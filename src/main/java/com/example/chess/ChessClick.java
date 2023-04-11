@@ -1,0 +1,203 @@
+package com.example.chess;
+
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+import javafx.scene.paint.Color;
+
+import java.util.List;
+import java.util.Objects;
+
+public class ChessClick extends ChessBoard {
+
+    public static List<Integer[]> prevHigh = null;
+    public static void setClick(int row, int col, StackPane square) {
+
+        String pieceType = ChessBoard.startingPositions[row][col];
+        String pieceType2 = ChessBoard.startingPositions[row][col];
+
+        System.out.println((char)('A' + col)+ " "+ (8-row));
+
+        Integer[] prev = new Integer[]{row, col};
+
+        removePrevHigh();
+
+        if(pieceType!= null) {
+
+            square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.5; -fx-background-color: rgba(0, 40, 0, 0.5);");
+
+            ChessPiece piece = (ChessPiece) square.getChildren().get(0);
+            String wb = piece.getColor();
+
+            //do better
+            if(pieceType.equals("pawn") && wb.equals("black"))
+            {
+                pieceType2 = "bpawn";
+            }
+
+            List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pieceType2, wb);
+
+            boolean[][] legalMoves = moves.get(0);
+            boolean[][] captureMoves = moves.get(1);
+
+            List<Integer[]> legalIndexes = ChessLogic.getTrueIndexes(legalMoves);
+            List<Integer[]> captureIndexes = ChessLogic.getTrueIndexes(captureMoves);
+
+
+            for (Integer[] index : captureIndexes) {
+
+                int crow = index[0];
+                int ccol = index[1];
+
+                highlightSquare(crow, ccol, "capture");
+
+                StackPane captureMove = (StackPane) chessBoard.getChildren().get(crow * 8 + ccol+1);
+
+                captureMove.setOnMouseClicked(event1 ->
+                        movePieceCapture(row, col, square, captureMove, wb, pieceType, true));
+            }
+
+            for (Integer[] index1 : legalIndexes) {
+
+                int trow = index1[0];
+                int tcol = index1[1];
+
+                highlightSquare(trow, tcol, "legal");
+
+                StackPane targetMove = (StackPane) chessBoard.getChildren().get(trow * 8 + tcol+1);
+
+                targetMove.setOnMouseClicked(event1 ->
+                        movePieceCapture(row, col, square, targetMove, wb, pieceType, false));
+
+            }
+
+            prevHigh = legalIndexes;
+            prevHigh.addAll(captureIndexes);
+            prevHigh.add(prev);
+        }
+    }
+    private static void movePieceCapture(int fromRow,int fromCol, StackPane square, StackPane targetMove, String wb, String pieceType, boolean Capt) {
+
+        int toCol = GridPane.getColumnIndex(targetMove);
+        int toRow = GridPane.getRowIndex(targetMove);
+
+        startingPositions[toRow][toCol] = pieceType;
+
+        square.getChildren().remove(0);
+
+        ChessPiece piece = new ChessPiece(pieceType, wb);
+
+        StackPane to = (StackPane) chessBoard.getChildren().get(toRow * 8 + toCol+1);
+
+        if(Capt)
+        {
+            to.getChildren().remove(0);
+        }
+
+        to.getChildren().add(piece);
+
+        startingPositions[fromRow][fromCol] = null;
+
+        board[toRow][toCol]= true;
+        board[fromRow][fromCol]= false;
+
+        removePrevHigh();
+        turns(isWhiteTurn);
+        isWhiteTurn = !isWhiteTurn;
+    }
+
+    private static void highlightSquare(int row, int col, String legOrCap) {
+
+        StackPane squareToHighlight = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
+
+        if(Objects.equals(legOrCap, "legal")) {
+
+            Color customColor = Color.rgb(0, 40, 0);
+            Circle circle = new Circle(10, customColor);
+            circle.setOpacity(0.5);
+
+            VBox vBox = new VBox(circle);
+            vBox.setAlignment(Pos.CENTER);
+
+            squareToHighlight.getChildren().add(vBox);
+
+        }
+
+        else if(Objects.equals(legOrCap, "capture"))
+        {
+            squareToHighlight.setStyle("-fx-background-color: rgba(92, 32, 27, 0.7);");
+        }
+    }
+
+    private static void removeHighlight(int row, int col) {
+
+        StackPane squareToRemove = (StackPane) chessBoard.getChildren().get(row * 8 + col+1);
+        squareToRemove.setStyle("-fx-border-color: transparent;-fx-background-color:" + getSquareColor(row, col));
+
+        VBox vBoxToRemove = null;
+
+        for (Node node : squareToRemove.getChildren()) {
+            if (node instanceof VBox) {
+                vBoxToRemove = (VBox) node;
+                break;
+            }
+        }
+
+        if (vBoxToRemove != null) {
+            squareToRemove.getChildren().remove(vBoxToRemove);
+        }
+    }
+
+    private static void turns(boolean whiteTurn) {
+
+        for(int i = 0; i<8; i++)
+        {
+            for(int j = 0; j<8; j++)
+            {
+                int finalI = i;
+                int finalJ = j;
+
+                if(startingPositions[i][j] != null) {
+                    StackPane turn = (StackPane) chessBoard.getChildren().get(i * 8 + j + 1);
+                    ChessPiece piece = (ChessPiece) turn.getChildren().get(0);
+                    String wb = piece.getColor();
+
+                    if(whiteTurn) {
+                        if (Objects.equals(wb, "white")) {
+                            turn.setOnMouseClicked(null);
+                        }
+
+                        if (Objects.equals(wb, "black")) {
+                            turn.setOnMouseClicked(event ->
+                                    ChessClick.setClick(finalI, finalJ, turn));
+                        }
+                    }
+
+                    if(!whiteTurn) {
+                        if (Objects.equals(wb, "white")) {
+                            turn.setOnMouseClicked(event ->
+                                    ChessClick.setClick(finalI, finalJ, turn));
+                        }
+                        if (Objects.equals(wb, "black")) {
+                            turn.setOnMouseClicked(null);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void removePrevHigh( ) {
+
+        if(prevHigh !=null)
+        {
+            for (Integer[] index1 : prevHigh) {
+                removeHighlight(index1[0], index1[1]);
+            }
+        }
+
+    }
+}
