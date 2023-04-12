@@ -76,6 +76,27 @@ public class ChessClick extends ChessBoard {
         prevHigh.add(SelectedPrev);
 
     }
+
+    public static boolean isCheck(int row, int col, String pieceType2, String wb) {
+
+        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pieceType2, wb);
+        boolean[][] captureMoves = moves.get(1);
+
+        List<Integer[]> captureIndexes = ChessLogic.getTrueIndexes(captureMoves);
+
+        for (Integer[] index : captureIndexes) {
+
+            int trow = index[0];
+            int tcol = index[1];
+
+            if(startingPositions[trow][tcol].equals("king"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt) {
 
         int toCol = GridPane.getColumnIndex(to);
@@ -101,7 +122,13 @@ public class ChessClick extends ChessBoard {
 
         removePrevHigh();
 
+        if(isCheck(toRow, toCol, pieceType, wb))
+        {
+            System.out.println("Check");
+        }
+
         turns(isWhiteTurn);
+
         isWhiteTurn = !isWhiteTurn;
         if(isWhiteTurn)
         {
@@ -217,5 +244,7 @@ public class ChessClick extends ChessBoard {
         }
 
     }
+
+
 }
 
