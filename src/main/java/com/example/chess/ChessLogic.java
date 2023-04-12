@@ -66,7 +66,6 @@ public class ChessLogic extends ChessBoard {
                 }
             }
 
-
             case "bishop" -> {
 
                 int i = row - 1, j = col + 1;
@@ -129,7 +128,6 @@ public class ChessLogic extends ChessBoard {
                 }
             }
 
-
             case "rook" -> {
 
                 for (int i = row - 1; i >= 0; i--) {
@@ -143,7 +141,6 @@ public class ChessLogic extends ChessBoard {
                     }
                 }
 
-                // Check legal moves in downward direction
                 for (int i = row + 1; i < 8; i++) {
                     if (!board[i][col]) {
                         legalMoves[i][col] = true;
@@ -155,7 +152,6 @@ public class ChessLogic extends ChessBoard {
                     }
                 }
 
-                // Check legal moves in left direction
                 for (int i = col - 1; i >= 0; i--) {
                     if (!board[row][i]) {
                         legalMoves[row][i] = true;
@@ -167,7 +163,6 @@ public class ChessLogic extends ChessBoard {
                     }
                 }
 
-                // Check legal moves in right direction
                 for (int i = col + 1; i < 8; i++) {
                     if (!board[row][i]) {
                         legalMoves[row][i] = true;
@@ -179,8 +174,6 @@ public class ChessLogic extends ChessBoard {
                     }
                 }
             }
-
-
 
             case "king" -> {
                 int[] rowOff = {0, 0, 1, -1, 1, -1, 1, -1};
@@ -205,7 +198,7 @@ public class ChessLogic extends ChessBoard {
                         break;
                     }
                 }
-                // Check legal moves in down direction
+
                 for (int i = row + 1; i < 8; i++) {
                     if (!board[i][col]) {
                         legalMoves[i][col] = true;
@@ -216,7 +209,7 @@ public class ChessLogic extends ChessBoard {
                         break;
                     }
                 }
-                // Check legal moves in left direction
+
                 for (int i = col - 1; i >= 0; i--) {
                     if (!board[row][i]) {
                         legalMoves[row][i] = true;
@@ -227,7 +220,7 @@ public class ChessLogic extends ChessBoard {
                         break;
                     }
                 }
-                // Check legal moves in right direction
+
                 for (int i = col + 1; i < 8; i++) {
                     if (!board[row][i]) {
                         legalMoves[row][i] = true;
@@ -249,7 +242,7 @@ public class ChessLogic extends ChessBoard {
                         break;
                     }
                 }
-                // Check legal moves in up-right diagonal direction
+
                 for (int i = row - 1, j = col + 1; i >= 0 && j < 8; i--, j++) {
                     if (!board[i][j]) {
                         legalMoves[i][j] = true;
@@ -260,7 +253,7 @@ public class ChessLogic extends ChessBoard {
                         break;
                     }
                 }
-                // Check legal moves in down-left diagonal direction
+
                 for (int i = row + 1, j = col - 1; i < 8 && j >= 0; i++, j--) {
                     if (!board[i][j]) {
                         legalMoves[i][j] = true;
@@ -284,7 +277,6 @@ public class ChessLogic extends ChessBoard {
                 }
             }
 
-
         List<boolean[][]> movesList = new ArrayList<>();
         movesList.add(legalMoves);
         movesList.add(captureMoves);
@@ -306,10 +298,11 @@ public class ChessLogic extends ChessBoard {
         return trueIndexes;
     }
 
-    static String getPieceColor(int row, int col) {
+    private static String getPieceColor(int row, int col) {
 
         StackPane squareToCheck = (StackPane) chessBoard.getChildren().get(row * 8 + col+1);
         ChessPiece piece = (ChessPiece) squareToCheck.getChildren().get(0);
+
         return piece.getColor();
     }
 }
