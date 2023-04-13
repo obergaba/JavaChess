@@ -14,8 +14,6 @@ import java.util.Objects;
 
 public class ChessClick extends ChessBoard {
 
-    double CELL = ChessBoard.CELL_SIZE;
-
     private static List<Integer[]> prevHigh = null;
     public static void setClick(int row, int col, StackPane square) {
 

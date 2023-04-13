@@ -10,6 +10,7 @@ public class ChessLogic extends ChessBoard {
 
         boolean[][] legalMoves = new boolean[8][8];
         boolean[][] captureMoves = new boolean[8][8];
+        boolean[][] captureMyMoves = new boolean[8][8];
 
         switch (pieceType) {
 
@@ -59,6 +60,9 @@ public class ChessLogic extends ChessBoard {
                         } else if (!getPieceColor(newRow, newCol).equals(pColor)) {
                             captureMoves[newRow][newCol] = true;
                         }
+                        else if (getPieceColor(newRow, newCol).equals(pColor)) {
+                            captureMyMoves[newRow][newCol] = true;
+                        }
                     }
                 }
             }
@@ -72,7 +76,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         captureMoves[i][j] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(i, j).equals(pColor)) {
+                        captureMyMoves[i][j] = true;
+                        break;
+                    }else {
                         break;
                     }
                     i--;
@@ -87,7 +95,10 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         captureMoves[i][j] = true;
                         break;
-                    } else {
+                    } else if (getPieceColor(i, j).equals(pColor)) {
+                        captureMyMoves[i][j] = true;
+                        break;
+                    }else {
                         break;
                     }
                     i--;
@@ -102,7 +113,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         captureMoves[i][j] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(i, j).equals(pColor)) {
+                        captureMyMoves[i][j] = true;
+                        break;
+                    }else {
                         break;
                     }
                     i++;
@@ -117,7 +132,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         captureMoves[i][j] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(i, j).equals(pColor)) {
+                        captureMyMoves[i][j] = true;
+                        break;
+                    }else {
                         break;
                     }
                     i++;
@@ -133,7 +152,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(i, col).equals(pColor)) {
                         captureMoves[i][col] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(i, col).equals(pColor)) {
+                        captureMyMoves[i][col] = true;
+                        break;
+                    }else {
                         break;
                     }
                 }
@@ -144,7 +167,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(i, col).equals(pColor)) {
                         captureMoves[i][col] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(i, col).equals(pColor)) {
+                        captureMyMoves[i][col] = true;
+                        break;
+                    }else {
                         break;
                     }
                 }
@@ -155,7 +182,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(row, i).equals(pColor)) {
                         captureMoves[row][i] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(row, i).equals(pColor)) {
+                        captureMyMoves[row][i] = true;
+                        break;
+                    }else {
                         break;
                     }
                 }
@@ -165,6 +196,10 @@ public class ChessLogic extends ChessBoard {
                         legalMoves[row][i] = true;
                     } else if (!getPieceColor(row, i).equals(pColor)) {
                         captureMoves[row][i] = true;
+                        break;
+                    }
+                    else if (getPieceColor(row, i).equals(pColor)) {
+                        captureMyMoves[row][i] = true;
                         break;
                     } else {
                         break;
@@ -215,9 +250,6 @@ public class ChessLogic extends ChessBoard {
                 }
             }
 
-
-
-
             case "queen" -> {
 
                 for (int i = row - 1; i >= 0; i--) {
@@ -226,7 +258,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(i, col).equals(pColor)) {
                         captureMoves[i][col] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(i, col).equals(pColor)) {
+                        captureMyMoves[i][col] = true;
+                        break;
+                    }else {
                         break;
                     }
                 }
@@ -237,7 +273,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(i, col).equals(pColor)) {
                         captureMoves[i][col] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(i, col).equals(pColor)) {
+                        captureMyMoves[i][col] = true;
+                        break;
+                    }else {
                         break;
                     }
                 }
@@ -248,7 +288,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(row, i).equals(pColor)) {
                         captureMoves[row][i] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(row, i).equals(pColor)) {
+                        captureMyMoves[row][i] = true;
+                        break;
+                    }else {
                         break;
                     }
                 }
@@ -259,7 +303,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(row, i).equals(pColor)) {
                         captureMoves[row][i] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(row, i).equals(pColor)) {
+                        captureMyMoves[row][i] = true;
+                        break;
+                    }else {
                         break;
                     }
                 }
@@ -270,7 +318,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         captureMoves[i][j] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(i, j).equals(pColor)) {
+                        captureMyMoves[i][j] = true;
+                        break;
+                    }else {
                         break;
                     }
                 }
@@ -281,7 +333,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         captureMoves[i][j] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(i, j).equals(pColor)) {
+                        captureMyMoves[i][j] = true;
+                        break;
+                    }else {
                         break;
                     }
                 }
@@ -291,6 +347,10 @@ public class ChessLogic extends ChessBoard {
                         legalMoves[i][j] = true;
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         captureMoves[i][j] = true;
+                        break;
+                    }
+                    else if (getPieceColor(i, j).equals(pColor)) {
+                        captureMyMoves[i][j] = true;
                         break;
                     } else {
                         break;
@@ -302,7 +362,11 @@ public class ChessLogic extends ChessBoard {
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         captureMoves[i][j] = true;
                         break;
-                    } else {
+                    }
+                    else if (getPieceColor(i, j).equals(pColor)) {
+                        captureMyMoves[i][j] = true;
+                        break;
+                    }else {
                         break;
                     }
                 }
@@ -313,10 +377,10 @@ public class ChessLogic extends ChessBoard {
 
         movesList.add(legalMoves);
         movesList.add(captureMoves);
+        movesList.add(captureMyMoves);
 
         return movesList;
     }
-
     public static List<Integer[]> getTrueIndexes(boolean[][] arr) {
 
         List<Integer[]> trueIndexes = new ArrayList<>();
@@ -332,7 +396,6 @@ public class ChessLogic extends ChessBoard {
 
         return trueIndexes;
     }
-
     public static List<Integer[]> getChecks(boolean isWitheTurn) {
 
         List<Integer[]> captureIndexes = new ArrayList<>();
@@ -354,14 +417,15 @@ public class ChessLogic extends ChessBoard {
 
                     if(wb.equals(color)) {
 
-                        List<boolean[][]> moves = ChessLogic.getLegalMoves2(board, row, col, pt);
+                        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
 
                         boolean[][] leg = moves.get(0);
                         boolean[][] capMoves = moves.get(1);
+                        boolean[][] asd = moves.get(2);
 
                         captureIndexes.addAll(ChessLogic.getTrueIndexes(capMoves));
                         captureIndexes.addAll(ChessLogic.getTrueIndexes(leg));
-
+                        captureIndexes.addAll(ChessLogic.getTrueIndexes(asd));
                     }
                 }
             }
@@ -375,213 +439,5 @@ public class ChessLogic extends ChessBoard {
         ChessPiece piece = (ChessPiece) squareToCheck.getChildren().get(0);
 
         return piece.getColor();
-    }
-    public static List<boolean[][]> getLegalMoves2(boolean[][] board, int row, int col, String pieceType) {
-
-        boolean[][] legalMoves = new boolean[8][8];
-        boolean[][] captureMoves = new boolean[8][8];
-
-        switch (pieceType) {
-
-            case "pawn" -> {
-
-                if (row > 0 && col > 0 && board[row-1][col-1]) {
-                    captureMoves[row-1][col-1] = true;
-                }
-                if (row > 0 && col < 7 && board[row-1][col+1]) {
-                    captureMoves[row-1][col+1] = true;
-                }
-            }
-
-
-            case "knight" -> {
-
-                int[] rowOffsets = {2, 2, -2, -2, 1, 1, -1, -1};
-                int[] colOffsets = {-1, 1, -1, 1, 2, -2, 2, -2};
-                for (int i = 0; i < rowOffsets.length; i++) {
-                    int newRow = row + rowOffsets[i];
-                    int newCol = col + colOffsets[i];
-                    if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-                            legalMoves[newRow][newCol] = true;
-                    }
-                }
-            }
-
-            case "bishop" -> {
-
-                int i = row - 1, j = col + 1;
-                while (i >= 0 && j < 8) {
-                    if (!board[i][j]) {
-                        legalMoves[i][j] = true;
-                    } else  {
-                        captureMoves[i][j] = true;
-                        break;
-                    }
-                    i--;
-                    j++;
-                }
-
-                i = row - 1;
-                j = col - 1;
-
-                while (i >= 0 && j >= 0) {
-                    if (!board[i][j]) {
-                        legalMoves[i][j] = true;
-                    } else  {
-                        captureMoves[i][j] = true;
-                        break;
-                    }
-                    i--;
-                    j--;
-                }
-
-                i = row + 1;
-                j = col + 1;
-                while (i < 8 && j < 8) {
-                    if (!board[i][j]) {
-                        legalMoves[i][j] = true;
-                    } else  {
-                        captureMoves[i][j] = true;
-                        break;
-                    }
-                    i++;
-                    j++;
-                }
-
-                i = row + 1;
-                j = col - 1;
-                while (i < 8 && j >= 0) {
-                    if (!board[i][j]) {
-                        legalMoves[i][j] = true;
-                    } else  {
-                        captureMoves[i][j] = true;
-                        break;
-                    }
-                    i++;
-                    j--;
-                }
-            }
-
-            case "rook" -> {
-
-                for (int i = row - 1; i >= 0; i--) {
-                    if (!board[i][col]) {
-                        legalMoves[i][col] = true;
-                    } else  {
-                        captureMoves[i][col] = true;
-                        break;
-                    }
-                }
-
-                for (int i = row + 1; i < 8; i++) {
-                    if (!board[i][col]) {
-                        legalMoves[i][col] = true;
-                    } else  {
-                        captureMoves[i][col] = true;
-                        break;
-                    }
-                }
-
-                for (int i = col - 1; i >= 0; i--) {
-                    if (!board[row][i]) {
-                        legalMoves[row][i] = true;
-                    } else  {
-                        captureMoves[row][i] = true;
-                        break;
-                    }
-                }
-
-                for (int i = col + 1; i < 8; i++) {
-                    if (!board[row][i]) {
-                        legalMoves[row][i] = true;
-                    } else  {
-                        captureMoves[row][i] = true;
-                        break;
-                    }
-                }
-            }
-
-
-            case "queen" -> {
-
-                for (int i = row - 1; i >= 0; i--) {
-                    if (!board[i][col]) {
-                        legalMoves[i][col] = true;
-                    } else  {
-                        captureMoves[i][col] = true;
-                        break;
-                    }
-                }
-
-                for (int i = row + 1; i < 8; i++) {
-                    if (!board[i][col]) {
-                        legalMoves[i][col] = true;
-                    } else  {
-                        captureMoves[i][col] = true;
-                        break;
-                    }
-                }
-
-                for (int i = col - 1; i >= 0; i--) {
-                    if (!board[row][i]) {
-                        legalMoves[row][i] = true;
-                    } else  {
-                        captureMoves[row][i] = true;
-                        break;
-                    }
-                }
-
-                for (int i = col + 1; i < 8; i++) {
-                    if (!board[row][i]) {
-                        legalMoves[row][i] = true;
-                    } else {
-                        captureMoves[row][i] = true;
-                        break;
-                    }
-                }
-
-                for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
-                    if (!board[i][j]) {
-                        legalMoves[i][j] = true;
-                    } else  {
-                        captureMoves[i][j] = true;
-                        break;
-                    }
-                }
-
-                for (int i = row - 1, j = col + 1; i >= 0 && j < 8; i--, j++) {
-                    if (!board[i][j]) {
-                        legalMoves[i][j] = true;
-                    } else  {
-                        captureMoves[i][j] = true;
-                        break;
-                    }
-                }
-
-                for (int i = row + 1, j = col - 1; i < 8 && j >= 0; i++, j--) {
-                    if (!board[i][j]) {
-                        legalMoves[i][j] = true;
-                    } else  {
-                        captureMoves[i][j] = true;
-                        break;
-                    }
-                }
-                for (int i = row + 1, j = col + 1; i < 8 && j < 8; i++, j++) {
-                    if (!board[i][j]) {
-                        legalMoves[i][j] = true;
-                    } else  {
-                        captureMoves[i][j] = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        List<boolean[][]> movesList = new ArrayList<>();
-
-        movesList.add(legalMoves);
-        movesList.add(captureMoves);
-
-        return movesList;
     }
 }
