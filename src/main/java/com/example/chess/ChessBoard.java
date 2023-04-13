@@ -28,7 +28,6 @@ import javafx.stage.Stage;
 
         public void start(Stage primaryStage) {
 
-            //This initializes a 8x8 boolean board with true if there is a piece and keeps updating while the players makes moves.
             initializeBoolBoard();
 
             chessBoard = new GridPane();
@@ -36,7 +35,6 @@ import javafx.stage.Stage;
 
             System.out.println("White to move");
 
-            //Created the 64 chess squares using the stack-pane method and add each stack-pane to the grid-pane
             for (int row = 0; row < 8; row++) {
                 for (int col = 0; col < 8; col++) {
 
