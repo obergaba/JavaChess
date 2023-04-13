@@ -86,7 +86,7 @@ public class ChessClick extends ChessBoard {
 
         for(int row = 0; row < 8; row++) {
             for(int col = 0; col < 8; col++) {
-                if(startingPositions[row][col] != null) {
+                if(startingPositions[row][col] != null && startingPositions[row][col] != "king") {
                     StackPane temp = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
                     ChessPiece piece = (ChessPiece) temp.getChildren().get(0);
                     String wb = piece.getColor();
@@ -139,14 +139,17 @@ public class ChessClick extends ChessBoard {
 
         removePrevHigh();
 
-        int[] result = isCheck(isWhiteTurn);
-        if (result[0] != 0 || result[1] != 0) {
-            System.out.println("Check!");
-            StackPane squareToHighlightCheck = (StackPane) chessBoard.getChildren().get(result[0] * 8 + result[1] + 1);
-            squareToHighlightCheck.setStyle("-fx-border-color: red; -fx-border-width: 2px;-fx-background-color:" + getSquareColor(result[0], result[1]));
+        turns(isWhiteTurn);
+
+        if(pieceType != "king")
+        {
+            int[] result = isCheck(isWhiteTurn);
+
+            if (result[0] != 0 || result[1] != 0) {
+                DoCheck(result[0], result[1]);
+                }
         }
 
-        turns(isWhiteTurn);
 
         isWhiteTurn = !isWhiteTurn;
         if(isWhiteTurn)
@@ -181,6 +184,26 @@ public class ChessClick extends ChessBoard {
         {
             squareToHighlight.setStyle("-fx-background-color: rgba(92, 32, 27, 0.7);");
         }
+    }
+    private static void DoCheck(int row, int col) {
+
+        System.out.println("Check!");
+        StackPane squareToHighlightCheck = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
+        squareToHighlightCheck.setStyle("-fx-border-color: red; -fx-border-width: 2px;-fx-background-color:" + getSquareColor(row, col));
+
+        for(int i = 0; i<8; i++)
+        {
+            for(int j = 0; j<8; j++)
+            {
+                if(startingPositions[i][j] != null ) {
+                    StackPane turn2 = (StackPane) chessBoard.getChildren().get(i * 8 + j + 1);
+                    turn2.setOnMouseClicked(null);
+                }
+            }
+        }
+
+        squareToHighlightCheck.setOnMouseClicked(event ->
+                ChessClick.setClick(row, col, squareToHighlightCheck));
     }
 
     private static void turns(boolean whiteTurn) {

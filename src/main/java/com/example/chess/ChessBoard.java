@@ -106,4 +106,3 @@ import javafx.stage.Stage;
             return new ChessPiece(pieceType, color);
         }
     }
-
