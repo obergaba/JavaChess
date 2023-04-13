@@ -13,9 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ChessClick extends ChessBoard {
-
-    public static List<Integer[]> prevHigh = null;
-
+    private static List<Integer[]> prevHigh = null;
     public static void setClick(int row, int col, StackPane square) {
 
         System.out.println((char)('A' + col)+ " "+ (8-row));
@@ -43,7 +41,6 @@ public class ChessClick extends ChessBoard {
 
         List<Integer[]> legalIndexes = ChessLogic.getTrueIndexes(legalMoves);
         List<Integer[]> captureIndexes = ChessLogic.getTrueIndexes(captureMoves);
-
 
         for (Integer[] index : captureIndexes) {
 
@@ -78,28 +75,24 @@ public class ChessClick extends ChessBoard {
 
     }
 
-    public static boolean isCheck(boolean isWhiteTurn) {
+    public static int[] isCheck(boolean isWhiteTurn) {
 
         List<Integer[]> captureIndexes = new ArrayList<>();
+        int[] result = new int[2];
 
         String color = "black";
         if(isWhiteTurn)
             color = "white";
 
-
-        for(int row = 0; row< 8; row++)
-        {
-            for(int col = 0; col <8; col++)
-            {
-                if(startingPositions[row][col] != null)
-                {
+        for(int row = 0; row < 8; row++) {
+            for(int col = 0; col < 8; col++) {
+                if(startingPositions[row][col] != null) {
                     StackPane temp = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
                     ChessPiece piece = (ChessPiece) temp.getChildren().get(0);
                     String wb = piece.getColor();
                     String pt = piece.getType();
 
-                    if(wb.equals(color))
-                    {
+                    if(wb.equals(color)) {
                         List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
                         boolean[][] captureMoves = moves.get(1);
                         captureIndexes.addAll(ChessLogic.getTrueIndexes(captureMoves));
@@ -107,24 +100,25 @@ public class ChessClick extends ChessBoard {
                 }
             }
         }
-        for (Integer[] index : captureIndexes) {
 
+        for (Integer[] index : captureIndexes) {
             int trow = index[0];
             int tcol = index[1];
 
-            if(startingPositions[trow][tcol].equals("king"))
-            {
-                return true;
+            if(startingPositions[trow][tcol].equals("king")) {
+                result[0] = trow;
+                result[1] = tcol;
+                return result;
             }
         }
-        return  false;
+
+        return new int[2];
     }
+
     private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt) {
 
         int toCol = GridPane.getColumnIndex(to);
         int toRow = GridPane.getRowIndex(to);
-
-
 
         from.getChildren().remove(0);
 
@@ -145,9 +139,11 @@ public class ChessClick extends ChessBoard {
 
         removePrevHigh();
 
-        if(isCheck(isWhiteTurn))
-        {
-            System.out.println("Check");
+        int[] result = isCheck(isWhiteTurn);
+        if (result[0] != 0 || result[1] != 0) {
+            System.out.println("Check!");
+            StackPane squareToHighlightCheck = (StackPane) chessBoard.getChildren().get(result[0] * 8 + result[1] + 1);
+            squareToHighlightCheck.setStyle("-fx-border-color: red; -fx-border-width: 2px;-fx-background-color:" + getSquareColor(result[0], result[1]));
         }
 
         turns(isWhiteTurn);
@@ -254,7 +250,6 @@ public class ChessClick extends ChessBoard {
         {
             squareToRemove.setOnMouseClicked(null);
         }
-
     }
 
     public static void removePrevHigh() {
@@ -265,9 +260,6 @@ public class ChessClick extends ChessBoard {
                 removeHighlight(index1[0], index1[1]);
             }
         }
-
     }
-
-
 }
 
