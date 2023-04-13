@@ -1,12 +1,26 @@
 package com.example.chess;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-    public class ChessBoard extends Application {
+
+
+
+public class ChessBoard extends Application {
+
+        static double BOARD_SIZE = 800.0;
+        static double CELL_SIZE = BOARD_SIZE / 8;
+        static int WINDOW_SIZE = 1000;
+
         public static String[][] startingPositions = {
                 {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"},
                 {"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"},
@@ -32,6 +46,10 @@ import javafx.stage.Stage;
 
             chessBoard = new GridPane();
             chessBoard.setGridLinesVisible(true);
+            chessBoard.setAlignment(Pos.CENTER);
+
+            chessBoard.setTranslateX((WINDOW_SIZE - BOARD_SIZE) / 2);
+            chessBoard.setTranslateY((WINDOW_SIZE - BOARD_SIZE) / 2);
 
             System.out.println("White to move");
 
@@ -41,7 +59,7 @@ import javafx.stage.Stage;
                     final int currentRow = row;
                     final int currentCol = col;
 
-                    StackPane square = createSquare(row, col);
+                    StackPane square = createSquare(row, col, CELL_SIZE);
                     chessBoard.add(square, col, row);
 
                     pieceType = startingPositions[currentRow][currentCol];
@@ -60,8 +78,16 @@ import javafx.stage.Stage;
                 }
             }
 
+            Pane pane = new Pane();
+            pane.getChildren().add(chessBoard);
+
+            //Scene scene = new Scene(chessBoard, 800, 800);
+            Scene scene = new Scene(pane, WINDOW_SIZE, WINDOW_SIZE);
+            scene.setFill(Color.WHITE);
+
+
+            CreateTexts(pane, (int)BOARD_SIZE, (int)(WINDOW_SIZE-BOARD_SIZE));
             primaryStage.getIcons().add(icon);
-            Scene scene = new Scene(chessBoard, 700, 700);
             primaryStage.setTitle("Juicer");
             primaryStage.setResizable(false);
             primaryStage.setScene(scene);
@@ -90,12 +116,12 @@ import javafx.stage.Stage;
             }
         }
 
-        private StackPane createSquare(int row, int col) {
+        private StackPane createSquare(int row, int col, double size) {
 
             StackPane square = new StackPane();
             String color = getSquareColor(row, col);
             square.setStyle("-fx-border-color: transparent; -fx-border-width: 0; -fx-padding: 0; -fx-background-color: " + color);
-            square.setPrefSize(87.5,87.5 );
+            square.setPrefSize(CELL_SIZE,CELL_SIZE );
 
             return square;
         }
@@ -104,5 +130,22 @@ import javafx.stage.Stage;
             String color = (row < 2) ? "black" : "white";
 
             return new ChessPiece(pieceType, color);
+        }
+
+        private void CreateTexts(Pane pane, int boardSize, int offset)
+        {
+            int cellSize = boardSize / 8;
+            for (int i = 0; i < 8; i++)
+            {
+                char a = 97;
+                String aa = ""+a;
+                Label label = new Label(aa);
+                label.setTextFill(Color.BLUE);
+                label.setTranslateX(i*(cellSize)+(offset/2));
+                label.setTranslateY((WINDOW_SIZE-BOARD_SIZE)/2);
+
+                pane.getChildren().add(label);
+
+            }
         }
     }

@@ -3,6 +3,7 @@ package com.example.chess;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+
 public class ChessPiece extends ImageView  {
     private final String type;
     private final String color;
@@ -11,12 +12,15 @@ public class ChessPiece extends ImageView  {
         this.type = type;
         this.color = color;
 
-        String filePath =  type + "_" + color +".png"; //move all icons from "C:\\Users\\GABA\\IdeaProjects\\chess\\src\\main\\asd\\" to resources folder
+        String filePath =  type + "_" + color +".png";
         Image image = new Image(filePath);
 
         setPreserveRatio(true);
-        setFitWidth(80);
-        setFitHeight(80);
+
+        double cell = ChessClick.CELL_SIZE;
+
+        setFitWidth(cell);
+        setFitHeight(cell);
         setImage(image);
 
     }

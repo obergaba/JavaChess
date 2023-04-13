@@ -13,13 +13,16 @@ import java.util.List;
 import java.util.Objects;
 
 public class ChessClick extends ChessBoard {
+
+    double CELL = ChessBoard.CELL_SIZE;
+
     private static List<Integer[]> prevHigh = null;
     public static void setClick(int row, int col, StackPane square) {
 
         System.out.println((char)('A' + col)+ " "+ (8-row));
 
         Integer[] SelectedPrev = new Integer[]{row, col};
-        square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.5; -fx-background-color: rgba(0, 40, 0, 0.5);");
+        square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
 
         removePrevHigh();
 
@@ -170,7 +173,7 @@ public class ChessClick extends ChessBoard {
         if(Objects.equals(legOrCap, "legal")) {
 
             Color customColor = Color.rgb(0, 40, 0);
-            Circle circle = new Circle(10, customColor);
+            Circle circle = new Circle((CELL_SIZE*0.2)/2, customColor);
             circle.setOpacity(0.5);
 
             VBox vBox = new VBox(circle);
@@ -189,7 +192,7 @@ public class ChessClick extends ChessBoard {
 
         System.out.println("Check!");
         StackPane squareToHighlightCheck = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
-        squareToHighlightCheck.setStyle("-fx-border-color: red; -fx-border-width: 2px;-fx-background-color:" + getSquareColor(row, col));
+        squareToHighlightCheck.setStyle("-fx-border-color: red; -fx-border-width: 0px;-fx-background-color:" + getSquareColor(row, col));
 
         for(int i = 0; i<8; i++)
         {
@@ -254,7 +257,7 @@ public class ChessClick extends ChessBoard {
 
         StackPane squareToRemove = (StackPane) chessBoard.getChildren().get(row * 8 + col+1);
 
-        squareToRemove.setStyle("-fx-border-color: transparent;-fx-background-color:" + getSquareColor(row, col));
+        squareToRemove.setStyle("-fx-border-color: transparent;-fx-border-width: 0px;-fx-background-color:" + getSquareColor(row, col));
 
         VBox vBoxToRemove = null;
 
