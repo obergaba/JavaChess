@@ -49,6 +49,7 @@ public class ChessLogic extends ChessBoard {
 
                 int[] rowOffsets = {2, 2, -2, -2, 1, 1, -1, -1};
                 int[] colOffsets = {-1, 1, -1, 1, 2, -2, 2, -2};
+
                 for (int i = 0; i < rowOffsets.length; i++) {
                     int newRow = row + rowOffsets[i];
                     int newCol = col + colOffsets[i];
@@ -192,11 +193,23 @@ public class ChessLogic extends ChessBoard {
                                     break;
                                 }
                             }
+
                             if (canMove) {
                                 legalMoves[newRow][newCol] = true;
                             }
                         } else if (!getPieceColor(newRow, newCol).equals(pColor)) {
-                            captureMoves[newRow][newCol] = true;
+                            boolean canMovew = true;
+
+                            for (Integer[] index : captureIndexes) {
+                                int trow = index[0];
+                                int tcol = index[1];
+                                if (newRow == trow && newCol == tcol) {
+                                    canMovew = false;
+                                    break;
+                                }
+                            }
+                            if(canMovew)
+                                captureMoves[newRow][newCol] = true;
                         }
                     }
                 }
@@ -338,8 +351,6 @@ public class ChessLogic extends ChessBoard {
                     ChessPiece piece = (ChessPiece) temp.getChildren().get(0);
                     String wb = piece.getColor();
                     String pt = piece.getType();
-                    System.out.println(wb);
-                    System.out.println(pt);
 
                     if(wb.equals(color)) {
 
