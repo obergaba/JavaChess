@@ -8,13 +8,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class ChessClick extends ChessBoard {
-
-    public static List<Integer[]> prevHigh = null;
-
+    private static List<Integer[]> prevHigh = null;
     public static void setClick(int row, int col, StackPane square) {
 
         System.out.println((char)('A' + col)+ " "+ (8-row));
@@ -42,7 +41,6 @@ public class ChessClick extends ChessBoard {
 
         List<Integer[]> legalIndexes = ChessLogic.getTrueIndexes(legalMoves);
         List<Integer[]> captureIndexes = ChessLogic.getTrueIndexes(captureMoves);
-
 
         for (Integer[] index : captureIndexes) {
 
@@ -77,32 +75,50 @@ public class ChessClick extends ChessBoard {
 
     }
 
-    public static boolean isCheck(int row, int col, String pieceType2, String wb) {
+    public static int[] isCheck(boolean isWhiteTurn) {
 
-        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pieceType2, wb);
-        boolean[][] captureMoves = moves.get(1);
+        List<Integer[]> captureIndexes = new ArrayList<>();
+        int[] result = new int[2];
 
-        List<Integer[]> captureIndexes = ChessLogic.getTrueIndexes(captureMoves);
+        String color = "black";
+        if(isWhiteTurn)
+            color = "white";
+
+        for(int row = 0; row < 8; row++) {
+            for(int col = 0; col < 8; col++) {
+                if(startingPositions[row][col] != null && startingPositions[row][col] != "king") {
+                    StackPane temp = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
+                    ChessPiece piece = (ChessPiece) temp.getChildren().get(0);
+                    String wb = piece.getColor();
+                    String pt = piece.getType();
+
+                    if(wb.equals(color)) {
+                        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
+                        boolean[][] captureMoves = moves.get(1);
+                        captureIndexes.addAll(ChessLogic.getTrueIndexes(captureMoves));
+                    }
+                }
+            }
+        }
 
         for (Integer[] index : captureIndexes) {
-
             int trow = index[0];
             int tcol = index[1];
 
-            if(startingPositions[trow][tcol].equals("king"))
-            {
-                return true;
+            if(startingPositions[trow][tcol].equals("king")) {
+                result[0] = trow;
+                result[1] = tcol;
+                return result;
             }
         }
-        return false;
+
+        return new int[2];
     }
 
     private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt) {
 
         int toCol = GridPane.getColumnIndex(to);
         int toRow = GridPane.getRowIndex(to);
-
-        startingPositions[toRow][toCol] = pieceType;
 
         from.getChildren().remove(0);
 
@@ -115,6 +131,7 @@ public class ChessClick extends ChessBoard {
 
         to.getChildren().add(piece);
 
+        startingPositions[toRow][toCol] = pieceType;
         startingPositions[fromRow][fromCol] = null;
 
         board[toRow][toCol]= true;
@@ -122,12 +139,17 @@ public class ChessClick extends ChessBoard {
 
         removePrevHigh();
 
-        if(isCheck(toRow, toCol, pieceType, wb))
+        turns(isWhiteTurn);
+
+        if(pieceType != "king")
         {
-            System.out.println("Check");
+            int[] result = isCheck(isWhiteTurn);
+
+            if (result[0] != 0 || result[1] != 0) {
+                DoCheck(result[0], result[1]);
+                }
         }
 
-        turns(isWhiteTurn);
 
         isWhiteTurn = !isWhiteTurn;
         if(isWhiteTurn)
@@ -162,6 +184,26 @@ public class ChessClick extends ChessBoard {
         {
             squareToHighlight.setStyle("-fx-background-color: rgba(92, 32, 27, 0.7);");
         }
+    }
+    private static void DoCheck(int row, int col) {
+
+        System.out.println("Check!");
+        StackPane squareToHighlightCheck = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
+        squareToHighlightCheck.setStyle("-fx-border-color: red; -fx-border-width: 2px;-fx-background-color:" + getSquareColor(row, col));
+
+        for(int i = 0; i<8; i++)
+        {
+            for(int j = 0; j<8; j++)
+            {
+                if(startingPositions[i][j] != null ) {
+                    StackPane turn2 = (StackPane) chessBoard.getChildren().get(i * 8 + j + 1);
+                    turn2.setOnMouseClicked(null);
+                }
+            }
+        }
+
+        squareToHighlightCheck.setOnMouseClicked(event ->
+                ChessClick.setClick(row, col, squareToHighlightCheck));
     }
 
     private static void turns(boolean whiteTurn) {
@@ -231,7 +273,6 @@ public class ChessClick extends ChessBoard {
         {
             squareToRemove.setOnMouseClicked(null);
         }
-
     }
 
     public static void removePrevHigh() {
@@ -242,9 +283,6 @@ public class ChessClick extends ChessBoard {
                 removeHighlight(index1[0], index1[1]);
             }
         }
-
     }
-
-
 }
 

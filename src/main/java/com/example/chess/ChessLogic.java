@@ -1,6 +1,5 @@
 package com.example.chess;
 
-
 import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public class ChessLogic extends ChessBoard {
         switch (pieceType) {
 
             case "pawn" -> {
-                if (pColor.equals("white")) {
+
                     if (row > 0 && !board[row-1][col]) {
                         legalMoves[row-1][col] = true;
                         if (row == 6 && !board[row-2][col]) {
@@ -28,11 +27,9 @@ public class ChessLogic extends ChessBoard {
                     if (row > 0 && col < 7 && board[row-1][col+1] && !getPieceColor(row-1, col+1).equals(pColor)) {
                         captureMoves[row-1][col+1] = true;
                     }
-                }
             }
 
             case "bpawn" -> {
-                if (pColor.equals("black")) {
                     if (row < 7 && !board[row+1][col]) {
                         legalMoves[row+1][col] = true;
                         if (row == 1 && !board[row+2][col]) {
@@ -46,7 +43,6 @@ public class ChessLogic extends ChessBoard {
                         captureMoves[row+1][col+1] = true;
                     }
                 }
-            }
 
 
             case "knight" -> {
@@ -178,14 +174,37 @@ public class ChessLogic extends ChessBoard {
             case "king" -> {
                 int[] rowOff = {0, 0, 1, -1, 1, -1, 1, -1};
                 int[] colOff = {1, -1, 0, 0, 1, -1, -1, 1};
+
+                List<Integer[]> captureIndexes = getChecks(!isWhiteTurn);
+
                 for (int i = 0; i < rowOff.length; i++) {
                     int newRow = row + rowOff[i];
                     int newCol = col + colOff[i];
-                    if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8 && (!board[newRow][newCol] || board[newRow][newCol] != board[row][col])) {
-                        legalMoves[newRow][newCol] = true;
+                    if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                        if (!board[newRow][newCol]) {
+                            boolean canMove = true;
+
+                            for (Integer[] index : captureIndexes) {
+                                int trow = index[0];
+                                int tcol = index[1];
+                                if (newRow == trow && newCol == tcol) {
+                                    canMove = false;
+                                    break;
+                                }
+                            }
+                            if (canMove) {
+                                legalMoves[newRow][newCol] = true;
+                            }
+                        } else if (!getPieceColor(newRow, newCol).equals(pColor)) {
+                            captureMoves[newRow][newCol] = true;
+                        }
                     }
                 }
             }
+
+
+
+
             case "queen" -> {
 
                 for (int i = row - 1; i >= 0; i--) {
@@ -231,7 +250,7 @@ public class ChessLogic extends ChessBoard {
                         break;
                     }
                 }
-                // Check legal moves in up-left diagonal direction
+
                 for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
                     if (!board[i][j]) {
                         legalMoves[i][j] = true;
@@ -278,8 +297,10 @@ public class ChessLogic extends ChessBoard {
             }
 
         List<boolean[][]> movesList = new ArrayList<>();
+
         movesList.add(legalMoves);
         movesList.add(captureMoves);
+
         return movesList;
     }
 
@@ -295,7 +316,43 @@ public class ChessLogic extends ChessBoard {
                 }
             }
         }
+
         return trueIndexes;
+    }
+
+    public static List<Integer[]> getChecks(boolean isWitheTurn) {
+
+        List<Integer[]> captureIndexes = new ArrayList<>();
+
+        String color = "black";
+        if(isWitheTurn)
+            color = "white";
+
+        for(int row = 0; row < 8; row++) {
+            for(int col = 0; col < 8; col++) {
+
+                if(startingPositions[row][col] != null && !startingPositions[row][col].equals("king") && !startingPositions[row][col].equals("pawn")) {
+
+                    StackPane temp = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
+                    ChessPiece piece = (ChessPiece) temp.getChildren().get(0);
+                    String wb = piece.getColor();
+                    String pt = piece.getType();
+
+                    if(wb.equals(color)) {
+
+                        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
+
+                        boolean[][] leg = moves.get(0);
+                        boolean[][] capMoves = moves.get(1);
+
+                        captureIndexes.addAll(ChessLogic.getTrueIndexes(capMoves));
+                        captureIndexes.addAll(ChessLogic.getTrueIndexes(leg));
+
+                    }
+                }
+            }
+        }
+        return captureIndexes;
     }
 
     private static String getPieceColor(int row, int col) {
