@@ -48,7 +48,6 @@ public class ChessLogic extends ChessBoard {
                 }
             }
 
-
             case "knight" -> {
 
                 int[] rowOffsets = {2, 2, -2, -2, 1, 1, -1, -1};
@@ -186,6 +185,7 @@ public class ChessLogic extends ChessBoard {
                     }
                 }
             }
+
             case "queen" -> {
 
                 for (int i = row - 1; i >= 0; i--) {
@@ -231,7 +231,7 @@ public class ChessLogic extends ChessBoard {
                         break;
                     }
                 }
-                // Check legal moves in up-left diagonal direction
+
                 for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
                     if (!board[i][j]) {
                         legalMoves[i][j] = true;
@@ -278,8 +278,10 @@ public class ChessLogic extends ChessBoard {
             }
 
         List<boolean[][]> movesList = new ArrayList<>();
+
         movesList.add(legalMoves);
         movesList.add(captureMoves);
+
         return movesList;
     }
 
@@ -295,6 +297,7 @@ public class ChessLogic extends ChessBoard {
                 }
             }
         }
+
         return trueIndexes;
     }
 
