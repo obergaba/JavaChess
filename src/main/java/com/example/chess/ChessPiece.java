@@ -5,8 +5,8 @@ import javafx.scene.image.ImageView;
 
 
 public class ChessPiece extends ImageView  {
-    private   String type;
-    private  String color;
+    private final String type;
+    private final String color;
 
     public ChessPiece(String type, String color) {
 

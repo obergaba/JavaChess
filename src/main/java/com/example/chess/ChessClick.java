@@ -8,6 +8,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -77,13 +78,35 @@ public class ChessClick extends ChessBoard {
 
     }
 
-    public static boolean isCheck(int row, int col, String pieceType2, String wb) {
+    public static boolean isCheck(boolean isWhiteTurn) {
 
-        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pieceType2, wb);
-        boolean[][] captureMoves = moves.get(1);
+        List<Integer[]> captureIndexes = new ArrayList<>();
 
-        List<Integer[]> captureIndexes = ChessLogic.getTrueIndexes(captureMoves);
+        String color = "black";
+        if(isWhiteTurn)
+            color = "white";
 
+
+        for(int row = 0; row< 8; row++)
+        {
+            for(int col = 0; col <8; col++)
+            {
+                if(startingPositions[row][col] != null)
+                {
+                    StackPane temp = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
+                    ChessPiece piece = (ChessPiece) temp.getChildren().get(0);
+                    String wb = piece.getColor();
+                    String pt = piece.getType();
+
+                    if(wb.equals(color))
+                    {
+                        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
+                        boolean[][] captureMoves = moves.get(1);
+                        captureIndexes.addAll(ChessLogic.getTrueIndexes(captureMoves));
+                    }
+                }
+            }
+        }
         for (Integer[] index : captureIndexes) {
 
             int trow = index[0];
@@ -94,15 +117,14 @@ public class ChessClick extends ChessBoard {
                 return true;
             }
         }
-        return false;
+        return  false;
     }
-
     private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt) {
 
         int toCol = GridPane.getColumnIndex(to);
         int toRow = GridPane.getRowIndex(to);
 
-        startingPositions[toRow][toCol] = pieceType;
+
 
         from.getChildren().remove(0);
 
@@ -115,6 +137,7 @@ public class ChessClick extends ChessBoard {
 
         to.getChildren().add(piece);
 
+        startingPositions[toRow][toCol] = pieceType;
         startingPositions[fromRow][fromCol] = null;
 
         board[toRow][toCol]= true;
@@ -122,7 +145,7 @@ public class ChessClick extends ChessBoard {
 
         removePrevHigh();
 
-        if(isCheck(toRow, toCol, pieceType, wb))
+        if(isCheck(isWhiteTurn))
         {
             System.out.println("Check");
         }
