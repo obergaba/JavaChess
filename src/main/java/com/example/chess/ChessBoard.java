@@ -21,7 +21,7 @@ import javafx.stage.Stage;
         public static boolean[][] board;
         public static boolean isWhiteTurn = true;
         public static GridPane chessBoard;
-        Image icon = new Image("C:\\Users\\GABA\\IdeaProjects\\chess\\src\\main\\asd\\icon.png");
+        Image icon = new Image("icon.png"); ///move all icons from C:\Users\GABA\IdeaProjects\chess\src\main\asd\icon.png to resources
         public static String pieceType;
 
         @Override

@@ -13,7 +13,7 @@ public class ChessPiece extends ImageView  {
         this.type = type;
         this.color = color;
 
-        String filePath = "C:\\Users\\GABA\\IdeaProjects\\chess\\src\\main\\asd\\"+ type + "_" + color +".png";
+        String filePath =  type + "_" + color +".png"; //move all icons from "C:\\Users\\GABA\\IdeaProjects\\chess\\src\\main\\asd\\" to resources folder
         Image image = new Image(filePath);
 
         setPreserveRatio(true);
