@@ -86,7 +86,7 @@ public class ChessClick extends ChessBoard {
 
         for(int row = 0; row < 8; row++) {
             for(int col = 0; col < 8; col++) {
-                if(startingPositions[row][col] != null && startingPositions[row][col] != "king") {
+                if(startingPositions[row][col] != null && !startingPositions[row][col].equals("king")) {
                     StackPane temp = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
                     ChessPiece piece = (ChessPiece) temp.getChildren().get(0);
                     String wb = piece.getColor();
@@ -141,7 +141,7 @@ public class ChessClick extends ChessBoard {
 
         turns(isWhiteTurn);
 
-        if(pieceType != "king")
+        if(!pieceType.equals("king"))
         {
             int[] result = isCheck(isWhiteTurn);
 
