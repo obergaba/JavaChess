@@ -17,7 +17,7 @@ public class ChessClick extends ChessBoard {
     private static List<Integer[]> prevHigh = null;
     public static void setClick(int row, int col, StackPane square) {
 
-        System.out.println((char)('A' + col)+ " "+ (8-row));
+        //System.out.println((char)('A' + col)+ " "+ (8-row));
 
         Integer[] SelectedPrev = new Integer[]{row, col};
         square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
@@ -25,23 +25,24 @@ public class ChessClick extends ChessBoard {
         removePrevHigh();
 
         String pieceType = ChessBoard.startingPositions[row][col];
-        String pieceType2 = ChessBoard.startingPositions[row][col];
 
         ChessPiece piece = (ChessPiece) square.getChildren().get(0);
         String wb = piece.getColor();
 
         if(pieceType.equals("pawn") && wb.equals("black"))
         {
-            pieceType2 = "bpawn";
+            pieceType = "bpawn";
         }
 
-        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pieceType2, wb);
+        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pieceType, wb);
 
         boolean[][] legalMoves = moves.get(0);
         boolean[][] captureMoves = moves.get(1);
+        boolean[][] castleMoves = moves.get(3);
 
         List<Integer[]> legalIndexes = ChessLogic.getTrueIndexes(legalMoves);
         List<Integer[]> captureIndexes = ChessLogic.getTrueIndexes(captureMoves);
+        List<Integer[]> castleIndexes = ChessLogic.getTrueIndexes(castleMoves);
 
         for (Integer[] index : captureIndexes) {
 
@@ -52,8 +53,9 @@ public class ChessClick extends ChessBoard {
 
             StackPane captureMove = (StackPane) chessBoard.getChildren().get(crow * 8 + ccol+1);
 
+            String finalPieceType = pieceType;
             captureMove.setOnMouseClicked(event1 ->
-                    movePieceCapture(row, col, square, captureMove, wb, pieceType, true));
+                    movePieceCapture(row, col, square, captureMove, wb, finalPieceType, true, false));
         }
 
         for (Integer[] index1 : legalIndexes) {
@@ -65,13 +67,30 @@ public class ChessClick extends ChessBoard {
 
             StackPane targetMove = (StackPane) chessBoard.getChildren().get(trow * 8 + tcol+1);
 
+            String finalPieceType = pieceType;
             targetMove.setOnMouseClicked(event1 ->
-                    movePieceCapture(row, col, square, targetMove, wb, pieceType, false));
+                    movePieceCapture(row, col, square, targetMove, wb, finalPieceType, false, false));
+
+        }
+
+        for (Integer[] index2 : castleIndexes) {
+
+            int trow = index2[0];
+            int tcol = index2[1];
+
+            highlightSquare(trow, tcol, "legal");
+
+            StackPane castleMove = (StackPane) chessBoard.getChildren().get(trow * 8 + tcol+1);
+
+            String finalPieceType = pieceType;
+            castleMove.setOnMouseClicked(event1 ->
+                    movePieceCapture(row, col, square, castleMove, wb, finalPieceType, false, true));
 
         }
 
         prevHigh = legalIndexes;
         prevHigh.addAll(captureIndexes);
+        prevHigh.addAll(castleIndexes);
         prevHigh.add(SelectedPrev);
 
     }
@@ -94,40 +113,56 @@ public class ChessClick extends ChessBoard {
                     String pt = piece.getType();
 
                     if(wb.equals(color)) {
+
+                        if(pt.equals("pawn") && wb.equals("black"))
+                        {
+                            pt = "bpawn";
+                        }
                         List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
                         boolean[][] captureMoves = moves.get(1);
                         captureIndexes.addAll(ChessLogic.getTrueIndexes(captureMoves));
+
+                        for (Integer[] index : captureIndexes) {
+                            int trow = index[0];
+                            int tcol = index[1];
+
+                            if(startingPositions[trow][tcol].equals("king")) {
+                                result[0] = trow;
+                                result[1] = tcol;
+                                System.out.println(pt);
+                                return result;
+                            }
+                        }
                     }
                 }
-            }
-        }
-
-        for (Integer[] index : captureIndexes) {
-            int trow = index[0];
-            int tcol = index[1];
-
-            if(startingPositions[trow][tcol].equals("king")) {
-                result[0] = trow;
-                result[1] = tcol;
-                return result;
             }
         }
 
         return new int[2];
     }
 
-    private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt) {
+    private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt, boolean castle) {
 
         int toCol = GridPane.getColumnIndex(to);
         int toRow = GridPane.getRowIndex(to);
 
+        if(pieceType.equals("bpawn"))
+        {
+            pieceType = "pawn";
+        }
+
         from.getChildren().remove(0);
 
-        ChessPiece piece = new ChessPiece(pieceType, wb);
+        ChessPiece piece = new ChessPiece(pieceType, wb, true);
 
         if(Capt)
         {
             to.getChildren().remove(0);
+        }
+
+        if(castle)
+        {
+            castle(toCol, fromRow, fromCol, wb);
         }
 
         to.getChildren().add(piece);
@@ -147,7 +182,9 @@ public class ChessClick extends ChessBoard {
             int[] result = isCheck(isWhiteTurn);
 
             if (result[0] != 0 || result[1] != 0) {
+
                 DoCheck(result[0], result[1]);
+
                 }
         }
 
@@ -185,6 +222,74 @@ public class ChessClick extends ChessBoard {
         {
             squareToHighlight.setStyle("-fx-background-color: rgba(92, 32, 27, 0.7);");
         }
+    }
+
+    private static void castle(int toCol,int fromRow, int fromCol, String wb) {
+
+        if(toCol == 6 && wb.equals("white"))
+        {
+            StackPane rookCastle = (StackPane) chessBoard.getChildren().get(64);
+            rookCastle.getChildren().remove(0);
+
+            startingPositions[7][7] = null;
+            board[7][7]= false;
+
+            ChessPiece rook = new ChessPiece("rook", wb, true);
+            StackPane rookCastle2 = (StackPane) chessBoard.getChildren().get(fromRow * 8 + fromCol+2);
+            rookCastle2.getChildren().add(rook);
+
+            startingPositions[fromRow][fromCol+1] = "rook";
+            board[fromRow][fromCol+1]= true;
+        }
+
+        if(toCol == 2 && wb.equals("white"))
+        {
+            StackPane rookCastle = (StackPane) chessBoard.getChildren().get(57);
+            rookCastle.getChildren().remove(0);
+
+            startingPositions[7][0] = null;
+            board[7][0]= false;
+
+            ChessPiece rook = new ChessPiece("rook", wb, true);
+            StackPane rookCastle2 = (StackPane) chessBoard.getChildren().get(fromRow * 8 + fromCol);
+            rookCastle2.getChildren().add(rook);
+
+            startingPositions[fromRow][fromCol-1] = "rook";
+            board[fromRow][fromCol-1]= true;
+        }
+
+        if(toCol == 6 && wb.equals("black"))
+        {
+            StackPane rookCastle = (StackPane) chessBoard.getChildren().get(8);
+            rookCastle.getChildren().remove(0);
+
+            startingPositions[0][7] = null;
+            board[0][7]= false;
+
+            ChessPiece rook = new ChessPiece("rook", wb, true);
+            StackPane rookCastle2 = (StackPane) chessBoard.getChildren().get(fromRow * 8 + fromCol+2);
+            rookCastle2.getChildren().add(rook);
+
+            startingPositions[fromRow][fromCol+1] = "rook";
+            board[fromRow][fromCol+1]= true;
+        }
+
+        if(toCol == 2 && wb.equals("black"))
+        {
+            StackPane rookCastle = (StackPane) chessBoard.getChildren().get(1);
+            rookCastle.getChildren().remove(0);
+
+            startingPositions[0][0] = null;
+            board[0][0]= false;
+
+            ChessPiece rook = new ChessPiece("rook", wb, true);
+            StackPane rookCastle2 = (StackPane) chessBoard.getChildren().get(fromRow * 8 + fromCol);
+            rookCastle2.getChildren().add(rook);
+
+            startingPositions[fromRow][fromCol-1] = "rook";
+            board[fromRow][fromCol-1]= true;
+        }
+
     }
     private static void DoCheck(int row, int col) {
 

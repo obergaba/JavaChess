@@ -11,6 +11,7 @@ public class ChessLogic extends ChessBoard {
         boolean[][] legalMoves = new boolean[8][8];
         boolean[][] captureMoves = new boolean[8][8];
         boolean[][] captureMyMoves = new boolean[8][8];
+        boolean[][] castle = new boolean[8][8];
 
         switch (pieceType) {
 
@@ -28,6 +29,13 @@ public class ChessLogic extends ChessBoard {
                 if (row > 0 && col < 7 && board[row-1][col+1] && !getPieceColor(row-1, col+1).equals(pColor)) {
                     captureMoves[row-1][col+1] = true;
                 }
+
+                if (row > 0 && col > 0) {
+                    captureMyMoves[row-1][col-1] = true;
+                }
+                if (row > 0 && col < 7) {
+                    captureMyMoves[row-1][col+1] = true;
+                }
             }
 
             case "bpawn" -> {
@@ -42,6 +50,13 @@ public class ChessLogic extends ChessBoard {
                 }
                 if (row < 7 && col < 7 && board[row+1][col+1] && !getPieceColor(row+1, col+1).equals(pColor)) {
                     captureMoves[row+1][col+1] = true;
+                }
+
+                if (row < 7 && col > 0) {
+                    captureMyMoves[row+1][col-1] = true;
+                }
+                if (row < 7 && col < 7) {
+                    captureMyMoves[row+1][col+1] = true;
                 }
             }
 
@@ -213,6 +228,20 @@ public class ChessLogic extends ChessBoard {
 
                 List<Integer[]> captureIndexes = getChecks(!isWhiteTurn);
 
+                if (!hasMoved(row, col)) {
+                    System.out.println(!hasMoved(row, col));
+                    if (!hasMoved(row, col+3) && !board[row][col+1] && !board[row][col+2] &&
+                            !isAttacked(captureIndexes, row, col+1) && !isAttacked(captureIndexes, row, col+2)) {
+
+                        castle[row][col+2] = true;
+                    }
+                    if (!hasMoved(row, col-4) && !board[row][col-1] && !board[row][col-2] && !board[row][col-3] &&
+                            !isAttacked(captureIndexes, row, col-1) && !isAttacked(captureIndexes, row, col-2)) {
+
+                        castle[row][col-2] = true;
+                    }
+                }
+
                 for (int i = 0; i < rowOff.length; i++) {
                     int newRow = row + rowOff[i];
                     int newCol = col + colOff[i];
@@ -233,17 +262,17 @@ public class ChessLogic extends ChessBoard {
                                 legalMoves[newRow][newCol] = true;
                             }
                         } else if (!getPieceColor(newRow, newCol).equals(pColor)) {
-                            boolean canMovew = true;
+                            boolean canMove2 = true;
 
                             for (Integer[] index : captureIndexes) {
                                 int trow = index[0];
                                 int tcol = index[1];
                                 if (newRow == trow && newCol == tcol) {
-                                    canMovew = false;
+                                    canMove2 = false;
                                     break;
                                 }
                             }
-                            if(canMovew)
+                            if(canMove2)
                                 captureMoves[newRow][newCol] = true;
                         }
                     }
@@ -378,6 +407,7 @@ public class ChessLogic extends ChessBoard {
         movesList.add(legalMoves);
         movesList.add(captureMoves);
         movesList.add(captureMyMoves);
+        movesList.add(castle);
 
         return movesList;
     }
@@ -417,14 +447,21 @@ public class ChessLogic extends ChessBoard {
 
                     if(wb.equals(color)) {
 
+                        if(pt.equals("pawn") && wb.equals("black"))
+                        {
+                            pt = "bpawn";
+                        }
                         List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
 
                         boolean[][] leg = moves.get(0);
                         boolean[][] capMoves = moves.get(1);
                         boolean[][] asd = moves.get(2);
 
-                        captureIndexes.addAll(ChessLogic.getTrueIndexes(capMoves));
-                        captureIndexes.addAll(ChessLogic.getTrueIndexes(leg));
+                        if(!pt.equals("pawn") && !pt.equals("bpawn"))
+                        {
+                            captureIndexes.addAll(ChessLogic.getTrueIndexes(capMoves));
+                            captureIndexes.addAll(ChessLogic.getTrueIndexes(leg));
+                        }
                         captureIndexes.addAll(ChessLogic.getTrueIndexes(asd));
                     }
                 }
@@ -440,4 +477,24 @@ public class ChessLogic extends ChessBoard {
 
         return piece.getColor();
     }
+    private static boolean hasMoved(int row, int col) {
+
+        StackPane squareToCheck = (StackPane) chessBoard.getChildren().get(row * 8 + col+1);
+        ChessPiece piece = (ChessPiece) squareToCheck.getChildren().get(0);
+
+        return piece.hasMoved();
+    }
+
+    private static boolean isAttacked(List<Integer[]> asd, int row, int col)
+    {
+        for (Integer[] index : asd) {
+            int trow = index[0];
+            int tcol = index[1];
+            if (row == trow && col == tcol) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

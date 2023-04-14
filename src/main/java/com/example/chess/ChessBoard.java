@@ -7,20 +7,13 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-
-
 
 public class ChessBoard extends Application {
 
-        static double BOARD_SIZE = 800.0;
+        static double BOARD_SIZE = 600.0;
         static double CELL_SIZE = BOARD_SIZE / 8;
-        static int WINDOW_SIZE = 1000;
-
+        static int WINDOW_SIZE = 800;
         public static String[][] startingPositions = {
                 {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"},
                 {"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"},
@@ -59,7 +52,7 @@ public class ChessBoard extends Application {
                     final int currentRow = row;
                     final int currentCol = col;
 
-                    StackPane square = createSquare(row, col, CELL_SIZE);
+                    StackPane square = createSquare(row, col);
                     chessBoard.add(square, col, row);
 
                     pieceType = startingPositions[currentRow][currentCol];
@@ -81,12 +74,11 @@ public class ChessBoard extends Application {
             Pane pane = new Pane();
             pane.getChildren().add(chessBoard);
 
-            //Scene scene = new Scene(chessBoard, 800, 800);
             Scene scene = new Scene(pane, WINDOW_SIZE, WINDOW_SIZE);
             scene.setFill(Color.WHITE);
 
 
-            CreateTexts(pane, (int)BOARD_SIZE, (int)(WINDOW_SIZE-BOARD_SIZE));
+            //CreateTexts(pane, (int)BOARD_SIZE, (int)(WINDOW_SIZE-BOARD_SIZE));
             primaryStage.getIcons().add(icon);
             primaryStage.setTitle("Juicer");
             primaryStage.setResizable(false);
@@ -107,6 +99,7 @@ public class ChessBoard extends Application {
             board = new boolean[8][8];
 
             for (int i = 0; i < 8; i++) {
+
                 for (int j = 0; j < 8; j++) {
                     String pieceType = startingPositions[i][j];
                     if (pieceType != null) {
@@ -116,7 +109,7 @@ public class ChessBoard extends Application {
             }
         }
 
-        private StackPane createSquare(int row, int col, double size) {
+        private StackPane createSquare(int row, int col) {
 
             StackPane square = new StackPane();
             String color = getSquareColor(row, col);
@@ -129,7 +122,7 @@ public class ChessBoard extends Application {
         private ChessPiece createChessPiece(String pieceType, int row) {
             String color = (row < 2) ? "black" : "white";
 
-            return new ChessPiece(pieceType, color);
+            return new ChessPiece(pieceType, color, false);
         }
 
         private void CreateTexts(Pane pane, int boardSize, int offset)
@@ -143,7 +136,6 @@ public class ChessBoard extends Application {
                 label.setTextFill(Color.BLUE);
                 label.setTranslateX(i*(cellSize)+(offset/2));
                 label.setTranslateY((WINDOW_SIZE-BOARD_SIZE)/2);
-
                 pane.getChildren().add(label);
 
             }
