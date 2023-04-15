@@ -161,7 +161,7 @@ public class ChessClick extends ChessBoard {
         }
     }
 
-    private static void highlightSquare(int row, int col, String legOrCap) {
+    static void highlightSquare(int row, int col, String legOrCap) {
 
         StackPane squareToHighlight = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
 

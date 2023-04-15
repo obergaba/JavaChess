@@ -126,6 +126,25 @@ public class ChessChecks extends ChessClick{
             return piecesThatCanBlock(blockIndexes, !isWhiteTurn);
         }
 
+        if(Math.abs(kingRow - atkPieceRow) == Math.abs(kingCol - atkPieceCol)) {
+
+            blockIndexes.add(new Integer[] {atkPieceRow, atkPieceCol});
+
+            int rowOffset = kingRow > atkPieceRow ? 1 : -1;
+            int colOffset = kingCol > atkPieceCol ? 1 : -1;
+
+            int row = atkPieceRow + rowOffset;
+            int col = atkPieceCol + colOffset;
+
+            while (row >= 0 && row < 8 && col >= 0 && col < 8 && (row != kingRow || col != kingCol)) {
+                blockIndexes.add(new Integer[]{row, col});
+                row += rowOffset;
+                col += colOffset;
+            }
+
+            return piecesThatCanBlock(blockIndexes, !isWhiteTurn);
+        }
+
         System.out.println("Its not blockable");
 
         return blockIndexes;
@@ -176,6 +195,9 @@ public class ChessChecks extends ChessClick{
                     if(!whiteTurn)
                     {
                         if (wb.equals("black")) {
+
+                            if(pt.equals("pawn"))
+                                pt = "bpawn";
 
                             List<boolean[][]> moves = ChessLogic.getLegalMoves(board, i, j, pt, wb);
 
