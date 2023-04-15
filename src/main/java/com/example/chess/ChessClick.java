@@ -17,7 +17,6 @@ public class ChessClick extends ChessBoard {
     private static List<Integer[]> prevHigh = null;
     public static void setClick(int row, int col, StackPane square) {
 
-        //System.out.println((char)('A' + col)+ " "+ (8-row));
 
         Integer[] SelectedPrev = new Integer[]{row, col};
         square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
@@ -25,6 +24,7 @@ public class ChessClick extends ChessBoard {
         removePrevHigh();
 
         String pieceType = ChessBoard.startingPositions[row][col];
+
 
         ChessPiece piece = (ChessPiece) square.getChildren().get(0);
         String wb = piece.getColor();
@@ -152,6 +152,7 @@ public class ChessClick extends ChessBoard {
         }
 
         from.getChildren().remove(0);
+        from.setOnMouseClicked(null);
 
         ChessPiece piece = new ChessPiece(pieceType, wb, true);
 

@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 
 public class ChessBoard extends Application {
 
-        static double BOARD_SIZE = 800.0;
+        static double BOARD_SIZE = 560.0;
         static double CELL_SIZE = BOARD_SIZE / 8;
         static double WINDOW_SIZE = 1000;
         static String COLOR_1 = "#dee3e6";
@@ -31,7 +31,7 @@ public class ChessBoard extends Application {
         public static boolean[][] board;
         public static boolean isWhiteTurn = true;
         public static GridPane chessBoard;
-        Image icon = new Image("icon.png"); ///move all icons from C:\Users\GABA\IdeaProjects\chess\src\main\asd\icon.png to resources
+        Image icon = new Image("icon.png");
         public static String pieceType;
 
         @Override
@@ -134,7 +134,7 @@ public class ChessBoard extends Application {
             //PROBLEM: Windows size needs to be a square and equal offset by board
 
             double cellSize = BOARD_SIZE / 8;
-            double offset = (double)(WINDOW_SIZE - BOARD_SIZE) / 2;
+            double offset = (WINDOW_SIZE - BOARD_SIZE) / 2;
             int[] charOffset = {97,49};
 
             for (int i = 0; i < 8; i++)
@@ -152,10 +152,8 @@ public class ChessBoard extends Application {
                     label.setTranslateX(posX);
                     label.setTranslateY(posY);
                     label.setStyle(String.format("-fx-font-weight: bold;-fx-font-size: %dpx;", fontSize));
-
                     pane.getChildren().add(label);
                 }
-
             }
         }
     }
