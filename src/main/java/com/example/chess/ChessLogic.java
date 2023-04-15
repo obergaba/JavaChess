@@ -228,16 +228,14 @@ public class ChessLogic extends ChessBoard {
 
                 List<Integer[]> captureIndexes = getChecks(!isWhiteTurn);
 
-                if (!hasMoved(row, col)) {
-                    System.out.println(!hasMoved(row, col));
-                    if (!hasMoved(row, col+3) && !board[row][col+1] && !board[row][col+2] &&
-                            !isAttacked(captureIndexes, row, col+1) && !isAttacked(captureIndexes, row, col+2)) {
+                if (hasMoved(row, col)) {
+                    if (hasMoved(row, col + 3) && !board[row][col+1] && !board[row][col+2] &&
+                            isAttacked(captureIndexes, row, col + 1) && isAttacked(captureIndexes, row, col + 2)) {
 
                         castle[row][col+2] = true;
                     }
-                    if (!hasMoved(row, col-4) && !board[row][col-1] && !board[row][col-2] && !board[row][col-3] &&
-                            !isAttacked(captureIndexes, row, col-1) && !isAttacked(captureIndexes, row, col-2)) {
-
+                    if (hasMoved(row, col - 4) && !board[row][col-1] && !board[row][col-2] && !board[row][col-3] &&
+                            isAttacked(captureIndexes, row, col - 1) && isAttacked(captureIndexes, row, col - 2)) {
                         castle[row][col-2] = true;
                     }
                 }
@@ -482,7 +480,7 @@ public class ChessLogic extends ChessBoard {
         StackPane squareToCheck = (StackPane) chessBoard.getChildren().get(row * 8 + col+1);
         ChessPiece piece = (ChessPiece) squareToCheck.getChildren().get(0);
 
-        return piece.hasMoved();
+        return !piece.hasMoved();
     }
 
     private static boolean isAttacked(List<Integer[]> asd, int row, int col)
@@ -491,10 +489,10 @@ public class ChessLogic extends ChessBoard {
             int trow = index[0];
             int tcol = index[1];
             if (row == trow && col == tcol) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
 }
