@@ -11,9 +11,12 @@ import javafx.stage.Stage;
 
 public class ChessBoard extends Application {
 
-        static double BOARD_SIZE = 600.0;
+        static double BOARD_SIZE = 800.0;
         static double CELL_SIZE = BOARD_SIZE / 8;
-        static int WINDOW_SIZE = 800;
+        static double WINDOW_SIZE = 1000;
+        static String COLOR_1 = "#dee3e6";
+        static String COLOR_2 = "#8ca2ad";
+
         public static String[][] startingPositions = {
                 {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"},
                 {"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"},
@@ -78,7 +81,8 @@ public class ChessBoard extends Application {
             scene.setFill(Color.WHITE);
 
 
-            //CreateTexts(pane, (int)BOARD_SIZE, (int)(WINDOW_SIZE-BOARD_SIZE));
+            CreateTexts(pane);
+
             primaryStage.getIcons().add(icon);
             primaryStage.setTitle("Juicer");
             primaryStage.setResizable(false);
@@ -88,9 +92,9 @@ public class ChessBoard extends Application {
 
         public static String getSquareColor(int row, int col) {
             if ((row + col) % 2 == 0) {
-                return "#dee3e6";
+                return COLOR_1;
             } else {
-                return "#8ca2ad ";
+                return COLOR_2;
             }
         }
 
@@ -125,18 +129,32 @@ public class ChessBoard extends Application {
             return new ChessPiece(pieceType, color, false);
         }
 
-        private void CreateTexts(Pane pane, int boardSize, int offset)
+        private void CreateTexts(Pane pane)
         {
-            int cellSize = boardSize / 8;
+            //PROBLEM: Windows size needs to be a square and equal offset by board
+
+            double cellSize = BOARD_SIZE / 8;
+            double offset = (double)(WINDOW_SIZE - BOARD_SIZE) / 2;
+            int[] charOffset = {97,49};
+
             for (int i = 0; i < 8; i++)
             {
-                char a = 97;
-                String aa = ""+a;
-                Label label = new Label(aa);
-                label.setTextFill(Color.BLUE);
-                label.setTranslateX(i*(cellSize)+(offset/2));
-                label.setTranslateY((WINDOW_SIZE-BOARD_SIZE)/2);
-                pane.getChildren().add(label);
+                for (int j = 0; j < 2; j++) {
+
+                    double posX = (j == 0) ? ((i * cellSize + offset) + cellSize * 0.05) : ((WINDOW_SIZE - ((WINDOW_SIZE - BOARD_SIZE) / 2)) - cellSize * 0.1);
+                    double posY = (j == 0) ? (((WINDOW_SIZE - BOARD_SIZE) / 2 + BOARD_SIZE) - cellSize * 0.2) : ((WINDOW_SIZE-cellSize) - (i * cellSize + offset) );
+                    String coordChar = "" + (char) (charOffset[j] + i);
+                    Color textColor = ((i+j)%2 == 0) ? (Color.web(COLOR_1)) : (Color.web(COLOR_2));
+                    int fontSize = (int)(cellSize*0.15);
+
+                    Label label = new Label(coordChar);
+                    label.setTextFill(textColor);
+                    label.setTranslateX(posX);
+                    label.setTranslateY(posY);
+                    label.setStyle(String.format("-fx-font-weight: bold;-fx-font-size: %dpx;", fontSize));
+
+                    pane.getChildren().add(label);
+                }
 
             }
         }
