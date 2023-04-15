@@ -17,14 +17,12 @@ public class ChessClick extends ChessBoard {
     private static List<Integer[]> prevHigh = null;
     public static void setClick(int row, int col, StackPane square) {
 
+        removePrevHigh();
 
         Integer[] SelectedPrev = new Integer[]{row, col};
         square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
 
-        removePrevHigh();
-
         String pieceType = ChessBoard.startingPositions[row][col];
-
 
         ChessPiece piece = (ChessPiece) square.getChildren().get(0);
         String wb = piece.getColor();
@@ -227,9 +225,12 @@ public class ChessClick extends ChessBoard {
 
     private static void castle(int toCol,int fromRow, int fromCol, String wb) {
 
+        StackPane rookCastle = new StackPane();
+
+
         if(toCol == 6 && wb.equals("white"))
         {
-            StackPane rookCastle = (StackPane) chessBoard.getChildren().get(64);
+            rookCastle = (StackPane) chessBoard.getChildren().get(64);
             rookCastle.getChildren().remove(0);
 
             startingPositions[7][7] = null;
@@ -245,7 +246,7 @@ public class ChessClick extends ChessBoard {
 
         if(toCol == 2 && wb.equals("white"))
         {
-            StackPane rookCastle = (StackPane) chessBoard.getChildren().get(57);
+            rookCastle = (StackPane) chessBoard.getChildren().get(57);
             rookCastle.getChildren().remove(0);
 
             startingPositions[7][0] = null;
@@ -261,7 +262,7 @@ public class ChessClick extends ChessBoard {
 
         if(toCol == 6 && wb.equals("black"))
         {
-            StackPane rookCastle = (StackPane) chessBoard.getChildren().get(8);
+            rookCastle = (StackPane) chessBoard.getChildren().get(8);
             rookCastle.getChildren().remove(0);
 
             startingPositions[0][7] = null;
@@ -277,7 +278,7 @@ public class ChessClick extends ChessBoard {
 
         if(toCol == 2 && wb.equals("black"))
         {
-            StackPane rookCastle = (StackPane) chessBoard.getChildren().get(1);
+            rookCastle = (StackPane) chessBoard.getChildren().get(1);
             rookCastle.getChildren().remove(0);
 
             startingPositions[0][0] = null;
@@ -291,7 +292,9 @@ public class ChessClick extends ChessBoard {
             board[fromRow][fromCol-1]= true;
         }
 
+        rookCastle.setOnMouseClicked(null);
     }
+
     private static void DoCheck(int row, int col) {
 
         System.out.println("Check!");
