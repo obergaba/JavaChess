@@ -9,13 +9,17 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+//import java.util.Dictionary;
+//import java.util.Hashtable;
 public class ChessBoard extends Application {
 
         static double BOARD_SIZE = 600.0;
-        static double CELL_SIZE = BOARD_SIZE / 8;
+        public static double CELL_SIZE = BOARD_SIZE / 8;
         static double WINDOW_SIZE = 1000;
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
+
+        private static String STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6";
 
         public static String[][] startingPositions = {
                 {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"},
@@ -33,6 +37,8 @@ public class ChessBoard extends Application {
         public static GridPane chessBoard;
         Image icon = new Image("icon.png");
         public static String pieceType;
+
+
 
         @Override
 
@@ -88,7 +94,9 @@ public class ChessBoard extends Application {
             primaryStage.setResizable(false);
             primaryStage.setScene(scene);
             primaryStage.show();
+
         }
+
 
         public static String getSquareColor(int row, int col) {
             if ((row + col) % 2 == 0) {
@@ -158,4 +166,37 @@ public class ChessBoard extends Application {
 
             }
         }
+
+     /*   private void StartingPositionFromFEN(String FEN)
+        {
+            //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6
+            //8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8
+
+
+            Dictionary<String, String> dict = new Hashtable<>();
+            dict.put("r", "rook");
+            dict.put("k", "knight");
+            dict.put("b", "bishop");
+            dict.put("q", "queen");
+            dict.put("k", "king");
+            dict.put("p", "pawn");
+
+            int[] boardFEN = new int[64];
+            String startPosition = FEN.split(" ")[0];
+
+            int squareNum = 0;
+
+            for (char piece : FEN.toCharArray())
+            {
+                if (piece == '/'){}
+
+                if (Character.isDigit(piece))
+                {
+                    squareNum += piece - '0';
+                }
+                else{
+
+                }
+            }
+        }*/
     }

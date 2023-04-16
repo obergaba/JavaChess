@@ -20,7 +20,7 @@ public class ChessPiece extends ImageView  {
 
         setPreserveRatio(true);
 
-        double cell = ChessClick.CELL_SIZE;
+        double cell = ChessBoard.CELL_SIZE;
 
         setFitWidth(cell);
         setFitHeight(cell);

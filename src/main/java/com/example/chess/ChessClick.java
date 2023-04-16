@@ -148,6 +148,7 @@ public class ChessClick extends ChessBoard {
                 }
         }
 
+
         isWhiteTurn = !isWhiteTurn;
 
         if(isWhiteTurn)
