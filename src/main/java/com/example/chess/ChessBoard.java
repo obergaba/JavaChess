@@ -9,9 +9,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.*;
+
 public class ChessBoard extends Application {
 
         static double BOARD_SIZE = 600.0;
@@ -20,8 +19,9 @@ public class ChessBoard extends Application {
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
 
-        private static String STARTING_FEN = "8/8/8/4p1K1/2k1P3/8/8/8 w KQkq g6 0 6"; //"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6";
+        private static String STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"; //"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6";
         //8/8/8/4p1K1/2k1P3/8/8/8
+
         /*public static String[][] startingPositions = {
                 {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"},
                 {"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"},
@@ -47,6 +47,8 @@ public class ChessBoard extends Application {
         @Override
 
         public void start(Stage primaryStage) {
+
+            List<Integer[]> list = new ArrayList<>(0);
 
             startingPositions = StartingPositionFromFEN(STARTING_FEN);
             initializeBoolBoard();
@@ -81,7 +83,7 @@ public class ChessBoard extends Application {
 
                         if(color.equals("white")) {
                             square.setOnMouseClicked(event ->
-                                    ChessClick.setClick(currentRow, currentCol, square)
+                                    ChessClick.setClick(currentRow, currentCol, square, list)
                             );
                         }
                     }

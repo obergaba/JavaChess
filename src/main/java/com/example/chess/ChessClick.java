@@ -8,13 +8,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class ChessClick extends ChessBoard {
 
     private static List<Integer[]> prevHigh = null;
-    public static void setClick(int row, int col, StackPane square) {
+    public static void setClick(int row, int col, StackPane square, List<Integer[]> checkBlock) {
 
         removePrevHigh();
 
@@ -46,19 +48,35 @@ public class ChessClick extends ChessBoard {
 
             int crow = index[0];
             int ccol = index[1];
+
+
             highlightSquare(crow, ccol, "capture");
 
-            StackPane captureMove = (StackPane) chessBoard.getChildren().get(crow * 8 + ccol+1);
+            StackPane captureMove = (StackPane) chessBoard.getChildren().get(crow * 8 + ccol + 1);
 
             String finalPieceType = pieceType;
             captureMove.setOnMouseClicked(event1 ->
                     movePieceCapture(row, col, square, captureMove, wb, finalPieceType, true, false));
+
         }
 
         for (Integer[] index1 : legalIndexes) {
 
             int trow = index1[0];
             int tcol = index1[1];
+
+
+            if(checkBlock.contains(index1) && checkBlock.stream().count() > 0)
+            {
+                highlightSquare(trow, tcol, "legal");
+
+                continue;
+
+            } else if (checkBlock.stream().count() > 0) {
+
+
+                continue;
+            }
 
             highlightSquare(trow, tcol, "legal");
 
@@ -67,6 +85,7 @@ public class ChessClick extends ChessBoard {
             String finalPieceType = pieceType;
             targetMove.setOnMouseClicked(event1 ->
                     movePieceCapture(row, col, square, targetMove, wb, finalPieceType, false, false));
+
 
         }
 
@@ -114,7 +133,7 @@ public class ChessClick extends ChessBoard {
 
         if(castle)
         {
-            castle(toCol, fromRow, fromCol, wb);
+            castle(toCol, toRow, fromRow, fromCol, wb);
         }
 
         to.getChildren().add(piece);
@@ -185,9 +204,9 @@ public class ChessClick extends ChessBoard {
         }
     }
 
-    private static void castle(int toCol,int fromRow, int fromCol, String wb) {
+    private static void castle(int toCol, int toRow,int fromRow, int fromCol, String wb) {
 
-        if(toCol == 6 && wb.equals("white"))
+        if(toCol == 6 && toRow == 7 && wb.equals("white"))
         {
             StackPane rookCastle = (StackPane) chessBoard.getChildren().get(64);
             rookCastle.getChildren().remove(0);
@@ -203,7 +222,7 @@ public class ChessClick extends ChessBoard {
             board[fromRow][fromCol+1]= true;
         }
 
-        if(toCol == 2 && wb.equals("white"))
+        if(toCol == 2 && toRow == 7 && wb.equals("white"))
         {
             StackPane rookCastle = (StackPane) chessBoard.getChildren().get(57);
             rookCastle.getChildren().remove(0);
@@ -219,7 +238,7 @@ public class ChessClick extends ChessBoard {
             board[fromRow][fromCol-1]= true;
         }
 
-        if(toCol == 6 && wb.equals("black"))
+        if(toCol == 6 && toRow == 0 && wb.equals("black"))
         {
             StackPane rookCastle = (StackPane) chessBoard.getChildren().get(8);
             rookCastle.getChildren().remove(0);
@@ -235,7 +254,7 @@ public class ChessClick extends ChessBoard {
             board[fromRow][fromCol+1]= true;
         }
 
-        if(toCol == 2 && wb.equals("black"))
+        if(toCol == 2 && toRow == 0 && wb.equals("black"))
         {
             StackPane rookCastle = (StackPane) chessBoard.getChildren().get(1);
             rookCastle.getChildren().remove(0);
@@ -257,6 +276,8 @@ public class ChessClick extends ChessBoard {
 
     private static void turns(boolean whiteTurn) {
 
+        List<Integer[]> list = new ArrayList<>();
+
         for(int i = 0; i<8; i++)
         {
             for(int j = 0; j<8; j++)
@@ -277,14 +298,14 @@ public class ChessClick extends ChessBoard {
 
                         if (Objects.equals(wb, "black")) {
                             turn.setOnMouseClicked(event ->
-                                    ChessClick.setClick(finalI, finalJ, turn));
+                                    ChessClick.setClick(finalI, finalJ, turn, list));
                         }
                     }
 
                     if(!whiteTurn) {
                         if (Objects.equals(wb, "white")) {
                             turn.setOnMouseClicked(event ->
-                                    ChessClick.setClick(finalI, finalJ, turn));
+                                    ChessClick.setClick(finalI, finalJ, turn, list));
                         }
                         if (Objects.equals(wb, "black")) {
                             turn.setOnMouseClicked(null);

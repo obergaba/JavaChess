@@ -63,7 +63,11 @@ public class ChessChecks extends ChessClick{
         StackPane squareToHighlightCheck = (StackPane) chessBoard.getChildren().get(kingRow * 8 + kingCol + 1);
         squareToHighlightCheck.setStyle("-fx-border-color: red; -fx-border-width: 2px;-fx-background-color:" + getSquareColor(kingRow, kingCol));
 
-        List<Integer[]> piecesThatCanBlock = squaresToBlock(kingRow, kingCol, atkPieceRow, atkPieceCol);
+        List<List<Integer[]>> piecesThatCanBlock = squaresToBlock(kingRow, kingCol, atkPieceRow, atkPieceCol);
+
+        List<Integer[]> temp = piecesThatCanBlock.get(0);
+        List<Integer[]> temp2 = piecesThatCanBlock.get(1);
+
 
         for(int i = 0; i<8; i++)
         {
@@ -76,8 +80,7 @@ public class ChessChecks extends ChessClick{
             }
         }
 
-        for (Integer[] index : piecesThatCanBlock) {
-
+        for (Integer[] index : temp) {
 
             int rowTemp = index[0];
             int colTemp = index[1];
@@ -87,16 +90,20 @@ public class ChessChecks extends ChessClick{
 
             StackPane canBlock = (StackPane) chessBoard.getChildren().get(rowTemp * 8 + colTemp + 1);
             canBlock.setOnMouseClicked(event ->
-                    ChessClick.setClick(rowTemp, colTemp, canBlock));
+                    ChessClick.setClick(rowTemp, colTemp, canBlock, temp2));
         }
 
+        List<Integer[]> list = new ArrayList<>(0);
+
         squareToHighlightCheck.setOnMouseClicked(event ->
-                ChessClick.setClick(kingRow, kingCol, squareToHighlightCheck));
+
+                ChessClick.setClick(kingRow, kingCol, squareToHighlightCheck, list));
     }
 
-    private static List<Integer[]> squaresToBlock(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol) {
+    private static  List<List<Integer[]>> squaresToBlock(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol) {
 
         List<Integer[]> blockIndexes = new ArrayList<>();
+        List<List<Integer[]>> resultList = new ArrayList<>();
 
         if(kingCol == atkPieceCol) {
 
@@ -109,7 +116,10 @@ public class ChessChecks extends ChessClick{
                 blockIndexes.add(new Integer[]{r, kingCol});
             }
 
-            return piecesThatCanBlock(blockIndexes, !isWhiteTurn);
+            resultList.add(piecesThatCanBlock(blockIndexes, !isWhiteTurn));
+            resultList.add(blockIndexes);
+
+            return resultList;
         }
 
         if(kingRow == atkPieceRow) {
@@ -123,7 +133,10 @@ public class ChessChecks extends ChessClick{
                 blockIndexes.add(new Integer[]{kingRow, c});
             }
 
-            return piecesThatCanBlock(blockIndexes, !isWhiteTurn);
+            resultList.add(piecesThatCanBlock(blockIndexes, !isWhiteTurn));
+            resultList.add(blockIndexes);
+
+            return resultList;
         }
 
         if(Math.abs(kingRow - atkPieceRow) == Math.abs(kingCol - atkPieceCol)) {
@@ -142,12 +155,15 @@ public class ChessChecks extends ChessClick{
                 col += colOffset;
             }
 
-            return piecesThatCanBlock(blockIndexes, !isWhiteTurn);
+            resultList.add(piecesThatCanBlock(blockIndexes, !isWhiteTurn));
+            resultList.add(blockIndexes);
+
+            return resultList;
         }
 
         System.out.println("Its not blockable");
 
-        return blockIndexes;
+        return resultList;
     }
 
     private static List<Integer[]> piecesThatCanBlock(List<Integer[]> squaresToBlock, boolean whiteTurn) {
