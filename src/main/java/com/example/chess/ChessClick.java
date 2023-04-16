@@ -49,6 +49,22 @@ public class ChessClick extends ChessBoard {
             int crow = index[0];
             int ccol = index[1];
 
+            if(ArrayContains(checkBlock, index) && checkBlock.size() > 0)
+            {
+                highlightSquare(crow, ccol, "capture");
+
+                StackPane captureMove = (StackPane) chessBoard.getChildren().get(crow * 8 + ccol + 1);
+
+                String finalPieceType = pieceType;
+                captureMove.setOnMouseClicked(event1 ->
+                        movePieceCapture(row, col, square, captureMove, wb, finalPieceType, true, false));
+
+                continue;
+
+            } else if (checkBlock.size() > 0) {
+
+                continue;
+            }
 
             highlightSquare(crow, ccol, "capture");
 
@@ -65,14 +81,19 @@ public class ChessClick extends ChessBoard {
             int trow = index1[0];
             int tcol = index1[1];
 
-
-            if(checkBlock.contains(index1) && checkBlock.stream().count() > 0)
+            if(ArrayContains(checkBlock, index1) && checkBlock.size() > 0)
             {
                 highlightSquare(trow, tcol, "legal");
 
+                StackPane targetMove = (StackPane) chessBoard.getChildren().get(trow * 8 + tcol+1);
+
+                String finalPieceType = pieceType;
+                targetMove.setOnMouseClicked(event1 ->
+                        movePieceCapture(row, col, square, targetMove, wb, finalPieceType, false, false));
+
                 continue;
 
-            } else if (checkBlock.stream().count() > 0) {
+            } else if (checkBlock.size() > 0) {
 
 
                 continue;
@@ -85,7 +106,6 @@ public class ChessClick extends ChessBoard {
             String finalPieceType = pieceType;
             targetMove.setOnMouseClicked(event1 ->
                     movePieceCapture(row, col, square, targetMove, wb, finalPieceType, false, false));
-
 
         }
 
@@ -353,6 +373,18 @@ public class ChessClick extends ChessBoard {
                 removeHighlight(index1[0], index1[1]);
             }
         }
+    }
+
+    private static boolean ArrayContains(List<Integer[]> array, Integer[] elem)
+    {
+        for (Integer[] el : array)
+        {
+            if (Arrays.equals(el, elem))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
