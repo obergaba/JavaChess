@@ -9,8 +9,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-//import java.util.Dictionary;
-//import java.util.Hashtable;
+import java.util.Arrays;
+import java.util.Dictionary;
+import java.util.Hashtable;
 public class ChessBoard extends Application {
 
         static double BOARD_SIZE = 600.0;
@@ -19,9 +20,9 @@ public class ChessBoard extends Application {
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
 
-        private static String STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6";
-
-        public static String[][] startingPositions = {
+        private static String STARTING_FEN = "8/8/8/4p1K1/2k1P3/8/8/8 w KQkq g6 0 6"; //"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6";
+        //8/8/8/4p1K1/2k1P3/8/8/8
+        /*public static String[][] startingPositions = {
                 {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"},
                 {"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"},
                 {null, null, null, null, null, null, null, null},
@@ -30,7 +31,10 @@ public class ChessBoard extends Application {
                 {null, null, null, null, null, null, null, null},
                 {"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"},
                 {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"}
-        };
+        };*/
+
+        public static String[][] startingPositions = new String[8][8];
+        public static int[][] startingPositionColors = new int[8][8];
 
         public static boolean[][] board;
         public static boolean isWhiteTurn = true;
@@ -44,6 +48,7 @@ public class ChessBoard extends Application {
 
         public void start(Stage primaryStage) {
 
+            startingPositions = StartingPositionFromFEN(STARTING_FEN);
             initializeBoolBoard();
 
             chessBoard = new GridPane();
@@ -68,10 +73,13 @@ public class ChessBoard extends Application {
 
                     if (pieceType != null) {
 
-                        ChessPiece piece = createChessPiece(pieceType, row);
+                        //ChessPiece piece = createChessPiece(pieceType, row);
+                        String color = (startingPositionColors[row][col] == 1) ? "white" : "black";
+                        ChessPiece piece = new ChessPiece(pieceType, color, false);
+
                         square.getChildren().add(piece);
 
-                        if(row > 2) {
+                        if(color.equals("white")) {
                             square.setOnMouseClicked(event ->
                                     ChessClick.setClick(currentRow, currentCol, square)
                             );
@@ -167,36 +175,56 @@ public class ChessBoard extends Application {
             }
         }
 
-     /*   private void StartingPositionFromFEN(String FEN)
+        private String[][] StartingPositionFromFEN(String FEN)
         {
             //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6
             //8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8
 
 
-            Dictionary<String, String> dict = new Hashtable<>();
-            dict.put("r", "rook");
-            dict.put("k", "knight");
-            dict.put("b", "bishop");
-            dict.put("q", "queen");
-            dict.put("k", "king");
-            dict.put("p", "pawn");
+            Dictionary<Character, String> dict = new Hashtable<>();
+            dict.put('r', "rook");
+            dict.put('n', "knight");
+            dict.put('b', "bishop");
+            dict.put('q', "queen");
+            dict.put('k', "king");
+            dict.put('p', "pawn");
 
-            int[] boardFEN = new int[64];
+            String[] boardFEN = new String[64];
+            int[] boardFENcol = new int[64];
             String startPosition = FEN.split(" ")[0];
 
             int squareNum = 0;
 
-            for (char piece : FEN.toCharArray())
+            for (char piece : startPosition.toCharArray())
             {
-                if (piece == '/'){}
+                char pieceBoard = Character.toLowerCase(piece);
+                int col = (Character.isLowerCase(piece)) ? 0 : 1;
+
+                if (piece == '/'){continue;}
 
                 if (Character.isDigit(piece))
                 {
-                    squareNum += piece - '0';
+                    squareNum += (piece - '0');
                 }
                 else{
-
+                    boardFEN[squareNum] = dict.get(pieceBoard);
+                    boardFENcol[squareNum] = col;
+                    System.out.println( dict.get(pieceBoard));
+                    squareNum += 1;
                 }
             }
-        }*/
+
+            String[][] returnFEN = new String[8][8];
+
+            int counter = 0;
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    returnFEN[i][j] = boardFEN[counter];
+                    startingPositionColors[i][j] = boardFENcol[counter];
+                    counter++;
+                }
+            }
+
+            return returnFEN;
+        }
     }

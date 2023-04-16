@@ -15,6 +15,8 @@ public class ChessPiece extends ImageView  {
         this.color = color;
         this.hasMoved = hasMoved;
 
+
+
         String filePath =  type + "_" + color +".png";
         Image image = new Image(filePath);
 
