@@ -4,6 +4,7 @@ import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ChessChecks extends ChessClick{
 
@@ -18,7 +19,9 @@ public class ChessChecks extends ChessClick{
 
         for(int row = 0; row < 8; row++) {
             for(int col = 0; col < 8; col++) {
+
                 if(startingPositions[row][col] != null && !startingPositions[row][col].equals("king")) {
+
                     StackPane temp = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
                     ChessPiece piece = (ChessPiece) temp.getChildren().get(0);
                     String wb = piece.getColor();
@@ -30,6 +33,7 @@ public class ChessChecks extends ChessClick{
                         {
                             pt = "bpawn";
                         }
+
                         List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
                         boolean[][] captureMoves = moves.get(1);
 
@@ -40,11 +44,13 @@ public class ChessChecks extends ChessClick{
                             int tcol = index[1];
 
                             if(startingPositions[trow][tcol].equals("king")) {
+
                                 result[0] = trow;
                                 result[1] = tcol;
+
                                 result[2] = row;
                                 result[3] = col;
-                                System.out.println(pt);
+
                                 return result;
                             }
                         }
@@ -56,54 +62,67 @@ public class ChessChecks extends ChessClick{
         return new int[2];
     }
 
-    static void DoCheck(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol) {
+    public static void DoCheck(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol, String pt) {
 
+
+        isWhiteTurn = !isWhiteTurn;
         System.out.println("Check!");
 
-        StackPane squareToHighlightCheck = (StackPane) chessBoard.getChildren().get(kingRow * 8 + kingCol + 1);
-        squareToHighlightCheck.setStyle("-fx-border-color: red; -fx-border-width: 2px;-fx-background-color:" + getSquareColor(kingRow, kingCol));
+        StackPane kingSquare = (StackPane) chessBoard.getChildren().get(kingRow * 8 + kingCol + 1);
+        kingSquare.setStyle("-fx-border-color: red; -fx-border-width: 2px;-fx-background-color:" + getSquareColor(kingRow, kingCol));
 
-        List<List<Integer[]>> piecesThatCanBlock = squaresToBlock(kingRow, kingCol, atkPieceRow, atkPieceCol);
-
-        List<Integer[]> temp = piecesThatCanBlock.get(0);
-        List<Integer[]> temp2 = piecesThatCanBlock.get(1);
-
-
-        for(int i = 0; i<8; i++)
+        String wb;
+        if(isWhiteTurn)
         {
-            for(int j = 0; j<8; j++)
-            {
-                if(startingPositions[i][j] != null ) {
-                    StackPane turn2 = (StackPane) chessBoard.getChildren().get(i * 8 + j + 1);
-                    turn2.setOnMouseClicked(null);
-                }
-            }
+            wb = "white";
+        }else {
+            wb = "black";
         }
 
-        for (Integer[] index : temp) {
-
-            int rowTemp = index[0];
-            int colTemp = index[1];
-
-            System.out.println(index[0]);
-            System.out.println(index[1]);
-
-            StackPane canBlock = (StackPane) chessBoard.getChildren().get(rowTemp * 8 + colTemp + 1);
-            canBlock.setOnMouseClicked(event ->
-                    ChessClick.setClick(rowTemp, colTemp, canBlock, temp2));
-        }
+        setAllClickToNull();
 
         List<Integer[]> list = new ArrayList<>(0);
 
-        squareToHighlightCheck.setOnMouseClicked(event ->
+        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, kingRow, kingCol, "king", wb);
 
-                ChessClick.setClick(kingRow, kingCol, squareToHighlightCheck, list));
+        boolean[][] legalMoves = moves.get(0);
+
+        List<Integer[]> legalIndexes = ChessLogic.getTrueIndexes(legalMoves);
+
+        isWhiteTurn = !isWhiteTurn;
+
+        List<List<Integer[]>> piecesThatCanBlock = squaresToBlock(kingRow, kingCol, atkPieceRow, atkPieceCol, pt);
+
+        List<Integer[]> canBlockIndex = piecesThatCanBlock.get(0);
+        List<Integer[]> toBlockIndex = piecesThatCanBlock.get(1);
+
+        if(legalIndexes.isEmpty() && canBlockIndex.size() == 0)
+        {
+            System.out.println("CHECK MATE!!");
+            return;
+        }
+
+        kingSquare.setOnMouseClicked(event ->
+                ChessClick.setClick(kingRow, kingCol, kingSquare, list));
+
+        for (Integer[] index : canBlockIndex) {
+            int rowTemp = index[0];
+            int colTemp = index[1];
+            StackPane canBlock = (StackPane) chessBoard.getChildren().get(rowTemp * 8 + colTemp + 1);
+            canBlock.setOnMouseClicked(event ->
+                    ChessClick.setClick(rowTemp, colTemp, canBlock, toBlockIndex));
+        }
     }
 
-    private static  List<List<Integer[]>> squaresToBlock(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol) {
 
-        List<Integer[]> blockIndexes = new ArrayList<>();
+
+    private static  List<List<Integer[]>> squaresToBlock(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol, String pt) {
+
         List<List<Integer[]>> resultList = new ArrayList<>();
+        List<Integer[]> blockIndexes = new ArrayList<>();
+
+        List<Integer[]> pie;
+
 
         if(kingCol == atkPieceCol) {
 
@@ -116,7 +135,8 @@ public class ChessChecks extends ChessClick{
                 blockIndexes.add(new Integer[]{r, kingCol});
             }
 
-            resultList.add(piecesThatCanBlock(blockIndexes, !isWhiteTurn));
+            pie = piecesThatCanBlock(blockIndexes, !isWhiteTurn);
+            resultList.add(pie);
             resultList.add(blockIndexes);
 
             return resultList;
@@ -133,7 +153,21 @@ public class ChessChecks extends ChessClick{
                 blockIndexes.add(new Integer[]{kingRow, c});
             }
 
-            resultList.add(piecesThatCanBlock(blockIndexes, !isWhiteTurn));
+            pie = piecesThatCanBlock(blockIndexes, !isWhiteTurn);
+            resultList.add(pie);
+
+            resultList.add(blockIndexes);
+
+
+            return resultList;
+        }
+
+        if(pt.equals("knight") || pt.equals("pawn") || pt.equals("bpawn")) {
+
+            blockIndexes.add(new Integer[] {atkPieceRow, atkPieceCol});
+
+            pie = piecesThatCanBlock(blockIndexes, !isWhiteTurn);
+            resultList.add(pie);
             resultList.add(blockIndexes);
 
             return resultList;
@@ -155,14 +189,15 @@ public class ChessChecks extends ChessClick{
                 col += colOffset;
             }
 
-            resultList.add(piecesThatCanBlock(blockIndexes, !isWhiteTurn));
+            pie = piecesThatCanBlock(blockIndexes, !isWhiteTurn);
+            resultList.add(pie);
             resultList.add(blockIndexes);
+
 
             return resultList;
         }
 
         System.out.println("Its not blockable");
-
         return resultList;
     }
 
@@ -173,7 +208,7 @@ public class ChessChecks extends ChessClick{
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
 
-                if (startingPositions[i][j] != null) {
+                if (startingPositions[i][j] != null && !Objects.equals(startingPositions[i][j], "king")) {
 
                     StackPane turn = (StackPane) chessBoard.getChildren().get(i * 8 + j + 1);
                     ChessPiece piece = (ChessPiece) turn.getChildren().get(0);
@@ -243,5 +278,18 @@ public class ChessChecks extends ChessClick{
         }
 
         return piecesThatCanBlock;
+    }
+    private static void setAllClickToNull() {
+
+        for(int i = 0; i<8; i++)
+        {
+            for(int j = 0; j<8; j++)
+            {
+                if(startingPositions[i][j] != null ) {
+                    StackPane turn2 = (StackPane) chessBoard.getChildren().get(i * 8 + j + 1);
+                    turn2.setOnMouseClicked(null);
+                }
+            }
+        }
     }
 }

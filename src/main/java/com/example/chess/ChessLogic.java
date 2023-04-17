@@ -13,12 +13,16 @@ public class ChessLogic extends ChessBoard {
         boolean[][] captureMyMoves = new boolean[8][8];
         boolean[][] castle = new boolean[8][8];
 
+
+
+
         switch (pieceType) {
 
             case "pawn" -> {
 
                 if (row > 0 && !board[row-1][col]) {
                     legalMoves[row-1][col] = true;
+
                     if (row == 6 && !board[row-2][col]) {
                         legalMoves[row-2][col] = true;
                     }
@@ -223,10 +227,12 @@ public class ChessLogic extends ChessBoard {
             }
 
             case "king" -> {
+
                 int[] rowOff = {0, 0, 1, -1, 1, -1, 1, -1};
                 int[] colOff = {1, -1, 0, 0, 1, -1, -1, 1};
 
                 List<Integer[]> captureIndexes = getChecks(!isWhiteTurn);
+
 
                 if (hasMoved(row, col)) {
                     if (hasMoved(row, col + 3) && !board[row][col+1] && !board[row][col+2] &&
@@ -359,6 +365,7 @@ public class ChessLogic extends ChessBoard {
                         legalMoves[i][j] = true;
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         captureMoves[i][j] = true;
+
                         break;
                     }
                     else if (getPieceColor(i, j).equals(pColor)) {
@@ -449,18 +456,19 @@ public class ChessLogic extends ChessBoard {
                         {
                             pt = "bpawn";
                         }
+
                         List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
 
-                        boolean[][] leg = moves.get(0);
-                        boolean[][] capMoves = moves.get(1);
-                        boolean[][] asd = moves.get(2);
+                        boolean[][] legal = moves.get(0);
+                        boolean[][] capture = moves.get(1);
+                        boolean[][] captureOwn = moves.get(2);
 
                         if(!pt.equals("pawn") && !pt.equals("bpawn"))
                         {
-                            captureIndexes.addAll(ChessLogic.getTrueIndexes(capMoves));
-                            captureIndexes.addAll(ChessLogic.getTrueIndexes(leg));
+                            captureIndexes.addAll(ChessLogic.getTrueIndexes(capture));
+                            captureIndexes.addAll(ChessLogic.getTrueIndexes(legal));
                         }
-                        captureIndexes.addAll(ChessLogic.getTrueIndexes(asd));
+                        captureIndexes.addAll(ChessLogic.getTrueIndexes(captureOwn));
                     }
                 }
             }

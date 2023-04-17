@@ -42,8 +42,6 @@ public class ChessBoard extends Application {
         Image icon = new Image("icon.png");
         public static String pieceType;
 
-
-
         @Override
 
         public void start(Stage primaryStage) {
@@ -59,8 +57,6 @@ public class ChessBoard extends Application {
 
             chessBoard.setTranslateX((WINDOW_SIZE - BOARD_SIZE) / 2);
             chessBoard.setTranslateY((WINDOW_SIZE - BOARD_SIZE) / 2);
-
-            System.out.println("White to move");
 
             for (int row = 0; row < 8; row++) {
                 for (int col = 0; col < 8; col++) {
@@ -211,7 +207,6 @@ public class ChessBoard extends Application {
                 else{
                     boardFEN[squareNum] = dict.get(pieceBoard);
                     boardFENcol[squareNum] = col;
-                    System.out.println( dict.get(pieceBoard));
                     squareNum += 1;
                 }
             }

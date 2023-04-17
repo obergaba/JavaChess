@@ -25,7 +25,6 @@ public class ChessClick extends ChessBoard {
 
         String pieceType = ChessBoard.startingPositions[row][col];
 
-
         ChessPiece piece = (ChessPiece) square.getChildren().get(0);
         String wb = piece.getColor();
 
@@ -48,6 +47,7 @@ public class ChessClick extends ChessBoard {
 
             int crow = index[0];
             int ccol = index[1];
+
 
             if(ArrayContains(checkBlock, index) && checkBlock.size() > 0)
             {
@@ -83,7 +83,6 @@ public class ChessClick extends ChessBoard {
 
             if(ArrayContains(checkBlock, index1) && checkBlock.size() > 0)
             {
-                highlightSquare(trow, tcol, "legal");
 
                 StackPane targetMove = (StackPane) chessBoard.getChildren().get(trow * 8 + tcol+1);
 
@@ -104,6 +103,7 @@ public class ChessClick extends ChessBoard {
             StackPane targetMove = (StackPane) chessBoard.getChildren().get(trow * 8 + tcol+1);
 
             String finalPieceType = pieceType;
+
             targetMove.setOnMouseClicked(event1 ->
                     movePieceCapture(row, col, square, targetMove, wb, finalPieceType, false, false));
 
@@ -179,26 +179,12 @@ public class ChessClick extends ChessBoard {
                 int atkPieceRow = result[2];
                 int atkPieceCol = result[3];
 
-                System.out.println(atkPieceRow);
-                System.out.println(atkPieceCol);
-
-                ChessChecks.DoCheck(kingRow, kingCol, atkPieceRow, atkPieceCol);
+                ChessChecks.DoCheck(kingRow, kingCol, atkPieceRow, atkPieceCol, pieceType);
 
                 }
         }
 
-
         isWhiteTurn = !isWhiteTurn;
-
-        if(isWhiteTurn)
-        {
-            System.out.println("White to move");
-        }
-
-        if(!isWhiteTurn)
-        {
-            System.out.println("Black to move");
-        }
     }
 
     static void highlightSquare(int row, int col, String legOrCap) {
@@ -231,8 +217,11 @@ public class ChessClick extends ChessBoard {
             StackPane rookCastle = (StackPane) chessBoard.getChildren().get(64);
             rookCastle.getChildren().remove(0);
 
+
             startingPositions[7][7] = null;
             board[7][7]= false;
+
+            rookCastle.setOnMouseClicked(null);
 
             ChessPiece rook = new ChessPiece("rook", wb, true);
             StackPane rookCastle2 = (StackPane) chessBoard.getChildren().get(fromRow * 8 + fromCol+2);
@@ -250,6 +239,8 @@ public class ChessClick extends ChessBoard {
             startingPositions[7][0] = null;
             board[7][0]= false;
 
+            rookCastle.setOnMouseClicked(null);
+
             ChessPiece rook = new ChessPiece("rook", wb, true);
             StackPane rookCastle2 = (StackPane) chessBoard.getChildren().get(fromRow * 8 + fromCol);
             rookCastle2.getChildren().add(rook);
@@ -266,6 +257,8 @@ public class ChessClick extends ChessBoard {
             startingPositions[0][7] = null;
             board[0][7]= false;
 
+            rookCastle.setOnMouseClicked(null);
+
             ChessPiece rook = new ChessPiece("rook", wb, true);
             StackPane rookCastle2 = (StackPane) chessBoard.getChildren().get(fromRow * 8 + fromCol+2);
             rookCastle2.getChildren().add(rook);
@@ -281,6 +274,8 @@ public class ChessClick extends ChessBoard {
 
             startingPositions[0][0] = null;
             board[0][0]= false;
+
+            rookCastle.setOnMouseClicked(null);
 
             ChessPiece rook = new ChessPiece("rook", wb, true);
             StackPane rookCastle2 = (StackPane) chessBoard.getChildren().get(fromRow * 8 + fromCol);
