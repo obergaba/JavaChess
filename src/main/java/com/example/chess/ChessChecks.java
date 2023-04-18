@@ -64,7 +64,6 @@ public class ChessChecks extends ChessClick{
 
     public static void DoCheck(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol, String pt) {
 
-
         isWhiteTurn = !isWhiteTurn;
         System.out.println("Check!");
 
@@ -113,8 +112,6 @@ public class ChessChecks extends ChessClick{
                     ChessClick.setClick(rowTemp, colTemp, canBlock, toBlockIndex));
         }
     }
-
-
 
     private static  List<List<Integer[]>> squaresToBlock(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol, String pt) {
 
@@ -192,7 +189,6 @@ public class ChessChecks extends ChessClick{
             pie = piecesThatCanBlock(blockIndexes, !isWhiteTurn);
             resultList.add(pie);
             resultList.add(blockIndexes);
-
 
             return resultList;
         }

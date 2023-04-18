@@ -13,9 +13,6 @@ public class ChessLogic extends ChessBoard {
         boolean[][] captureMyMoves = new boolean[8][8];
         boolean[][] castle = new boolean[8][8];
 
-
-
-
         switch (pieceType) {
 
             case "pawn" -> {
@@ -283,6 +280,23 @@ public class ChessLogic extends ChessBoard {
                 }
             }
 
+
+            case "king2" -> {
+                int[] rowOff = {0, 0, 1, -1, 1, -1, 1, -1};
+                int[] colOff = {1, -1, 0, 0, 1, -1, -1, 1};
+
+                for (int i = 0; i < 8; i++) {
+
+                    int newX = row + rowOff[i];
+                    int newY = col + colOff[i];
+
+                    if (newX >= 0 && newX < 8 && newY >= 0 && newY < 8) {
+
+                        legalMoves[newX][newY] = true;
+                    }
+                }
+            }
+
             case "queen" -> {
 
                 for (int i = row - 1; i >= 0; i--) {
@@ -443,12 +457,17 @@ public class ChessLogic extends ChessBoard {
         for(int row = 0; row < 8; row++) {
             for(int col = 0; col < 8; col++) {
 
-                if(startingPositions[row][col] != null && !startingPositions[row][col].equals("king")) {
+                if(startingPositions[row][col] != null) {
 
                     StackPane temp = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
                     ChessPiece piece = (ChessPiece) temp.getChildren().get(0);
                     String wb = piece.getColor();
                     String pt = piece.getType();
+
+                    if(startingPositions[row][col].equals("king"))
+                    {
+                        pt = "king2";
+                    }
 
                     if(wb.equals(color)) {
 
