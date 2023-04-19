@@ -61,7 +61,6 @@ public class ChessLogic extends ChessBoard {
                 }
             }
 
-
             case "knight" -> {
 
                 int[] rowOffsets = {2, 2, -2, -2, 1, 1, -1, -1};
@@ -279,7 +278,6 @@ public class ChessLogic extends ChessBoard {
                     }
                 }
             }
-
 
             case "king2" -> {
                 int[] rowOff = {0, 0, 1, -1, 1, -1, 1, -1};

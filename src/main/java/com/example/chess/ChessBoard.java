@@ -15,11 +15,11 @@ public class ChessBoard extends Application {
 
         static double BOARD_SIZE = 600.0;
         public static double CELL_SIZE = BOARD_SIZE / 8;
-        static double WINDOW_SIZE = 1000;
+        static double WINDOW_SIZE = 800;
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
 
-        private static String STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"; //"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6";
+        private static String STARTING_FEN = "7k/4qb2/8/8/8/6R1/1K6/8 w KQkq - 0 1"; //"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6";
         //8/8/8/4p1K1/2k1P3/8/8/8
 
         /*public static String[][] startingPositions = {
@@ -38,6 +38,8 @@ public class ChessBoard extends Application {
 
         public static boolean[][] board;
         public static boolean isWhiteTurn = true;
+
+        public static boolean boolCheck= false;
         public static GridPane chessBoard;
         Image icon = new Image("icon.png");
         public static String pieceType;
@@ -73,7 +75,7 @@ public class ChessBoard extends Application {
 
                         //ChessPiece piece = createChessPiece(pieceType, row);
                         String color = (startingPositionColors[row][col] == 1) ? "white" : "black";
-                        ChessPiece piece = new ChessPiece(pieceType, color, false);
+                        ChessPiece piece = new ChessPiece(pieceType, color, true);
 
                         square.getChildren().add(piece);
 
@@ -140,7 +142,7 @@ public class ChessBoard extends Application {
         private ChessPiece createChessPiece(String pieceType, int row) {
             String color = (row < 2) ? "black" : "white";
 
-            return new ChessPiece(pieceType, color, false);
+            return new ChessPiece(pieceType, color, true);
         }
 
         private void CreateTexts(Pane pane)

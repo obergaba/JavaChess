@@ -15,13 +15,21 @@ import java.util.Objects;
 
 public class ChessClick extends ChessBoard {
 
-    private static List<Integer[]> prevHigh = null;
+    private static List<Integer[]> prevHigh;
     public static void setClick(int row, int col, StackPane square, List<Integer[]> checkBlock) {
+
+        Integer[] SelectedPrev = new Integer[]{row, col};
+
+        System.out.println(boolCheck);
 
         removePrevHigh();
 
-        Integer[] SelectedPrev = new Integer[]{row, col};
-        square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
+        if(checkBlock.size() > 0) {
+            System.out.println("BLOCK:");
+            for (Integer[] index : checkBlock) {
+                System.out.println(index[0] + ", " + index[1]);
+            }
+        }
 
         String pieceType = ChessBoard.startingPositions[row][col];
 
@@ -48,7 +56,6 @@ public class ChessClick extends ChessBoard {
             int crow = index[0];
             int ccol = index[1];
 
-
             if(ArrayContains(checkBlock, index) && checkBlock.size() > 0)
             {
                 highlightSquare(crow, ccol, "capture");
@@ -67,7 +74,6 @@ public class ChessClick extends ChessBoard {
             }
 
             highlightSquare(crow, ccol, "capture");
-
             StackPane captureMove = (StackPane) chessBoard.getChildren().get(crow * 8 + ccol + 1);
 
             String finalPieceType = pieceType;
@@ -84,6 +90,7 @@ public class ChessClick extends ChessBoard {
             if(ArrayContains(checkBlock, index1) && checkBlock.size() > 0)
             {
 
+                highlightSquare(trow, tcol, "legal");
                 StackPane targetMove = (StackPane) chessBoard.getChildren().get(trow * 8 + tcol+1);
 
                 String finalPieceType = pieceType;
@@ -93,7 +100,6 @@ public class ChessClick extends ChessBoard {
                 continue;
 
             } else if (checkBlock.size() > 0) {
-
 
                 continue;
             }
@@ -124,13 +130,19 @@ public class ChessClick extends ChessBoard {
 
         }
 
+
         prevHigh = legalIndexes;
+
+        if(!boolCheck)
+        {
+            prevHigh.add(SelectedPrev);
+            square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
+        }
+
         prevHigh.addAll(captureIndexes);
         prevHigh.addAll(castleIndexes);
-        prevHigh.add(SelectedPrev);
 
     }
-
     private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt, boolean castle) {
 
         int toCol = GridPane.getColumnIndex(to);
@@ -165,14 +177,21 @@ public class ChessClick extends ChessBoard {
         board[fromRow][fromCol]= false;
 
         removePrevHigh();
-
         turns(isWhiteTurn);
+
+        if(boolCheck)
+        {
+            System.out.println("boolCheck swap");
+            boolCheck = false;
+        }
 
         if(!pieceType.equals("king"))
         {
             int[] result = ChessChecks.isCheck(isWhiteTurn);
 
             if (result[0] != 0 || result[1] != 0) {
+
+                boolCheck = true;
                 int kingRow = result[0];
                 int kingCol = result[1];
 
@@ -201,7 +220,6 @@ public class ChessClick extends ChessBoard {
             vBox.setAlignment(Pos.CENTER);
 
             squareToHighlight.getChildren().add(vBox);
-
         }
 
         else if(Objects.equals(legOrCap, "capture"))
@@ -209,14 +227,12 @@ public class ChessClick extends ChessBoard {
             squareToHighlight.setStyle("-fx-background-color: rgba(92, 32, 27, 0.7);");
         }
     }
-
     private static void castle(int toCol, int toRow,int fromRow, int fromCol, String wb) {
 
         if(toCol == 6 && toRow == 7 && wb.equals("white"))
         {
             StackPane rookCastle = (StackPane) chessBoard.getChildren().get(64);
             rookCastle.getChildren().remove(0);
-
 
             startingPositions[7][7] = null;
             board[7][7]= false;
@@ -286,8 +302,6 @@ public class ChessClick extends ChessBoard {
         }
 
     }
-
-
 
     private static void turns(boolean whiteTurn) {
 
