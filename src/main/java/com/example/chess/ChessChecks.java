@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
 public class ChessChecks extends ChessClick{
 
     public static int[] isCheck(boolean isWhiteTurn) {
-
 
         List<Integer[]> captureIndexes = new ArrayList<>();
         int[] result = new int[4];
@@ -64,12 +64,12 @@ public class ChessChecks extends ChessClick{
     }
     public static void DoCheck(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol, String pt) {
 
+
         isWhiteTurn = !isWhiteTurn;
-        System.out.println("Check!");
 
         StackPane kingSquare = (StackPane) chessBoard.getChildren().get(kingRow * 8 + kingCol + 1);
         //kingSquare.setStyle("-fx-border-color: red; -fx-border-width: 2px;-fx-background-color:" + getSquareColor(kingRow, kingCol));
-        kingSquare.setStyle("-fx-background-color: rgba(255, 255, 0, 0.7)");
+        kingSquare.setStyle("-fx-background-color: rgba(100, 255, 0, 0.7)");
 
         String wb;
 
@@ -145,7 +145,6 @@ public class ChessChecks extends ChessClick{
 
         if(kingCol == atkPieceCol) {
 
-            System.out.println("HERE");
             blockIndexes.add(new Integer[] {atkPieceRow, atkPieceCol});
 
 

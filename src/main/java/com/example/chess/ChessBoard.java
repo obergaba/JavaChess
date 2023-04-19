@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import stockfish.Stockfish;
 
 import java.util.*;
 
@@ -19,19 +20,7 @@ public class ChessBoard extends Application {
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
 
-        private static String STARTING_FEN = "7k/4qb2/8/8/8/6R1/1K6/8 w KQkq - 0 1"; //"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6";
-        //8/8/8/4p1K1/2k1P3/8/8/8
-
-        /*public static String[][] startingPositions = {
-                {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"},
-                {"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {"pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn", "pawn"},
-                {"rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook"}
-        };*/
+        private static String STARTING_FEN = "7k/4q3/5n2/8/8/5R2/1K6/8 w - - 0 42"; //"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6";
 
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
@@ -47,6 +36,8 @@ public class ChessBoard extends Application {
         @Override
 
         public void start(Stage primaryStage) {
+
+
 
             List<Integer[]> list = new ArrayList<>(0);
 
@@ -102,6 +93,19 @@ public class ChessBoard extends Application {
             primaryStage.setResizable(false);
             primaryStage.setScene(scene);
             primaryStage.show();
+
+            Stockfish client = new Stockfish();
+
+
+            if (client.startEngine()) {
+                System.out.println("Engine has started..");
+            } else {
+                System.out.println("Oops! Something went wrong..");
+            }
+
+            System.out.println(client.getOutput(0));
+            System.out.println("Best move : " + client.getBestMove(STARTING_FEN, 100));
+            System.out.println("Evaluation score : " + client.getEvalScore(STARTING_FEN, 2000));
 
         }
 
@@ -177,9 +181,6 @@ public class ChessBoard extends Application {
 
         private String[][] StartingPositionFromFEN(String FEN)
         {
-            //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6
-            //8/5k2/3p4/1p1Pp2p/pP2Pp1P/P4P1K/8/8
-
 
             Dictionary<Character, String> dict = new Hashtable<>();
             dict.put('r', "rook");

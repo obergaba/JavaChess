@@ -20,16 +20,7 @@ public class ChessClick extends ChessBoard {
 
         Integer[] SelectedPrev = new Integer[]{row, col};
 
-        System.out.println(boolCheck);
-
         removePrevHigh();
-
-        if(checkBlock.size() > 0) {
-            System.out.println("BLOCK:");
-            for (Integer[] index : checkBlock) {
-                System.out.println(index[0] + ", " + index[1]);
-            }
-        }
 
         String pieceType = ChessBoard.startingPositions[row][col];
 
@@ -181,7 +172,7 @@ public class ChessClick extends ChessBoard {
 
         if(boolCheck)
         {
-            System.out.println("boolCheck swap");
+            //TODO: take king coordinates and remove the highlight, maybe?
             boolCheck = false;
         }
 
@@ -191,12 +182,18 @@ public class ChessClick extends ChessBoard {
 
             if (result[0] != 0 || result[1] != 0) {
 
+
+
                 boolCheck = true;
                 int kingRow = result[0];
                 int kingCol = result[1];
 
+                Integer[] kingHigh = new Integer[]{kingRow, kingCol};
+
                 int atkPieceRow = result[2];
                 int atkPieceCol = result[3];
+
+                prevHigh.add(kingHigh);
 
                 ChessChecks.DoCheck(kingRow, kingCol, atkPieceRow, atkPieceCol, pieceType);
 
@@ -348,6 +345,7 @@ public class ChessClick extends ChessBoard {
     private static void removeHighlight(int row, int col) {
 
         Integer[] lastCoordinates = prevHigh.get(prevHigh.size() - 1);
+
         int secondToLast = lastCoordinates[lastCoordinates.length - 2];
         int last = lastCoordinates[lastCoordinates.length - 1];
 
