@@ -1,9 +1,6 @@
 package stockfish;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 
 /**
  * https://github.com/rahular/chess-misc/tree/master/JavaStockfish/src/com/rahul/stockfish
@@ -18,7 +15,9 @@ public class Stockfish {
     private OutputStreamWriter processWriter;
 
     //replace PATH with your own after downloading stockfish from: https://stockfishchess.org/download/
-    private static final String PATH = "C:/stockfish/stockfish.exe";
+    static String filePath = new File("").getAbsolutePath().concat("\\src\\main\\java\\stockfish\\stockfish_java\\stockfish.exe");
+
+    private static final String PATH = filePath;
 
     /**
      * Starts Stockfish engine as a process and initializes it
