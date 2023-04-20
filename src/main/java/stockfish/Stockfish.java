@@ -152,11 +152,16 @@ public class Stockfish {
         for (int i = dump.length - 1; i >= 0; i--) {
             if (dump[i].startsWith("info depth ")) {
                 try {
+                    //System.out.println(dump[i] + "----------------------------------");
                     evalScore = Float.parseFloat(dump[i].split("score cp ")[1]
                             .split(" nodes")[0]);
                 } catch(Exception e) {
-                    evalScore = Float.parseFloat(dump[i].split("score cp ")[1]
-                            .split(" upperbound nodes")[0]);
+                    try {
+                        evalScore = Float.parseFloat(dump[i].split("score cp ")[1].split(" upperbound nodes")[0]);
+                    }catch (Exception ii)
+                    {
+                        evalScore = 10000;
+                    }
                 }
             }
         }
