@@ -64,7 +64,6 @@ public class ChessChecks extends ChessClick{
     }
     public static void DoCheck(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol, String pt) {
 
-
         isWhiteTurn = !isWhiteTurn;
 
         StackPane kingSquare = (StackPane) chessBoard.getChildren().get(kingRow * 8 + kingCol + 1);
@@ -85,12 +84,12 @@ public class ChessChecks extends ChessClick{
         List<Integer[]> list = new ArrayList<>(0);
 
         List<boolean[][]> moves = ChessLogic.getLegalMoves(board, kingRow, kingCol, "king", wb);
-
         boolean[][] legalMoves = moves.get(0);
-        boolean[][] capMoves = moves.get(0);
+        boolean[][] capMoves = moves.get(1);
 
         List<Integer[]> legalIndexes = ChessLogic.getTrueIndexes(legalMoves);
         List<Integer[]> capIndexes = ChessLogic.getTrueIndexes(capMoves);
+
 
         isWhiteTurn = !isWhiteTurn;
 
@@ -98,30 +97,21 @@ public class ChessChecks extends ChessClick{
 
         List<Integer[]> canBlockIndex = piecesThatCanBlock.get(0);
         List<Integer[]> toBlockIndex = piecesThatCanBlock.get(1);
+        List<Integer[]> thruCheck = piecesThatCanBlock.get(2);
 
-        /*
-        System.out.println("Squares:");
-        for(Integer[] index: toBlockIndex)
-        {
-            System.out.println(index[0]+", "+index[1]);
-        }
-
-        System.out.println("Pieces:");
-        for(Integer[] index: canBlockIndex)
-        {
-            System.out.println(index[0]+", "+index[1]);
-        }
+        Integer[] thruCheckArray = thruCheck.get(0);
+        System.out.println("First element: (" + thruCheckArray[0] + ", " + thruCheckArray[1] + ")");
 
 
-         */
 
-        if(legalIndexes.isEmpty() && canBlockIndex.size() == 0)
+
+        if(legalIndexes.isEmpty() && canBlockIndex.size() == 0 && capIndexes.isEmpty())
         {
             System.out.println("CHECK MATE!!");
             return;
         }
 
-        if(!legalIndexes.isEmpty()) {
+        if(!legalIndexes.isEmpty() || !capIndexes.isEmpty()) {
             kingSquare.setOnMouseClicked(event ->
                     ChessClick.setClick(kingRow, kingCol, kingSquare, list));
         }
@@ -135,19 +125,33 @@ public class ChessChecks extends ChessClick{
         }
     }
 
-    private static  List<List<Integer[]>> squaresToBlock(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol, String pt) {
+    private static List<List<Integer[]>> squaresToBlock(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol, String pt) {
 
         List<List<Integer[]>> resultList = new ArrayList<>();
         List<Integer[]> blockIndexes = new ArrayList<>();
-        List<Integer[]> moreIndexes = new ArrayList<>();
+        List<Integer[]> thruCheck = new ArrayList<>();
+
+        int[] array = {-1, -1};
 
         List<Integer[]> pieces;
 
         if(kingCol == atkPieceCol) {
 
+            if(kingRow>atkPieceRow && kingRow+1<8)
+            {
+                array[0] = kingRow+1;
+                array[1] = kingCol;
+            }
+
+            else if(kingRow<atkPieceRow && kingRow-1 >-1)
+            {
+                array[0] = kingRow-1;
+                array[1] = kingCol;
+            }
+
+
+
             blockIndexes.add(new Integer[] {atkPieceRow, atkPieceCol});
-
-
 
             int startRow = Math.min(kingRow, atkPieceRow);
             int endRow = Math.max(kingRow, atkPieceRow);
@@ -156,23 +160,31 @@ public class ChessChecks extends ChessClick{
                 blockIndexes.add(new Integer[]{r, kingCol});
             }
 
-            /*
-            System.out.println("More:");
-            for(Integer[] index : moreIndexes)
-            {
-                System.out.println(index[0]+", "+ index[1]);
-            }
-            */
-
             pieces = piecesThatCanBlock(blockIndexes, !isWhiteTurn);
+
+            thruCheck.add(new Integer[]{array[0], array[1]});
 
             resultList.add(pieces);
             resultList.add(blockIndexes);
+            resultList.add(thruCheck);
 
             return resultList;
         }
 
         if(kingRow == atkPieceRow) {
+
+            if(kingCol>atkPieceCol && kingCol+1<8)
+            {
+                array[0] = kingRow;
+                array[1] = kingCol+1;
+            }
+
+            if(kingCol<atkPieceCol && kingCol-1>-1)
+            {
+                array[0] = kingRow;
+                array[1] = kingCol-1;
+            }
+
 
             blockIndexes.add(new Integer[] {atkPieceRow, atkPieceCol});
 
@@ -185,14 +197,47 @@ public class ChessChecks extends ChessClick{
 
             pieces = piecesThatCanBlock(blockIndexes, !isWhiteTurn);
 
+            thruCheck.add(new Integer[]{array[0], array[1]});
+
             resultList.add(pieces);
             resultList.add(blockIndexes);
-
+            resultList.add(thruCheck);
 
             return resultList;
         }
 
         if(Math.abs(kingRow - atkPieceRow) == Math.abs(kingCol - atkPieceCol)) {
+
+            if(kingCol>atkPieceCol)
+            {
+                if(kingRow>atkPieceRow && kingRow+1<8 && kingCol+1<8)
+                {
+                    array[0] = kingRow+1;
+                    array[1] = kingCol+1;
+                }
+
+                if(kingRow<atkPieceRow && kingRow-1> -1 && kingCol+1<8)
+                {
+                    array[0] = kingRow-1;
+                    array[1] = kingCol+1;
+                }
+            }
+
+            if(kingCol<atkPieceCol)
+            {
+                if(kingRow>atkPieceRow && kingRow+1<8 && kingCol-1>-1)
+                {
+                    array[0] = kingRow+1;
+                    array[1] = kingCol-1;
+                }
+
+                if(kingRow<atkPieceRow && kingRow-1> -1 && kingCol-1>-1)
+                {
+                    array[0] = kingRow-1;
+                    array[1] = kingCol-1;
+                }
+            }
+
 
             blockIndexes.add(new Integer[] {atkPieceRow, atkPieceCol});
 
@@ -209,8 +254,12 @@ public class ChessChecks extends ChessClick{
             }
 
             pieces = piecesThatCanBlock(blockIndexes, !isWhiteTurn);
+
+            thruCheck.add(new Integer[]{array[0], array[1]});
+
             resultList.add(pieces);
             resultList.add(blockIndexes);
+            resultList.add(thruCheck);
 
             return resultList;
         }
@@ -220,8 +269,12 @@ public class ChessChecks extends ChessClick{
             blockIndexes.add(new Integer[] {atkPieceRow, atkPieceCol});
 
             pieces = piecesThatCanBlock(blockIndexes, !isWhiteTurn);
+
+            thruCheck.add(new Integer[]{array[0], array[1]});
+
             resultList.add(pieces);
             resultList.add(blockIndexes);
+            resultList.add(thruCheck);
 
             return resultList;
         }

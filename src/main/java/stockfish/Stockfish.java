@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 /**
+ * https://github.com/rahular/chess-misc/tree/master/JavaStockfish/src/com/rahul/stockfish
  * A simple and efficient client to run Stockfish from Java
  *
  * @author Rahul A R

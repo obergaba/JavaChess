@@ -18,9 +18,9 @@ public class ChessClick extends ChessBoard {
     private static List<Integer[]> prevHigh;
     public static void setClick(int row, int col, StackPane square, List<Integer[]> checkBlock) {
 
-        Integer[] SelectedPrev = new Integer[]{row, col};
-
         removePrevHigh();
+
+        Integer[] SelectedPrev = new Integer[]{row, col};
 
         String pieceType = ChessBoard.startingPositions[row][col];
 
@@ -65,6 +65,7 @@ public class ChessClick extends ChessBoard {
             }
 
             highlightSquare(crow, ccol, "capture");
+
             StackPane captureMove = (StackPane) chessBoard.getChildren().get(crow * 8 + ccol + 1);
 
             String finalPieceType = pieceType;
@@ -121,18 +122,15 @@ public class ChessClick extends ChessBoard {
 
         }
 
-
         prevHigh = legalIndexes;
+        prevHigh.addAll(captureIndexes);
+        prevHigh.addAll(castleIndexes);
 
         if(!boolCheck)
         {
             prevHigh.add(SelectedPrev);
             square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
         }
-
-        prevHigh.addAll(captureIndexes);
-        prevHigh.addAll(castleIndexes);
-
     }
     private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt, boolean castle) {
 
