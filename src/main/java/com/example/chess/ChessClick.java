@@ -8,15 +8,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ChessClick extends ChessBoard {
 
     private static List<Integer[]> prevHigh;
-    public static void setClick(int row, int col, StackPane square, List<Integer[]> checkBlock) {
+
+    public static void setClick(int row, int col, StackPane square, List<Integer[]> checkBlock, Integer[] thruCheck) {
 
         removePrevHigh();
 
@@ -41,6 +39,22 @@ public class ChessClick extends ChessBoard {
         List<Integer[]> legalIndexes = ChessLogic.getTrueIndexes(legalMoves);
         List<Integer[]> captureIndexes = ChessLogic.getTrueIndexes(captureMoves);
         List<Integer[]> castleIndexes = ChessLogic.getTrueIndexes(castleMoves);
+
+        if(thruCheck[0] != -1) {
+            for (Integer[] index : legalIndexes) {
+                if (Arrays.equals(index, thruCheck)) {
+                    legalIndexes.remove(index);
+                    break;
+                }
+            }
+
+            for (Integer[] index : captureIndexes) {
+                if (Arrays.equals(index, thruCheck)) {
+                    captureIndexes.remove(index);
+                    break;
+                }
+            }
+        }
 
         for (Integer[] index : captureIndexes) {
 
@@ -140,6 +154,44 @@ public class ChessClick extends ChessBoard {
         if(pieceType.equals("bpawn"))
         {
             pieceType = "pawn";
+        }
+
+        if (pieceType.equals("pawn") && (toRow == 0 || toRow == 7))
+        {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("Enter a number between 1 and 4:");
+            System.out.println("1 -> queen");
+            System.out.println("2 -> rook");
+            System.out.println("3 -> knight");
+            System.out.println("4 -> bishop");
+
+            int input;
+
+            do{
+                input = sc.nextInt();
+            switch (input) {
+                case 1:
+                    System.out.println("You chose a queen.");
+                    pieceType ="queen";
+                    break;
+                case 2:
+                    System.out.println("You chose a rook.");
+                    pieceType ="rook";
+                    break;
+                case 3:
+                    System.out.println("You chose a knight.");
+                    pieceType ="knight";
+                    break;
+                case 4:
+                    System.out.println("You chose a bishop.");
+                    pieceType ="bishop";
+                    break;
+                default:
+                    System.out.println("Invalid input. Please enter a number between 1 and 4.");
+                }
+
+            }while (input<1 || input>4);
+
         }
 
         from.getChildren().remove(0);
@@ -301,6 +353,7 @@ public class ChessClick extends ChessBoard {
     private static void turns(boolean whiteTurn) {
 
         List<Integer[]> list = new ArrayList<>();
+        Integer[] temp = {-1, -1};
 
         for(int i = 0; i<8; i++)
         {
@@ -322,14 +375,14 @@ public class ChessClick extends ChessBoard {
 
                         if (Objects.equals(wb, "black")) {
                             turn.setOnMouseClicked(event ->
-                                    ChessClick.setClick(finalI, finalJ, turn, list));
+                                    ChessClick.setClick(finalI, finalJ, turn, list, temp));
                         }
                     }
 
                     if(!whiteTurn) {
                         if (Objects.equals(wb, "white")) {
                             turn.setOnMouseClicked(event ->
-                                    ChessClick.setClick(finalI, finalJ, turn, list));
+                                    ChessClick.setClick(finalI, finalJ, turn, list, temp));
                         }
                         if (Objects.equals(wb, "black")) {
                             turn.setOnMouseClicked(null);

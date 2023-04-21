@@ -1,7 +1,6 @@
 package stockfish;
 
 import java.io.*;
-import java.util.Arrays;
 
 /**
  * https://github.com/rahular/chess-misc/tree/master/JavaStockfish/src/com/rahul/stockfish
@@ -32,7 +31,6 @@ public class Stockfish {
                     engineProcess.getInputStream()));
             processWriter = new OutputStreamWriter(
                     engineProcess.getOutputStream());
-            sendCommand("setoption name Use NNUE");
         } catch (Exception e) {
             return false;
         }
@@ -158,12 +156,9 @@ public class Stockfish {
                     evalScore = Float.parseFloat(dump[i].split("score cp ")[1]
                             .split(" nodes")[0]);
                 } catch(Exception e) {
-                    try {
-                        evalScore = Float.parseFloat(dump[i].split("score cp ")[1].split(" upperbound nodes")[0]);
-                    }catch (Exception ii)
-                    {
-                        evalScore = 10000;
-                    }
+
+                    evalScore = Float.parseFloat(dump[i].split("score cp ")[1]
+                            .split(" upperbound nodes")[0]);
                 }
             }
         }

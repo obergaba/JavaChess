@@ -10,8 +10,17 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import stockfish.Stockfish;
 
-import java.io.File;
 import java.util.*;
+
+//Pawn promotion
+//En passant
+//Highlight check square
+//Double checks
+//Pinned pieces should not be able to move
+//Optimize ChessLogic
+//Castle bug in ChessLogic (king)
+//Stalemate
+//Update Fen for Stockfish
 
 public class ChessBoard extends Application {
 
@@ -21,7 +30,7 @@ public class ChessBoard extends Application {
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
 
-        private static String STARTING_FEN = "7k/5q2/8/8/8/8/1K6/8 w -- 0 42"; //"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6";
+        private final static String STARTING_FEN = "r7/1k6/5PPP/8/3p4/1pp5/8/1K5R b 1 1";
 
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
@@ -38,12 +47,11 @@ public class ChessBoard extends Application {
 
         public void start(Stage primaryStage) {
 
-
-
+            Integer[] temp = {-1, -1};
 
             List<Integer[]> list = new ArrayList<>(0);
 
-            startingPositions = StartingPositionFromFEN(STARTING_FEN);
+            startingPositions = StartingPositionFromFEN();
             initializeBoolBoard();
 
             chessBoard = new GridPane();
@@ -74,7 +82,7 @@ public class ChessBoard extends Application {
 
                         if(color.equals("white")) {
                             square.setOnMouseClicked(event ->
-                                    ChessClick.setClick(currentRow, currentCol, square, list)
+                                    ChessClick.setClick(currentRow, currentCol, square, list, temp)
                             );
                         }
                     }
@@ -149,12 +157,6 @@ public class ChessBoard extends Application {
             return square;
         }
 
-        private ChessPiece createChessPiece(String pieceType, int row) {
-            String color = (row < 2) ? "black" : "white";
-
-            return new ChessPiece(pieceType, color, true);
-        }
-
         private void CreateTexts(Pane pane)
         {
             //PROBLEM: Windows size needs to be a square and equal offset by board
@@ -185,7 +187,7 @@ public class ChessBoard extends Application {
             }
         }
 
-        private String[][] StartingPositionFromFEN(String FEN)
+        private String[][] StartingPositionFromFEN()
         {
 
             Dictionary<Character, String> dict = new Hashtable<>();
@@ -198,7 +200,7 @@ public class ChessBoard extends Application {
 
             String[] boardFEN = new String[64];
             int[] boardFENcol = new int[64];
-            String startPosition = FEN.split(" ")[0];
+            String startPosition = ChessBoard.STARTING_FEN.split(" ")[0];
 
             int squareNum = 0;
 

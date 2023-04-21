@@ -3,6 +3,7 @@ package com.example.chess;
 import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -64,6 +65,8 @@ public class ChessChecks extends ChessClick{
     }
     public static void DoCheck(int kingRow, int kingCol, int atkPieceRow, int atkPieceCol, String pt) {
 
+        Integer[] temp = {-1, -1};
+
         isWhiteTurn = !isWhiteTurn;
 
         StackPane kingSquare = (StackPane) chessBoard.getChildren().get(kingRow * 8 + kingCol + 1);
@@ -100,11 +103,22 @@ public class ChessChecks extends ChessClick{
         List<Integer[]> thruCheck = piecesThatCanBlock.get(2);
 
         Integer[] thruCheckArray = thruCheck.get(0);
-        System.out.println("First element: (" + thruCheckArray[0] + ", " + thruCheckArray[1] + ")");
 
+        if(thruCheckArray[0] != -1) {
+            for (Integer[] index : legalIndexes) {
+                if (Arrays.equals(index, thruCheckArray)) {
+                    legalIndexes.remove(index);
+                    break;
+                }
+            }
 
-
-
+            for (Integer[] index : capIndexes) {
+                if (Arrays.equals(index, thruCheckArray)) {
+                    capIndexes.remove(index);
+                    break;
+                }
+            }
+        }
         if(legalIndexes.isEmpty() && canBlockIndex.size() == 0 && capIndexes.isEmpty())
         {
             System.out.println("CHECK MATE!!");
@@ -113,7 +127,7 @@ public class ChessChecks extends ChessClick{
 
         if(!legalIndexes.isEmpty() || !capIndexes.isEmpty()) {
             kingSquare.setOnMouseClicked(event ->
-                    ChessClick.setClick(kingRow, kingCol, kingSquare, list));
+                    ChessClick.setClick(kingRow, kingCol, kingSquare, list, thruCheckArray));
         }
 
         for (Integer[] index : canBlockIndex) {
@@ -121,7 +135,7 @@ public class ChessChecks extends ChessClick{
             int colTemp = index[1];
             StackPane canBlock = (StackPane) chessBoard.getChildren().get(rowTemp * 8 + colTemp + 1);
             canBlock.setOnMouseClicked(event ->
-                    ChessClick.setClick(rowTemp, colTemp, canBlock, toBlockIndex));
+                    ChessClick.setClick(rowTemp, colTemp, canBlock, toBlockIndex, temp));
         }
     }
 
