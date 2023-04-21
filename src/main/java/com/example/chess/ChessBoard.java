@@ -21,7 +21,7 @@ public class ChessBoard extends Application {
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
 
-        private static String STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w -- 0 42"; //"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6";
+        private static String STARTING_FEN = "7k/5q2/8/8/8/8/1K6/8 w -- 0 42"; //"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq g6 0 6";
 
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
@@ -106,7 +106,10 @@ public class ChessBoard extends Application {
             System.out.println(client.getOutput(0));
 
             System.out.println("Best move : " + client.getBestMove(STARTING_FEN, 100));
+
+
             System.out.println("Evaluation score : " + client.getEvalScore(STARTING_FEN, 2000));
+            System.out.println("Evaluation with NNUE: " + client.getNNUE_Eval());
 
             client.stopEngine();
 

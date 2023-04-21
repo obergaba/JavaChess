@@ -1,6 +1,7 @@
 package stockfish;
 
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * https://github.com/rahular/chess-misc/tree/master/JavaStockfish/src/com/rahul/stockfish
@@ -31,6 +32,7 @@ public class Stockfish {
                     engineProcess.getInputStream()));
             processWriter = new OutputStreamWriter(
                     engineProcess.getOutputStream());
+            sendCommand("setoption name Use NNUE");
         } catch (Exception e) {
             return false;
         }
@@ -166,6 +168,27 @@ public class Stockfish {
             }
         }
         return evalScore/100;
+    }
+
+
+    public float getNNUE_Eval()
+    {
+        sendCommand("eval");
+        String[] temp = getOutput(0).split("\n");
+        String line = temp[temp.length -1];
+
+        if (line.startsWith("Final evaluation"))
+        {
+            try {
+                Float resault = Float.parseFloat(line.split("Final evaluation")[1].split("\\(")[0]);
+                return resault;
+            }
+            catch (Exception x){
+                System.out.println("Error on evaluating");
+                return 333;
+            }
+        }
+        return 0;
     }
 }
 
