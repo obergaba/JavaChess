@@ -31,6 +31,8 @@ public class Stockfish {
                     engineProcess.getInputStream()));
             processWriter = new OutputStreamWriter(
                     engineProcess.getOutputStream());
+            sendCommand("setoption name Use NNUE");
+
         } catch (Exception e) {
             return false;
         }
@@ -89,10 +91,15 @@ public class Stockfish {
      *            in milliseconds
      * @return Best Move in PGN format
      */
-    public String getBestMove(String fen, int waitTime) {
+    public String getBestMove_inTime(String fen, int waitTime) {
         sendCommand("position fen " + fen);
         sendCommand("go movetime " + waitTime);
         return getOutput(waitTime + 20).split("bestmove ")[1].split(" ")[0];
+    }
+    public String getBestMove_inDepth(String fen, int depth) {
+        sendCommand("position fen " + fen);
+        sendCommand("go depth " + depth);
+        return getOutput(20).split("bestmove ")[1].split(" ")[0];
     }
 
     /**
@@ -156,9 +163,12 @@ public class Stockfish {
                     evalScore = Float.parseFloat(dump[i].split("score cp ")[1]
                             .split(" nodes")[0]);
                 } catch(Exception e) {
-
-                    evalScore = Float.parseFloat(dump[i].split("score cp ")[1]
-                            .split(" upperbound nodes")[0]);
+                    try {
+                        evalScore = Float.parseFloat(dump[i].split("score cp ")[1].split(" upperbound nodes")[0]);
+                    }catch (Exception ii)
+                    {
+                        evalScore = 10000;
+                    }
                 }
             }
         }
@@ -180,7 +190,7 @@ public class Stockfish {
             }
             catch (Exception x){
                 System.out.println("Error on evaluating");
-                return 333;
+               return 333;
             }
         }
         return 0;

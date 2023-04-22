@@ -30,7 +30,7 @@ public class ChessBoard extends Application {
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
 
-        private final static String STARTING_FEN = "r7/1k6/5PPP/8/3p4/1pp5/8/1K5R b 1 1";
+        private final static String STARTING_FEN = "6k1/5ppp/8/8/8/8/5PPP/2R3K1 w - - 0 27";
 
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
@@ -112,9 +112,7 @@ public class ChessBoard extends Application {
             }
 
             System.out.println(client.getOutput(0));
-
-            System.out.println("Best move : " + client.getBestMove(STARTING_FEN, 100));
-
+            System.out.println("Best move : " + client.getBestMove_inTime(STARTING_FEN, 100));
 
             System.out.println("Evaluation score : " + client.getEvalScore(STARTING_FEN, 2000));
             System.out.println("Evaluation with NNUE: " + client.getNNUE_Eval());

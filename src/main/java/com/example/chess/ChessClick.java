@@ -232,8 +232,6 @@ public class ChessClick extends ChessBoard {
 
             if (result[0] != 0 || result[1] != 0) {
 
-
-
                 boolCheck = true;
                 int kingRow = result[0];
                 int kingCol = result[1];
