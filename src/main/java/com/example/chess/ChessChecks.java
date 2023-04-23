@@ -16,6 +16,7 @@ public class ChessChecks extends ChessClick{
         int[] result = new int[4];
 
         String color = "black";
+
         if(isWhiteTurn)
             color = "white";
 
@@ -23,6 +24,7 @@ public class ChessChecks extends ChessClick{
             for(int col = 0; col < 8; col++) {
 
                 if(startingPositions[row][col] != null && !startingPositions[row][col].equals("king")) {
+
 
                     StackPane temp = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
                     ChessPiece piece = (ChessPiece) temp.getChildren().get(0);

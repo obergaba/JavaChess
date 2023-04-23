@@ -21,15 +21,20 @@ public class ChessClick extends ChessBoard {
         String pieceType = ChessBoard.startingPositions[row][col];
 
         startingPositions[row][col] = null;
+        board[row][col]= false;
 
-        int[] result = ChessChecks.isCheck(isWhiteTurn);
+        int[] result = ChessChecks.isCheck(false);
+
+
 
         if (result[0] != 0 || result[1] != 0) {
             startingPositions[row][col] = pieceType;
+            board[row][col]= true;
             return;
         }
-
         startingPositions[row][col] = pieceType;
+        board[row][col]= true;
+
 
         Integer[] SelectedPrev = new Integer[]{row, col};
 

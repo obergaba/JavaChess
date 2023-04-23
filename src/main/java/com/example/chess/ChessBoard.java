@@ -31,7 +31,7 @@ public class ChessBoard extends Application {
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
 
-        final static String STARTING_FEN = "8/k7/5PPP/8/8/1ppp4/8/6K1 w - - 0 27";
+        final static String STARTING_FEN = "rnb1kbnr/pppp1ppp/4p3/8/7q/8/PPPPPPPP/RNBQKBNR w - - 0 27";
 
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
