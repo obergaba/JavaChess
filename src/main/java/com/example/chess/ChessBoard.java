@@ -31,7 +31,7 @@ public class ChessBoard extends Application {
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
 
-        public static String STARTING_FEN = "2q5/8/8/8/8/8/8/R3K3 w - - 0 27";
+        final static String STARTING_FEN = "8/k7/5PPP/8/8/1ppp4/8/6K1 w - - 0 27";
 
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
@@ -77,7 +77,7 @@ public class ChessBoard extends Application {
 
                         //ChessPiece piece = createChessPiece(pieceType, row);
                         String color = (startingPositionColors[row][col] == 1) ? "white" : "black";
-                        ChessPiece piece = new ChessPiece(pieceType, color, false);
+                        ChessPiece piece = new ChessPiece(pieceType, color, true);
 
                         square.getChildren().add(piece);
 

@@ -16,11 +16,24 @@ public class ChessClick extends ChessBoard {
 
     public static void setClick(int row, int col, StackPane square, List<Integer[]> checkBlock, Integer[] thruCheck) {
 
+
         removePrevHigh();
+        String pieceType = ChessBoard.startingPositions[row][col];
+
+        startingPositions[row][col] = null;
+
+        int[] result = ChessChecks.isCheck(isWhiteTurn);
+
+        if (result[0] != 0 || result[1] != 0) {
+            startingPositions[row][col] = pieceType;
+            return;
+        }
+
+        startingPositions[row][col] = pieceType;
 
         Integer[] SelectedPrev = new Integer[]{row, col};
 
-        String pieceType = ChessBoard.startingPositions[row][col];
+
 
         ChessPiece piece = (ChessPiece) square.getChildren().get(0);
         String wb = piece.getColor();
@@ -158,40 +171,7 @@ public class ChessClick extends ChessBoard {
 
         if (pieceType.equals("pawn") && (toRow == 0 || toRow == 7))
         {
-            Scanner sc = new Scanner(System.in);
-            System.out.println("Enter a number between 1 and 4:");
-            System.out.println("1 -> queen");
-            System.out.println("2 -> rook");
-            System.out.println("3 -> knight");
-            System.out.println("4 -> bishop");
-
-            int input;
-
-            do{
-                input = sc.nextInt();
-            switch (input) {
-                case 1:
-                    System.out.println("You chose a queen.");
-                    pieceType ="queen";
-                    break;
-                case 2:
-                    System.out.println("You chose a rook.");
-                    pieceType ="rook";
-                    break;
-                case 3:
-                    System.out.println("You chose a knight.");
-                    pieceType ="knight";
-                    break;
-                case 4:
-                    System.out.println("You chose a bishop.");
-                    pieceType ="bishop";
-                    break;
-                default:
-                    System.out.println("Invalid input. Please enter a number between 1 and 4.");
-                }
-
-            }while (input<1 || input>4);
-
+            pieceType ="queen";
         }
 
         from.getChildren().remove(0);
@@ -423,6 +403,7 @@ public class ChessClick extends ChessBoard {
                     String wb = piece.getColor();
 
                     if(whiteTurn) {
+
                         if (Objects.equals(wb, "white")) {
                             turn.setOnMouseClicked(null);
                         }

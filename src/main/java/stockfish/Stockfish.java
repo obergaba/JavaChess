@@ -25,6 +25,7 @@ public class Stockfish {
      * @return True on success. False otherwise
      */
     public boolean startEngine() {
+
         try {
             Process engineProcess = Runtime.getRuntime().exec(PATH);
             processReader = new BufferedReader(new InputStreamReader(
@@ -48,6 +49,7 @@ public class Stockfish {
         try {
             processWriter.write(command + "\n");
             processWriter.flush();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -64,7 +66,9 @@ public class Stockfish {
      * @return Raw output from Stockfish
      */
     public String getOutput(int waitTime) {
+
         StringBuilder buffer = new StringBuilder();
+
         try {
             Thread.sleep(waitTime);
             sendCommand("isready");
@@ -110,7 +114,7 @@ public class Stockfish {
             sendCommand("quit");
             processReader.close();
             processWriter.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 
@@ -138,7 +142,6 @@ public class Stockfish {
         sendCommand("d");
 
         String[] rows = getOutput(0).split("\n");
-
         for (int i = 1; i < 18; i++) {
             System.out.println(rows[i]);
         }
@@ -151,6 +154,7 @@ public class Stockfish {
      * @return evalScore
      */
     public float getEvalScore(String fen, int waitTime) {
+
         sendCommand("position fen " + fen);
         sendCommand("go movetime " + waitTime);
 
