@@ -209,6 +209,9 @@ public class ChessClick extends ChessBoard {
             castle(toCol, toRow, fromRow, fromCol, wb);
         }
 
+        //TODO: Update FEN, considering castle. Iterate all stacks? Update only single piece?
+        //UpdateFEN(fromRow, fromCol, toRow, toCol);
+
         to.getChildren().add(piece);
 
         startingPositions[toRow][toCol] = pieceType;
@@ -251,6 +254,57 @@ public class ChessClick extends ChessBoard {
         isWhiteTurn = !isWhiteTurn;
     }
 
+    static void UpdateFEN(int fromRow, int fromCol, int toRow, int toCol){
+
+        // Edit old fen from row that give the current fen split and target one.
+        // Function have to handle fen split = 8, P1P and so on
+        // Row = 1, Col = 1
+
+        // FEN example = rnbqkbnr/1p5p/8/8/8/8/PPPPPPPP/RNBQKBNR
+        // fromFEN = 1P5P -> 115P -> 7P
+        // toFEN = 8
+
+
+        String oldFen = STARTING_FEN.split(" ")[0];
+
+        String fromFen = oldFen.split("/")[fromRow];
+        char[] fromChars = fromFen.toCharArray();
+
+        String toFen = oldFen.split("/")[toRow];
+
+        int charInd = 0;
+        for (char ch : fromChars)
+        {
+            if (Character.isDigit(ch))
+            {
+                charInd += Character.getNumericValue(ch);
+            } else if (Character.isLetter(ch)) {
+                charInd += 1;
+            }else
+            {System.out.println("Error on parsing col FEN");}
+
+            if (charInd-1 == fromCol)
+            {
+                break;
+            }
+        }
+        fromChars[charInd-1] = '1';
+
+        int prevIsDigit = 1;
+        int count = 0;
+
+        while (count < fromChars.length)
+        {
+
+            count += 1;
+        }
+
+        System.out.println(fromFen);
+        System.out.println(String.valueOf(fromChars));
+
+
+    }
+
     static void highlightSquare(int row, int col, String legOrCap) {
 
         StackPane squareToHighlight = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
@@ -273,6 +327,8 @@ public class ChessClick extends ChessBoard {
         }
     }
     private static void castle(int toCol, int toRow,int fromRow, int fromCol, String wb) {
+
+
 
         if(toCol == 6 && toRow == 7 && wb.equals("white"))
         {

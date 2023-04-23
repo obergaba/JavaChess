@@ -502,10 +502,16 @@ public class ChessLogic extends ChessBoard {
     }
     private static boolean hasMoved(int row, int col) {
 
-        StackPane squareToCheck = (StackPane) chessBoard.getChildren().get(row * 8 + col+1);
-        ChessPiece piece = (ChessPiece) squareToCheck.getChildren().get(0);
 
-        return !piece.hasMoved();
+        StackPane squareToCheck = (StackPane) chessBoard.getChildren().get(row * 8 + col+1);
+        if (squareToCheck.getChildren().size() > 0)
+        {
+            ChessPiece piece = (ChessPiece) squareToCheck.getChildren().get(0);
+            return !piece.hasMoved();
+        }
+        return false;
+
+
     }
 
     private static boolean isAttacked(List<Integer[]> asd, int row, int col)

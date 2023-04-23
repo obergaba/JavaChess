@@ -12,15 +12,16 @@ import stockfish.Stockfish;
 
 import java.util.*;
 
-//Pawn promotion
-//En passant
-//Highlight check square
-//Double checks
-//Pinned pieces should not be able to move
-//Optimize ChessLogic
-//Castle bug in ChessLogic (king)
-//Stalemate
-//Update Fen for Stockfish
+
+//TODO: Pawn promotion
+//TODO: En passant
+//TODO: Highlight check square
+//TODO: Double checks
+//TODO: Pinned pieces should not be able to move
+//TODO: Optimize ChessLogic
+//TODO: Castle bug in ChessLogic (king)
+//TODO: Stalemate
+//TODO: Update Fen for Stockfish
 
 public class ChessBoard extends Application {
 
@@ -30,7 +31,7 @@ public class ChessBoard extends Application {
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
 
-        private final static String STARTING_FEN = "6k1/5ppp/8/8/8/8/5PPP/2R3K1 w - - 0 27";
+        public static String STARTING_FEN = "2q5/8/8/8/8/8/8/R3K3 w - - 0 27";
 
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
@@ -76,7 +77,7 @@ public class ChessBoard extends Application {
 
                         //ChessPiece piece = createChessPiece(pieceType, row);
                         String color = (startingPositionColors[row][col] == 1) ? "white" : "black";
-                        ChessPiece piece = new ChessPiece(pieceType, color, true);
+                        ChessPiece piece = new ChessPiece(pieceType, color, false);
 
                         square.getChildren().add(piece);
 
@@ -111,13 +112,13 @@ public class ChessBoard extends Application {
                 System.out.println("Oops! Something went wrong..");
             }
 
-            System.out.println(client.getOutput(0));
-            System.out.println("Best move : " + client.getBestMove_inTime(STARTING_FEN, 100));
+            //System.out.println(client.getOutput(0));
+            //System.out.println("Best move : " + client.getBestMove_inTime(STARTING_FEN, 100));
 
-            System.out.println("Evaluation score : " + client.getEvalScore(STARTING_FEN, 2000));
-            System.out.println("Evaluation with NNUE: " + client.getNNUE_Eval());
+            //System.out.println("Evaluation score : " + client.getEvalScore(STARTING_FEN, 10000));
+            //System.out.println("Evaluation with NNUE: " + client.getNNUE_Eval());
 
-            client.stopEngine();
+            //client.stopEngine();
 
         }
 
