@@ -12,33 +12,27 @@ import java.util.*;
 
 public class ChessClick extends ChessBoard {
 
-    private static List<Integer[]> prevHigh;
+    private static List<Integer[]> prevHigh = new ArrayList<>();
 
     public static void setClick(int row, int col, StackPane square, List<Integer[]> checkBlock, Integer[] thruCheck) {
 
-
         removePrevHigh();
+
         String pieceType = ChessBoard.startingPositions[row][col];
 
-        startingPositions[row][col] = null;
+        /*startingPositions[row][col] = null;
         board[row][col]= false;
-
         int[] result = ChessChecks.isCheck(false);
-
-
-
         if (result[0] != 0 || result[1] != 0) {
             startingPositions[row][col] = pieceType;
             board[row][col]= true;
             return;
         }
         startingPositions[row][col] = pieceType;
-        board[row][col]= true;
+        board[row][col]= true;*/
 
 
         Integer[] SelectedPrev = new Integer[]{row, col};
-
-
 
         ChessPiece piece = (ChessPiece) square.getChildren().get(0);
         String wb = piece.getColor();
@@ -92,7 +86,6 @@ public class ChessClick extends ChessBoard {
                 continue;
 
             } else if (checkBlock.size() > 0) {
-
                 continue;
             }
 
@@ -105,6 +98,7 @@ public class ChessClick extends ChessBoard {
                     movePieceCapture(row, col, square, captureMove, wb, finalPieceType, true, false));
 
         }
+
 
         for (Integer[] index1 : legalIndexes) {
 
@@ -124,8 +118,18 @@ public class ChessClick extends ChessBoard {
                 continue;
 
             } else if (checkBlock.size() > 0) {
-
                 continue;
+            }else {
+                startingPositions[row][col] = null;
+                board[row][col]= false;
+                int[] result = ChessChecks.isCheck(!isWhiteTurn);
+                if (result[0] != 0 || result[1] != 0) {
+                    startingPositions[row][col] = pieceType;
+                    board[row][col]= true;
+                    continue;
+                }
+                startingPositions[row][col] = pieceType;
+                board[row][col]= true;
             }
 
             highlightSquare(trow, tcol, "legal");
@@ -158,11 +162,13 @@ public class ChessClick extends ChessBoard {
         prevHigh.addAll(captureIndexes);
         prevHigh.addAll(castleIndexes);
 
-        if(!boolCheck)
+        if(!boolCheck || true)
         {
             prevHigh.add(SelectedPrev);
             square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
         }
+
+
     }
     private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt, boolean castle) {
 
@@ -205,14 +211,16 @@ public class ChessClick extends ChessBoard {
         board[toRow][toCol]= true;
         board[fromRow][fromCol]= false;
 
-        removePrevHigh();
-        turns(isWhiteTurn);
+
 
         if(boolCheck)
         {
             //TODO: take king coordinates and remove the highlight, maybe?
             boolCheck = false;
         }
+
+        removePrevHigh();
+        turns(isWhiteTurn);
 
         if(!pieceType.equals("king"))
         {
@@ -393,7 +401,7 @@ public class ChessClick extends ChessBoard {
 
         List<Integer[]> list = new ArrayList<>();
         Integer[] temp = {-1, -1};
-
+        int count = 0;
         for(int i = 0; i<8; i++)
         {
             for(int j = 0; j<8; j++)
@@ -435,13 +443,7 @@ public class ChessClick extends ChessBoard {
 
     private static void removeHighlight(int row, int col) {
 
-        Integer[] lastCoordinates = prevHigh.get(prevHigh.size() - 1);
-
-        int secondToLast = lastCoordinates[lastCoordinates.length - 2];
-        int last = lastCoordinates[lastCoordinates.length - 1];
-
         StackPane squareToRemove = (StackPane) chessBoard.getChildren().get(row * 8 + col+1);
-
         squareToRemove.setStyle("-fx-border-color: transparent;-fx-border-width: 0px;-fx-background-color:" + getSquareColor(row, col));
 
         VBox vBoxToRemove = null;
@@ -456,21 +458,28 @@ public class ChessClick extends ChessBoard {
         if (vBoxToRemove != null) {
             squareToRemove.getChildren().remove(vBoxToRemove);
         }
-
-        if(row != secondToLast || col != last)
-        {
-            squareToRemove.setOnMouseClicked(null);
-        }
     }
 
     public static void removePrevHigh() {
 
-        if(prevHigh !=null)
+        if(prevHigh.size() > 0)
         {
+            Integer[] lastCoordinates = prevHigh.get(prevHigh.size() - 1);
+
+            int selfRow = lastCoordinates[lastCoordinates.length - 2];
+            int selfCol = lastCoordinates[lastCoordinates.length - 1];
+
             for (Integer[] index1 : prevHigh) {
                 removeHighlight(index1[0], index1[1]);
+
+                if (index1[0] != selfRow || index1[1] != selfCol)
+                {
+                    StackPane stack = (StackPane) chessBoard.getChildren().get(index1[0] * 8 + index1[1]+1);
+                    stack.setOnMouseClicked(null);
+                }
             }
         }
+        prevHigh = new ArrayList<>();
     }
 
     private static boolean ArrayContains(List<Integer[]> array, Integer[] elem)

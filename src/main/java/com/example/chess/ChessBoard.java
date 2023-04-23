@@ -12,16 +12,12 @@ import stockfish.Stockfish;
 
 import java.util.*;
 
-
-//TODO: Pawn promotion
 //TODO: En passant
 //TODO: Highlight check square
 //TODO: Double checks
-//TODO: Pinned pieces should not be able to move
-//TODO: Optimize ChessLogic
-//TODO: Castle bug in ChessLogic (king)
 //TODO: Stalemate
 //TODO: Update Fen for Stockfish
+//TODO: Optimize ChessLogic
 
 public class ChessBoard extends Application {
 
@@ -31,7 +27,7 @@ public class ChessBoard extends Application {
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
 
-        final static String STARTING_FEN = "rnb1kbnr/pppp1ppp/4p3/8/7q/8/PPPPPPPP/RNBQKBNR w - - 0 27";
+        final static String STARTING_FEN = "r3k2r/8/b7/8/8/8/P7/R3K3 w - - 0 27";
 
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
@@ -77,7 +73,7 @@ public class ChessBoard extends Application {
 
                         //ChessPiece piece = createChessPiece(pieceType, row);
                         String color = (startingPositionColors[row][col] == 1) ? "white" : "black";
-                        ChessPiece piece = new ChessPiece(pieceType, color, true);
+                        ChessPiece piece = new ChessPiece(pieceType, color, false);
 
                         square.getChildren().add(piece);
 

@@ -47,7 +47,7 @@ public class ChessChecks extends ChessClick{
                             int trow = index[0];
                             int tcol = index[1];
 
-                            if(startingPositions[trow][tcol].equals("king")) {
+                            if (startingPositions[trow][tcol].equals("king")) {
 
                                 result[0] = trow;
                                 result[1] = tcol;
@@ -56,6 +56,7 @@ public class ChessChecks extends ChessClick{
                                 result[3] = col;
 
                                 return result;
+
                             }
                         }
                     }
