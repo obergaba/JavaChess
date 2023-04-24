@@ -9,29 +9,13 @@ import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
 
 import java.util.*;
-
 public class ChessClick extends ChessBoard {
-
     private static List<Integer[]> prevHigh = new ArrayList<>();
-
     public static void setClick(int row, int col, StackPane square, List<Integer[]> checkBlock, Integer[] thruCheck) {
 
         removePrevHigh();
 
         String pieceType = ChessBoard.startingPositions[row][col];
-
-        /*startingPositions[row][col] = null;
-        board[row][col]= false;
-        int[] result = ChessChecks.isCheck(false);
-        if (result[0] != 0 || result[1] != 0) {
-            startingPositions[row][col] = pieceType;
-            board[row][col]= true;
-            return;
-        }
-        startingPositions[row][col] = pieceType;
-        board[row][col]= true;*/
-
-
         Integer[] SelectedPrev = new Integer[]{row, col};
 
         ChessPiece piece = (ChessPiece) square.getChildren().get(0);
@@ -42,7 +26,7 @@ public class ChessClick extends ChessBoard {
             pieceType = "bpawn";
         }
 
-        List<List<Integer[]>> moves = ChessLogic.getLegalMoves(board, row, col, pieceType, wb);
+        List<List<Integer[]>> moves = ChessLogic.getLegalMoves(row, col, pieceType, wb);
 
         List<Integer[]> legalIndexes = moves.get(0);
         List<Integer[]> captureIndexes = moves.get(1);
@@ -78,7 +62,6 @@ public class ChessClick extends ChessBoard {
                 String finalPieceType = pieceType;
                 captureMove.setOnMouseClicked(event1 ->
                         movePieceCapture(row, col, square, captureMove, wb, finalPieceType, true, false));
-
                 continue;
 
             } else if (checkBlock.size() > 0) {
@@ -92,9 +75,7 @@ public class ChessClick extends ChessBoard {
             String finalPieceType = pieceType;
             captureMove.setOnMouseClicked(event1 ->
                     movePieceCapture(row, col, square, captureMove, wb, finalPieceType, true, false));
-
         }
-
 
         for (Integer[] index1 : legalIndexes) {
 
@@ -110,22 +91,20 @@ public class ChessClick extends ChessBoard {
                 String finalPieceType = pieceType;
                 targetMove.setOnMouseClicked(event1 ->
                         movePieceCapture(row, col, square, targetMove, wb, finalPieceType, false, false));
-
                 continue;
 
             } else if (checkBlock.size() > 0) {
+
                 continue;
+
             }else {
                 startingPositions[row][col] = null;
-                board[row][col]= false;
                 int[] result = ChessChecks.isCheck(!isWhiteTurn);
                 if (result[0] != 0 || result[1] != 0) {
                     startingPositions[row][col] = pieceType;
-                    board[row][col]= true;
                     continue;
                 }
                 startingPositions[row][col] = pieceType;
-                board[row][col]= true;
             }
 
             highlightSquare(trow, tcol, "legal");
@@ -158,12 +137,8 @@ public class ChessClick extends ChessBoard {
         prevHigh.addAll(captureIndexes);
         prevHigh.addAll(castleIndexes);
 
-        if(!boolCheck || true)
-        {
-            prevHigh.add(SelectedPrev);
-            square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
-        }
-
+        prevHigh.add(SelectedPrev);
+        square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
 
     }
     private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt, boolean castle) {
@@ -204,17 +179,11 @@ public class ChessClick extends ChessBoard {
         startingPositions[toRow][toCol] = pieceType;
         startingPositions[fromRow][fromCol] = null;
 
-        board[toRow][toCol]= true;
-        board[fromRow][fromCol]= false;
-
-
-
         if(boolCheck)
         {
             //TODO: take king coordinates and remove the highlight, maybe?
             boolCheck = false;
         }
-
         removePrevHigh();
         turns(isWhiteTurn);
 
@@ -236,13 +205,10 @@ public class ChessClick extends ChessBoard {
                 prevHigh.add(kingHigh);
 
                 ChessChecks.DoCheck(kingRow, kingCol, atkPieceRow, atkPieceCol, pieceType);
-
             }
         }
-
         isWhiteTurn = !isWhiteTurn;
     }
-
     static void UpdateFEN(int fromRow, int fromCol, int toRow, int toCol){
 
         // Edit old fen from row that give the current fen split and target one.
@@ -252,7 +218,6 @@ public class ChessClick extends ChessBoard {
         // FEN example = rnbqkbnr/1p5p/8/8/8/8/PPPPPPPP/RNBQKBNR
         // fromFEN = 1P5P -> 115P -> 7P
         // toFEN = 8
-
 
         String oldFen = STARTING_FEN.split(" ")[0];
 
@@ -290,10 +255,7 @@ public class ChessClick extends ChessBoard {
 
         System.out.println(fromFen);
         System.out.println(String.valueOf(fromChars));
-
-
     }
-
     static void highlightSquare(int row, int col, String legOrCap) {
 
         StackPane squareToHighlight = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
@@ -325,7 +287,7 @@ public class ChessClick extends ChessBoard {
             rookCastle.getChildren().remove(0);
 
             startingPositions[7][7] = null;
-            board[7][7]= false;
+
 
             rookCastle.setOnMouseClicked(null);
 
@@ -334,7 +296,7 @@ public class ChessClick extends ChessBoard {
             rookCastle2.getChildren().add(rook);
 
             startingPositions[fromRow][fromCol+1] = "rook";
-            board[fromRow][fromCol+1]= true;
+
         }
 
         if(toCol == 2 && toRow == 7 && wb.equals("white"))
@@ -343,7 +305,7 @@ public class ChessClick extends ChessBoard {
             rookCastle.getChildren().remove(0);
 
             startingPositions[7][0] = null;
-            board[7][0]= false;
+
 
             rookCastle.setOnMouseClicked(null);
 
@@ -352,7 +314,7 @@ public class ChessClick extends ChessBoard {
             rookCastle2.getChildren().add(rook);
 
             startingPositions[fromRow][fromCol-1] = "rook";
-            board[fromRow][fromCol-1]= true;
+
         }
 
         if(toCol == 6 && toRow == 0 && wb.equals("black"))
@@ -361,7 +323,6 @@ public class ChessClick extends ChessBoard {
             rookCastle.getChildren().remove(0);
 
             startingPositions[0][7] = null;
-            board[0][7]= false;
 
             rookCastle.setOnMouseClicked(null);
 
@@ -370,7 +331,6 @@ public class ChessClick extends ChessBoard {
             rookCastle2.getChildren().add(rook);
 
             startingPositions[fromRow][fromCol+1] = "rook";
-            board[fromRow][fromCol+1]= true;
         }
 
         if(toCol == 2 && toRow == 0 && wb.equals("black"))
@@ -379,7 +339,7 @@ public class ChessClick extends ChessBoard {
             rookCastle.getChildren().remove(0);
 
             startingPositions[0][0] = null;
-            board[0][0]= false;
+
 
             rookCastle.setOnMouseClicked(null);
 
@@ -388,16 +348,13 @@ public class ChessClick extends ChessBoard {
             rookCastle2.getChildren().add(rook);
 
             startingPositions[fromRow][fromCol-1] = "rook";
-            board[fromRow][fromCol-1]= true;
         }
-
     }
 
     private static void turns(boolean whiteTurn) {
 
         List<Integer[]> list = new ArrayList<>();
         Integer[] temp = {-1, -1};
-        int count = 0;
         for(int i = 0; i<8; i++)
         {
             for(int j = 0; j<8; j++)
@@ -422,7 +379,6 @@ public class ChessClick extends ChessBoard {
                                     ChessClick.setClick(finalI, finalJ, turn, list, temp));
                         }
                     }
-
                     if(!whiteTurn) {
                         if (Objects.equals(wb, "white")) {
                             turn.setOnMouseClicked(event ->

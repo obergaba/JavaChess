@@ -17,29 +17,21 @@ import java.util.*;
 //TODO: Double checks
 //TODO: Stalemate
 //TODO: Update Fen for Stockfish
-//TODO: Optimize ChessLogic
 
 public class ChessBoard extends Application {
-
         static double BOARD_SIZE = 600.0;
         public static double CELL_SIZE = BOARD_SIZE / 8;
         static double WINDOW_SIZE = 800;
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
-
-        final static String STARTING_FEN = "r3k2r/8/b7/8/8/8/P7/R3K3 w - - 0 27";
-
+        final static String STARTING_FEN = "3q1k2/4pp2/3p4/8/8/4P3/1Q1P1N2/3K4 w - - 0 27";
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
-
-        public static boolean[][] board;
         public static boolean isWhiteTurn = true;
-
         public static boolean boolCheck= false;
         public static GridPane chessBoard;
         Image icon = new Image("icon.png");
         public static String pieceType;
-
         @Override
 
         public void start(Stage primaryStage) {
@@ -49,7 +41,6 @@ public class ChessBoard extends Application {
             List<Integer[]> list = new ArrayList<>(0);
 
             startingPositions = StartingPositionFromFEN();
-            initializeBoolBoard();
 
             chessBoard = new GridPane();
             chessBoard.setGridLinesVisible(true);
@@ -100,13 +91,13 @@ public class ChessBoard extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
-            //Stockfish client = new Stockfish();
+            Stockfish client = new Stockfish();
 
-            // if (client.startEngine()) {
-            //     System.out.println("Engine has started..");
-            //} else {
-            //   System.out.println("Oops! Something went wrong..");
-            //}
+             if (client.startEngine()) {
+                 System.out.println("Engine has started..");
+            } else {
+               System.out.println("Oops! Something went wrong..");
+            }
 
             //System.out.println(client.getOutput(0));
             //System.out.println("Best move : " + client.getBestMove_inTime(STARTING_FEN, 100));
@@ -115,7 +106,6 @@ public class ChessBoard extends Application {
             //System.out.println("Evaluation with NNUE: " + client.getNNUE_Eval());
 
             //client.stopEngine();
-
         }
 
 
@@ -124,21 +114,6 @@ public class ChessBoard extends Application {
                 return COLOR_1;
             } else {
                 return COLOR_2;
-            }
-        }
-
-        private void initializeBoolBoard() {
-
-            board = new boolean[8][8];
-
-            for (int i = 0; i < 8; i++) {
-
-                for (int j = 0; j < 8; j++) {
-                    String pieceType = startingPositions[i][j];
-                    if (pieceType != null) {
-                        board[i][j] = true;
-                    }
-                }
             }
         }
 
@@ -184,7 +159,6 @@ public class ChessBoard extends Application {
 
         private String[][] StartingPositionFromFEN()
         {
-
             Dictionary<Character, String> dict = new Hashtable<>();
             dict.put('r', "rook");
             dict.put('n', "knight");

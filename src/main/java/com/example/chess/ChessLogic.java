@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChessLogic extends ChessBoard {
-    public static List<List<Integer[]>> getLegalMoves(boolean[][] board, int row, int col, String pieceType, String pColor) {
+    public static List<List<Integer[]>> getLegalMoves(int row, int col, String pieceType, String pColor) {
 
         List<Integer[]> legalIndexes = new ArrayList<>();
         List<Integer[]> capture2Indexes = new ArrayList<>();
@@ -16,16 +16,16 @@ public class ChessLogic extends ChessBoard {
         switch (pieceType) {
 
             case "pawn" -> {
-                if (row > 0 && !board[row-1][col]) {
+                if (row > 0 && startingPositions[row-1][col] == null) {
                     legalIndexes.add(new Integer[]{row-1, col});
-                    if (row == 6 && !board[row-2][col]) {
+                    if (row == 6 && startingPositions[row-2][col] == null) {
                         legalIndexes.add(new Integer[]{row-2, col});
                     }
                 }
-                if (row > 0 && col > 0 && board[row-1][col-1] && !getPieceColor(row-1, col-1).equals(pColor)) {
+                if (row > 0 && col > 0 && !(startingPositions[row-1][col-1] == null) && !getPieceColor(row-1, col-1).equals(pColor)) {
                     capture2Indexes.add(new Integer[]{row-1, col-1});
                 }
-                if (row > 0 && col < 7 && board[row-1][col+1] && !getPieceColor(row-1, col+1).equals(pColor)) {
+                if (row > 0 && col < 7 && !(startingPositions[row-1][col+1] == null) && !getPieceColor(row-1, col+1).equals(pColor)) {
                     capture2Indexes.add(new Integer[]{row-1, col+1});
                 }
 
@@ -37,18 +37,17 @@ public class ChessLogic extends ChessBoard {
                 }
             }
 
-
             case "bpawn" -> {
-                if (row < 7 && !board[row+1][col]) {
+                if (row < 7 && startingPositions[row+1][col] == null) {
                     legalIndexes.add(new Integer[]{row+1, col});
-                    if (row == 1 && !board[row+2][col]) {
+                    if (row == 1 && startingPositions[row+2][col] == null) {
                         legalIndexes.add(new Integer[]{row+2, col});
                     }
                 }
-                if (row < 7 && col > 0 && board[row+1][col-1] && !getPieceColor(row+1, col-1).equals(pColor)) {
+                if (row < 7 && col > 0 && !(startingPositions[row+1][col-1] == null) && !getPieceColor(row+1, col-1).equals(pColor)) {
                     capture2Indexes.add(new Integer[]{row+1, col-1});
                 }
-                if (row < 7 && col < 7 && board[row+1][col+1] && !getPieceColor(row+1, col+1).equals(pColor)) {
+                if (row < 7 && col < 7 && !(startingPositions[row+1][col+1] == null) && !getPieceColor(row+1, col+1).equals(pColor)) {
                     capture2Indexes.add(new Integer[]{row+1, col+1});
                 }
 
@@ -60,7 +59,6 @@ public class ChessLogic extends ChessBoard {
                 }
             }
 
-
             case "knight" -> {
 
                 int[] rowOffsets = {2, 2, -2, -2, 1, 1, -1, -1};
@@ -70,10 +68,10 @@ public class ChessLogic extends ChessBoard {
                     int newRow = row + rowOffsets[i];
                     int newCol = col + colOffsets[i];
                     if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-                        if (!board[newRow][newCol]) {
+                        if (startingPositions[newRow][newCol] == null) {
                             legalIndexes.add(new Integer[]{newRow, newCol});
                         } else if (!getPieceColor(newRow, newCol).equals(pColor)) {
-                            myCapture.add(new Integer[]{newRow, newCol});
+                            capture2Indexes.add(new Integer[]{newRow, newCol});
                         } else if (getPieceColor(newRow, newCol).equals(pColor)) {
                             myCapture.add(new Integer[]{newRow, newCol});
                         }
@@ -86,7 +84,7 @@ public class ChessLogic extends ChessBoard {
 
                 int i = row - 1, j = col + 1;
                 while (i >= 0 && j < 8) {
-                    if (!board[i][j]) {
+                    if (startingPositions[i][j] == null) {
                         legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{i, j});
@@ -104,7 +102,7 @@ public class ChessLogic extends ChessBoard {
                 i = row - 1;
                 j = col - 1;
                 while (i >= 0 && j >= 0) {
-                    if (!board[i][j]) {
+                    if (startingPositions[i][j] == null) {
                         legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{i, j});
@@ -122,7 +120,7 @@ public class ChessLogic extends ChessBoard {
                 i = row + 1;
                 j = col + 1;
                 while (i < 8 && j < 8) {
-                    if (!board[i][j]) {
+                    if (startingPositions[i][j] == null) {
                         legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{i, j});
@@ -140,7 +138,7 @@ public class ChessLogic extends ChessBoard {
                 i = row + 1;
                 j = col - 1;
                 while (i < 8 && j >= 0) {
-                    if (!board[i][j]) {
+                    if (startingPositions[i][j] == null) {
                         legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{i, j});
@@ -156,10 +154,9 @@ public class ChessLogic extends ChessBoard {
                 }
             }
 
-
             case "rook" -> {
                 for (int i = row - 1; i >= 0; i--) {
-                    if (!board[i][col]) {
+                    if (startingPositions[i][col] == null) {
                         legalIndexes.add(new Integer[]{i, col});
                     } else if (!getPieceColor(i, col).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{i, col});
@@ -172,7 +169,7 @@ public class ChessLogic extends ChessBoard {
                     }
                 }
                 for (int i = row + 1; i < 8; i++) {
-                    if (!board[i][col]) {
+                    if (startingPositions[i][col] == null) {
                         legalIndexes.add(new Integer[]{i, col});
                     } else if (!getPieceColor(i, col).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{i, col});
@@ -185,7 +182,7 @@ public class ChessLogic extends ChessBoard {
                     }
                 }
                 for (int i = col - 1; i >= 0; i--) {
-                    if (!board[row][i]) {
+                    if (startingPositions[row][i] == null) {
                         legalIndexes.add(new Integer[]{row, i});
                     } else if (!getPieceColor(row, i).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{row, i});
@@ -198,7 +195,7 @@ public class ChessLogic extends ChessBoard {
                     }
                 }
                 for (int i = col + 1; i < 8; i++) {
-                    if (!board[row][i]) {
+                    if (startingPositions[row][i] == null) {
                         legalIndexes.add(new Integer[]{row, i});
                     } else if (!getPieceColor(row, i).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{row, i});
@@ -212,7 +209,6 @@ public class ChessLogic extends ChessBoard {
                 }
             }
 
-
             case "king" -> {
 
                 int[] rowOff = {0, 0, 1, -1, 1, -1, 1, -1};
@@ -220,14 +216,13 @@ public class ChessLogic extends ChessBoard {
 
                 List<Integer[]> captureIndexes = getChecks(!isWhiteTurn);
 
-
                 if (hasMoved(row, col)) {
-                    if (hasMoved(row, col + 3) && !board[row][col+1] && !board[row][col+2] &&
+                    if (hasMoved(row, col + 3) && startingPositions[row][col+1] == null && startingPositions[row][col+2] == null &&
                             isAttacked(captureIndexes, row, col + 1) && isAttacked(captureIndexes, row, col + 2)) {
 
                         castleIndexes.add(new Integer[]{row, col+2});
                     }
-                    if (hasMoved(row, col - 4) && !board[row][col-1] && !board[row][col-2] && !board[row][col-3] &&
+                    if (hasMoved(row, col - 4) && startingPositions[row][col-1] == null && startingPositions[row][col-2] == null && startingPositions[row][col-3] == null &&
                             isAttacked(captureIndexes, row, col - 1) && isAttacked(captureIndexes, row, col - 2)) {
                         castleIndexes.add(new Integer[]{row, col-2});
                     }
@@ -237,7 +232,7 @@ public class ChessLogic extends ChessBoard {
                     int newRow = row + rowOff[i];
                     int newCol = col + colOff[i];
                     if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
-                        if (!board[newRow][newCol]) {
+                        if (startingPositions[newRow][newCol] == null) {
                             boolean canMove = true;
 
                             for (Integer[] index : captureIndexes) {
@@ -289,7 +284,7 @@ public class ChessLogic extends ChessBoard {
             case "queen" -> {
 
                 for (int i = row - 1; i >= 0; i--) {
-                    if (!board[i][col]) {
+                    if (startingPositions[i][col] == null) {
                         legalIndexes.add(new Integer[]{i, col});
                     } else if (!getPieceColor(i, col).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{i, col});
@@ -302,7 +297,7 @@ public class ChessLogic extends ChessBoard {
                     }
                 }
                 for (int i = row + 1; i < 8; i++) {
-                    if (!board[i][col]) {
+                    if (startingPositions[i][col] == null) {
                         legalIndexes.add(new Integer[]{i, col});
                     } else if (!getPieceColor(i, col).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{i, col});
@@ -315,7 +310,7 @@ public class ChessLogic extends ChessBoard {
                     }
                 }
                 for (int i = col - 1; i >= 0; i--) {
-                    if (!board[row][i]) {
+                    if (startingPositions[row][i] == null) {
                         legalIndexes.add(new Integer[]{row, i});
                     } else if (!getPieceColor(row, i).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{row, i});
@@ -328,7 +323,7 @@ public class ChessLogic extends ChessBoard {
                     }
                 }
                 for (int i = col + 1; i < 8; i++) {
-                    if (!board[row][i]) {
+                    if (startingPositions[row][i] == null) {
                         legalIndexes.add(new Integer[]{row, i});
                     } else if (!getPieceColor(row, i).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{row, i});
@@ -342,8 +337,9 @@ public class ChessLogic extends ChessBoard {
                 }
 
                 int i = row - 1, j = col + 1;
+
                 while (i >= 0 && j < 8) {
-                    if (!board[i][j]) {
+                    if (startingPositions[i][j] == null) {
                         legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{i, j});
@@ -361,7 +357,7 @@ public class ChessLogic extends ChessBoard {
                 i = row - 1;
                 j = col - 1;
                 while (i >= 0 && j >= 0) {
-                    if (!board[i][j]) {
+                    if (startingPositions[i][j] == null) {
                         legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{i, j});
@@ -379,7 +375,7 @@ public class ChessLogic extends ChessBoard {
                 i = row + 1;
                 j = col + 1;
                 while (i < 8 && j < 8) {
-                    if (!board[i][j]) {
+                    if (startingPositions[i][j] == null) {
                         legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{i, j});
@@ -397,7 +393,7 @@ public class ChessLogic extends ChessBoard {
                 i = row + 1;
                 j = col - 1;
                 while (i < 8 && j >= 0) {
-                    if (!board[i][j]) {
+                    if (startingPositions[i][j] == null) {
                         legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
                         capture2Indexes.add(new Integer[]{i, j});
@@ -411,6 +407,7 @@ public class ChessLogic extends ChessBoard {
                     i++;
                     j--;
                 }
+
             }
         }
 
@@ -455,7 +452,7 @@ public class ChessLogic extends ChessBoard {
                             pt = "bpawn";
                         }
 
-                        List<List<Integer[]>> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
+                        List<List<Integer[]>> moves = ChessLogic.getLegalMoves(row, col, pt, wb);
 
                         List<Integer[]> legal = moves.get(0);
                         List<Integer[]> capture = moves.get(1);
@@ -492,7 +489,6 @@ public class ChessLogic extends ChessBoard {
         }
         return false;
 
-
     }
 
     private static boolean isAttacked(List<Integer[]> asd, int row, int col)
@@ -506,5 +502,4 @@ public class ChessLogic extends ChessBoard {
         }
         return true;
     }
-
 }

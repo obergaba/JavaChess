@@ -7,9 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-
 public class ChessChecks extends ChessClick{
-
     public static int[] isCheck(boolean isWhiteTurn) {
 
         List<Integer[]> captureIndexes = new ArrayList<>();
@@ -38,7 +36,7 @@ public class ChessChecks extends ChessClick{
                             pt = "bpawn";
                         }
 
-                        List<List<Integer[]>> moves = ChessLogic.getLegalMoves(board,row, col, pt, wb);
+                        List<List<Integer[]>> moves = ChessLogic.getLegalMoves(row, col, pt, wb);
                         List<Integer[]> captureMoves = moves.get(1);
 
                         captureIndexes.addAll(captureMoves);
@@ -89,7 +87,7 @@ public class ChessChecks extends ChessClick{
 
         List<Integer[]> list = new ArrayList<>(0);
 
-        List<List<Integer[]>> moves = ChessLogic.getLegalMoves(board, kingRow, kingCol, "king", wb);
+        List<List<Integer[]>> moves = ChessLogic.getLegalMoves(kingRow, kingCol, "king", wb);
         List<Integer[]> legalIndexes  = moves.get(0);
         List<Integer[]> capIndexes = moves.get(1);
 
@@ -162,8 +160,6 @@ public class ChessChecks extends ChessClick{
                 array[1] = kingCol;
             }
 
-
-
             blockIndexes.add(new Integer[] {atkPieceRow, atkPieceCol});
 
             int startRow = Math.min(kingRow, atkPieceRow);
@@ -197,7 +193,6 @@ public class ChessChecks extends ChessClick{
                 array[0] = kingRow;
                 array[1] = kingCol-1;
             }
-
 
             blockIndexes.add(new Integer[] {atkPieceRow, atkPieceCol});
 
@@ -251,7 +246,6 @@ public class ChessChecks extends ChessClick{
                 }
             }
 
-
             blockIndexes.add(new Integer[] {atkPieceRow, atkPieceCol});
 
             int rowOffset = kingRow > atkPieceRow ? 1 : -1;
@@ -280,7 +274,6 @@ public class ChessChecks extends ChessClick{
         if(pt.equals("knight") || pt.equals("pawn") || pt.equals("bpawn")) {
 
             blockIndexes.add(new Integer[] {atkPieceRow, atkPieceCol});
-
             pieces = piecesThatCanBlock(blockIndexes, !isWhiteTurn);
 
             thruCheck.add(new Integer[]{array[0], array[1]});
@@ -314,7 +307,7 @@ public class ChessChecks extends ChessClick{
 
                         if (wb.equals("white")) {
 
-                            List<List<Integer[]>> moves = ChessLogic.getLegalMoves(board, i, j, pt, wb);
+                            List<List<Integer[]>> moves = ChessLogic.getLegalMoves(i, j, pt, wb);
 
                             List<Integer[]> legalIndexes = moves.get(0);
                             List<Integer[]> captureIndexes = moves.get(1);
@@ -342,7 +335,7 @@ public class ChessChecks extends ChessClick{
                             if(pt.equals("pawn"))
                                 pt = "bpawn";
 
-                            List<List<Integer[]>> moves = ChessLogic.getLegalMoves(board, i, j, pt, wb);
+                            List<List<Integer[]>> moves = ChessLogic.getLegalMoves(i, j, pt, wb);
 
                             List<Integer[]> legalIndexes = moves.get(0);
                             List<Integer[]> captureIndexes = moves.get(1);

@@ -3,9 +3,6 @@ package com.example.chess;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.util.List;
-
-
 public class ChessPiece extends ImageView  {
     private final String type;
     private final String color;
