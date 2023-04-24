@@ -100,13 +100,13 @@ public class ChessBoard extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
-            Stockfish client = new Stockfish();
+            //Stockfish client = new Stockfish();
 
-            if (client.startEngine()) {
-                System.out.println("Engine has started..");
-            } else {
-                System.out.println("Oops! Something went wrong..");
-            }
+            // if (client.startEngine()) {
+            //     System.out.println("Engine has started..");
+            //} else {
+            //   System.out.println("Oops! Something went wrong..");
+            //}
 
             //System.out.println(client.getOutput(0));
             //System.out.println("Best move : " + client.getBestMove_inTime(STARTING_FEN, 100));

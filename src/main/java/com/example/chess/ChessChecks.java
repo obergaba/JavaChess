@@ -38,10 +38,10 @@ public class ChessChecks extends ChessClick{
                             pt = "bpawn";
                         }
 
-                        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
-                        boolean[][] captureMoves = moves.get(1);
+                        List<List<Integer[]>> moves = ChessLogic.getLegalMoves(board,row, col, pt, wb);
+                        List<Integer[]> captureMoves = moves.get(1);
 
-                        captureIndexes.addAll(ChessLogic.getTrueIndexes(captureMoves));
+                        captureIndexes.addAll(captureMoves);
 
                         for (Integer[] index : captureIndexes) {
                             int trow = index[0];
@@ -89,13 +89,9 @@ public class ChessChecks extends ChessClick{
 
         List<Integer[]> list = new ArrayList<>(0);
 
-        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, kingRow, kingCol, "king", wb);
-        boolean[][] legalMoves = moves.get(0);
-        boolean[][] capMoves = moves.get(1);
-
-        List<Integer[]> legalIndexes = ChessLogic.getTrueIndexes(legalMoves);
-        List<Integer[]> capIndexes = ChessLogic.getTrueIndexes(capMoves);
-
+        List<List<Integer[]>> moves = ChessLogic.getLegalMoves(board, kingRow, kingCol, "king", wb);
+        List<Integer[]> legalIndexes  = moves.get(0);
+        List<Integer[]> capIndexes = moves.get(1);
 
         isWhiteTurn = !isWhiteTurn;
 
@@ -318,13 +314,10 @@ public class ChessChecks extends ChessClick{
 
                         if (wb.equals("white")) {
 
-                            List<boolean[][]> moves = ChessLogic.getLegalMoves(board, i, j, pt, wb);
+                            List<List<Integer[]>> moves = ChessLogic.getLegalMoves(board, i, j, pt, wb);
 
-                            boolean[][] legalMoves = moves.get(0);
-                            boolean[][] captureMoves = moves.get(1);
-
-                            List<Integer[]> legalIndexes = ChessLogic.getTrueIndexes(legalMoves);
-                            List<Integer[]> captureIndexes = ChessLogic.getTrueIndexes(captureMoves);
+                            List<Integer[]> legalIndexes = moves.get(0);
+                            List<Integer[]> captureIndexes = moves.get(1);
 
                             List<Integer[]> allMovesIndexes = new ArrayList<>();
 
@@ -349,13 +342,10 @@ public class ChessChecks extends ChessClick{
                             if(pt.equals("pawn"))
                                 pt = "bpawn";
 
-                            List<boolean[][]> moves = ChessLogic.getLegalMoves(board, i, j, pt, wb);
+                            List<List<Integer[]>> moves = ChessLogic.getLegalMoves(board, i, j, pt, wb);
 
-                            boolean[][] legalMoves = moves.get(0);
-                            boolean[][] captureMoves = moves.get(1);
-
-                            List<Integer[]> legalIndexes = ChessLogic.getTrueIndexes(legalMoves);
-                            List<Integer[]> captureIndexes = ChessLogic.getTrueIndexes(captureMoves);
+                            List<Integer[]> legalIndexes = moves.get(0);
+                            List<Integer[]> captureIndexes = moves.get(1);
 
                             List<Integer[]> allMovesIndexes = new ArrayList<>();
 

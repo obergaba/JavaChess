@@ -6,60 +6,60 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChessLogic extends ChessBoard {
-    public static List<boolean[][]> getLegalMoves(boolean[][] board, int row, int col, String pieceType, String pColor) {
+    public static List<List<Integer[]>> getLegalMoves(boolean[][] board, int row, int col, String pieceType, String pColor) {
 
-        boolean[][] legalMoves = new boolean[8][8];
-        boolean[][] captureMoves = new boolean[8][8];
-        boolean[][] captureMyMoves = new boolean[8][8];
-        boolean[][] castle = new boolean[8][8];
+        List<Integer[]> legalIndexes = new ArrayList<>();
+        List<Integer[]> capture2Indexes = new ArrayList<>();
+        List<Integer[]> myCapture = new ArrayList<>();
+        List<Integer[]> castleIndexes = new ArrayList<>();
 
         switch (pieceType) {
 
             case "pawn" -> {
-
                 if (row > 0 && !board[row-1][col]) {
-                    legalMoves[row-1][col] = true;
-
+                    legalIndexes.add(new Integer[]{row-1, col});
                     if (row == 6 && !board[row-2][col]) {
-                        legalMoves[row-2][col] = true;
+                        legalIndexes.add(new Integer[]{row-2, col});
                     }
                 }
                 if (row > 0 && col > 0 && board[row-1][col-1] && !getPieceColor(row-1, col-1).equals(pColor)) {
-                    captureMoves[row-1][col-1] = true;
+                    capture2Indexes.add(new Integer[]{row-1, col-1});
                 }
                 if (row > 0 && col < 7 && board[row-1][col+1] && !getPieceColor(row-1, col+1).equals(pColor)) {
-                    captureMoves[row-1][col+1] = true;
+                    capture2Indexes.add(new Integer[]{row-1, col+1});
                 }
 
                 if (row > 0 && col > 0) {
-                    captureMyMoves[row-1][col-1] = true;
+                    myCapture.add(new Integer[]{row-1, col-1});
                 }
                 if (row > 0 && col < 7) {
-                    captureMyMoves[row-1][col+1] = true;
+                    myCapture.add(new Integer[]{row-1, col+1});
                 }
             }
+
 
             case "bpawn" -> {
                 if (row < 7 && !board[row+1][col]) {
-                    legalMoves[row+1][col] = true;
+                    legalIndexes.add(new Integer[]{row+1, col});
                     if (row == 1 && !board[row+2][col]) {
-                        legalMoves[row+2][col] = true;
+                        legalIndexes.add(new Integer[]{row+2, col});
                     }
                 }
                 if (row < 7 && col > 0 && board[row+1][col-1] && !getPieceColor(row+1, col-1).equals(pColor)) {
-                    captureMoves[row+1][col-1] = true;
+                    capture2Indexes.add(new Integer[]{row+1, col-1});
                 }
                 if (row < 7 && col < 7 && board[row+1][col+1] && !getPieceColor(row+1, col+1).equals(pColor)) {
-                    captureMoves[row+1][col+1] = true;
+                    capture2Indexes.add(new Integer[]{row+1, col+1});
                 }
 
                 if (row < 7 && col > 0) {
-                    captureMyMoves[row+1][col-1] = true;
+                    myCapture.add(new Integer[]{row+1, col-1});
                 }
                 if (row < 7 && col < 7) {
-                    captureMyMoves[row+1][col+1] = true;
+                    myCapture.add(new Integer[]{row+1, col+1});
                 }
             }
+
 
             case "knight" -> {
 
@@ -71,31 +71,30 @@ public class ChessLogic extends ChessBoard {
                     int newCol = col + colOffsets[i];
                     if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
                         if (!board[newRow][newCol]) {
-                            legalMoves[newRow][newCol] = true;
+                            legalIndexes.add(new Integer[]{newRow, newCol});
                         } else if (!getPieceColor(newRow, newCol).equals(pColor)) {
-                            captureMoves[newRow][newCol] = true;
-                        }
-                        else if (getPieceColor(newRow, newCol).equals(pColor)) {
-                            captureMyMoves[newRow][newCol] = true;
+                            myCapture.add(new Integer[]{newRow, newCol});
+                        } else if (getPieceColor(newRow, newCol).equals(pColor)) {
+                            myCapture.add(new Integer[]{newRow, newCol});
                         }
                     }
                 }
             }
+
 
             case "bishop" -> {
 
                 int i = row - 1, j = col + 1;
                 while (i >= 0 && j < 8) {
                     if (!board[i][j]) {
-                        legalMoves[i][j] = true;
+                        legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
-                        captureMoves[i][j] = true;
+                        capture2Indexes.add(new Integer[]{i, j});
                         break;
-                    }
-                    else if (getPieceColor(i, j).equals(pColor)) {
-                        captureMyMoves[i][j] = true;
+                    } else if (getPieceColor(i, j).equals(pColor)) {
+                        myCapture.add(new Integer[]{i, j});
                         break;
-                    }else {
+                    } else {
                         break;
                     }
                     i--;
@@ -106,14 +105,14 @@ public class ChessLogic extends ChessBoard {
                 j = col - 1;
                 while (i >= 0 && j >= 0) {
                     if (!board[i][j]) {
-                        legalMoves[i][j] = true;
+                        legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
-                        captureMoves[i][j] = true;
+                        capture2Indexes.add(new Integer[]{i, j});
                         break;
                     } else if (getPieceColor(i, j).equals(pColor)) {
-                        captureMyMoves[i][j] = true;
+                        myCapture.add(new Integer[]{i, j});
                         break;
-                    }else {
+                    } else {
                         break;
                     }
                     i--;
@@ -124,15 +123,14 @@ public class ChessLogic extends ChessBoard {
                 j = col + 1;
                 while (i < 8 && j < 8) {
                     if (!board[i][j]) {
-                        legalMoves[i][j] = true;
+                        legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
-                        captureMoves[i][j] = true;
+                        capture2Indexes.add(new Integer[]{i, j});
                         break;
-                    }
-                    else if (getPieceColor(i, j).equals(pColor)) {
-                        captureMyMoves[i][j] = true;
+                    } else if (getPieceColor(i, j).equals(pColor)) {
+                        myCapture.add(new Integer[]{i, j});
                         break;
-                    }else {
+                    } else {
                         break;
                     }
                     i++;
@@ -143,15 +141,14 @@ public class ChessLogic extends ChessBoard {
                 j = col - 1;
                 while (i < 8 && j >= 0) {
                     if (!board[i][j]) {
-                        legalMoves[i][j] = true;
+                        legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
-                        captureMoves[i][j] = true;
+                        capture2Indexes.add(new Integer[]{i, j});
                         break;
-                    }
-                    else if (getPieceColor(i, j).equals(pColor)) {
-                        captureMyMoves[i][j] = true;
+                    } else if (getPieceColor(i, j).equals(pColor)) {
+                        myCapture.add(new Integer[]{i, j});
                         break;
-                    }else {
+                    } else {
                         break;
                     }
                     i++;
@@ -159,68 +156,62 @@ public class ChessLogic extends ChessBoard {
                 }
             }
 
-            case "rook" -> {
 
+            case "rook" -> {
                 for (int i = row - 1; i >= 0; i--) {
                     if (!board[i][col]) {
-                        legalMoves[i][col] = true;
+                        legalIndexes.add(new Integer[]{i, col});
                     } else if (!getPieceColor(i, col).equals(pColor)) {
-                        captureMoves[i][col] = true;
+                        capture2Indexes.add(new Integer[]{i, col});
                         break;
-                    }
-                    else if (getPieceColor(i, col).equals(pColor)) {
-                        captureMyMoves[i][col] = true;
+                    } else if (getPieceColor(i, col).equals(pColor)) {
+                        myCapture.add(new Integer[]{i, col});
                         break;
-                    }else {
+                    } else {
                         break;
                     }
                 }
-
                 for (int i = row + 1; i < 8; i++) {
                     if (!board[i][col]) {
-                        legalMoves[i][col] = true;
+                        legalIndexes.add(new Integer[]{i, col});
                     } else if (!getPieceColor(i, col).equals(pColor)) {
-                        captureMoves[i][col] = true;
+                        capture2Indexes.add(new Integer[]{i, col});
                         break;
-                    }
-                    else if (getPieceColor(i, col).equals(pColor)) {
-                        captureMyMoves[i][col] = true;
+                    } else if (getPieceColor(i, col).equals(pColor)) {
+                        myCapture.add(new Integer[]{i, col});
                         break;
-                    }else {
+                    } else {
                         break;
                     }
                 }
-
                 for (int i = col - 1; i >= 0; i--) {
                     if (!board[row][i]) {
-                        legalMoves[row][i] = true;
+                        legalIndexes.add(new Integer[]{row, i});
                     } else if (!getPieceColor(row, i).equals(pColor)) {
-                        captureMoves[row][i] = true;
+                        capture2Indexes.add(new Integer[]{row, i});
                         break;
-                    }
-                    else if (getPieceColor(row, i).equals(pColor)) {
-                        captureMyMoves[row][i] = true;
+                    } else if (getPieceColor(row, i).equals(pColor)) {
+                        myCapture.add(new Integer[]{row, i});
                         break;
-                    }else {
+                    } else {
                         break;
                     }
                 }
-
                 for (int i = col + 1; i < 8; i++) {
                     if (!board[row][i]) {
-                        legalMoves[row][i] = true;
+                        legalIndexes.add(new Integer[]{row, i});
                     } else if (!getPieceColor(row, i).equals(pColor)) {
-                        captureMoves[row][i] = true;
+                        capture2Indexes.add(new Integer[]{row, i});
                         break;
-                    }
-                    else if (getPieceColor(row, i).equals(pColor)) {
-                        captureMyMoves[row][i] = true;
+                    } else if (getPieceColor(row, i).equals(pColor)) {
+                        myCapture.add(new Integer[]{row, i});
                         break;
                     } else {
                         break;
                     }
                 }
             }
+
 
             case "king" -> {
 
@@ -234,11 +225,11 @@ public class ChessLogic extends ChessBoard {
                     if (hasMoved(row, col + 3) && !board[row][col+1] && !board[row][col+2] &&
                             isAttacked(captureIndexes, row, col + 1) && isAttacked(captureIndexes, row, col + 2)) {
 
-                        castle[row][col+2] = true;
+                        castleIndexes.add(new Integer[]{row, col+2});
                     }
                     if (hasMoved(row, col - 4) && !board[row][col-1] && !board[row][col-2] && !board[row][col-3] &&
                             isAttacked(captureIndexes, row, col - 1) && isAttacked(captureIndexes, row, col - 2)) {
-                        castle[row][col-2] = true;
+                        castleIndexes.add(new Integer[]{row, col-2});
                     }
                 }
 
@@ -259,7 +250,7 @@ public class ChessLogic extends ChessBoard {
                             }
 
                             if (canMove) {
-                                legalMoves[newRow][newCol] = true;
+                                legalIndexes.add(new Integer[]{newRow, newCol});
                             }
                         } else if (!getPieceColor(newRow, newCol).equals(pColor)) {
                             boolean canMove2 = true;
@@ -273,7 +264,7 @@ public class ChessLogic extends ChessBoard {
                                 }
                             }
                             if(canMove2)
-                                captureMoves[newRow][newCol] = true;
+                                capture2Indexes.add(new Integer[]{newRow, newCol});
                         }
                     }
                 }
@@ -290,7 +281,7 @@ public class ChessLogic extends ChessBoard {
 
                     if (newX >= 0 && newX < 8 && newY >= 0 && newY < 8) {
 
-                        legalMoves[newX][newY] = true;
+                        legalIndexes.add(new Integer[]{newX, newY});
                     }
                 }
             }
@@ -299,150 +290,140 @@ public class ChessLogic extends ChessBoard {
 
                 for (int i = row - 1; i >= 0; i--) {
                     if (!board[i][col]) {
-                        legalMoves[i][col] = true;
+                        legalIndexes.add(new Integer[]{i, col});
                     } else if (!getPieceColor(i, col).equals(pColor)) {
-                        captureMoves[i][col] = true;
+                        capture2Indexes.add(new Integer[]{i, col});
                         break;
-                    }
-                    else if (getPieceColor(i, col).equals(pColor)) {
-                        captureMyMoves[i][col] = true;
-                        break;
-                    }else {
-                        break;
-                    }
-                }
-
-                for (int i = row + 1; i < 8; i++) {
-                    if (!board[i][col]) {
-                        legalMoves[i][col] = true;
-                    } else if (!getPieceColor(i, col).equals(pColor)) {
-                        captureMoves[i][col] = true;
-                        break;
-                    }
-                    else if (getPieceColor(i, col).equals(pColor)) {
-                        captureMyMoves[i][col] = true;
-                        break;
-                    }else {
-                        break;
-                    }
-                }
-
-                for (int i = col - 1; i >= 0; i--) {
-                    if (!board[row][i]) {
-                        legalMoves[row][i] = true;
-                    } else if (!getPieceColor(row, i).equals(pColor)) {
-                        captureMoves[row][i] = true;
-                        break;
-                    }
-                    else if (getPieceColor(row, i).equals(pColor)) {
-                        captureMyMoves[row][i] = true;
-                        break;
-                    }else {
-                        break;
-                    }
-                }
-
-                for (int i = col + 1; i < 8; i++) {
-                    if (!board[row][i]) {
-                        legalMoves[row][i] = true;
-                    } else if (!getPieceColor(row, i).equals(pColor)) {
-                        captureMoves[row][i] = true;
-                        break;
-                    }
-                    else if (getPieceColor(row, i).equals(pColor)) {
-                        captureMyMoves[row][i] = true;
-                        break;
-                    }else {
-                        break;
-                    }
-                }
-
-                for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
-                    if (!board[i][j]) {
-                        legalMoves[i][j] = true;
-                    } else if (!getPieceColor(i, j).equals(pColor)) {
-                        captureMoves[i][j] = true;
-                        break;
-                    }
-                    else if (getPieceColor(i, j).equals(pColor)) {
-                        captureMyMoves[i][j] = true;
-                        break;
-                    }else {
-                        break;
-                    }
-                }
-
-                for (int i = row - 1, j = col + 1; i >= 0 && j < 8; i--, j++) {
-                    if (!board[i][j]) {
-                        legalMoves[i][j] = true;
-                    } else if (!getPieceColor(i, j).equals(pColor)) {
-                        captureMoves[i][j] = true;
-
-                        break;
-                    }
-                    else if (getPieceColor(i, j).equals(pColor)) {
-                        captureMyMoves[i][j] = true;
-                        break;
-                    }else {
-                        break;
-                    }
-                }
-
-                for (int i = row + 1, j = col - 1; i < 8 && j >= 0; i++, j--) {
-                    if (!board[i][j]) {
-                        legalMoves[i][j] = true;
-                    } else if (!getPieceColor(i, j).equals(pColor)) {
-                        captureMoves[i][j] = true;
-                        break;
-                    }
-                    else if (getPieceColor(i, j).equals(pColor)) {
-                        captureMyMoves[i][j] = true;
+                    } else if (getPieceColor(i, col).equals(pColor)) {
+                        myCapture.add(new Integer[]{i, col});
                         break;
                     } else {
                         break;
                     }
                 }
-                for (int i = row + 1, j = col + 1; i < 8 && j < 8; i++, j++) {
+                for (int i = row + 1; i < 8; i++) {
+                    if (!board[i][col]) {
+                        legalIndexes.add(new Integer[]{i, col});
+                    } else if (!getPieceColor(i, col).equals(pColor)) {
+                        capture2Indexes.add(new Integer[]{i, col});
+                        break;
+                    } else if (getPieceColor(i, col).equals(pColor)) {
+                        myCapture.add(new Integer[]{i, col});
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+                for (int i = col - 1; i >= 0; i--) {
+                    if (!board[row][i]) {
+                        legalIndexes.add(new Integer[]{row, i});
+                    } else if (!getPieceColor(row, i).equals(pColor)) {
+                        capture2Indexes.add(new Integer[]{row, i});
+                        break;
+                    } else if (getPieceColor(row, i).equals(pColor)) {
+                        myCapture.add(new Integer[]{row, i});
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+                for (int i = col + 1; i < 8; i++) {
+                    if (!board[row][i]) {
+                        legalIndexes.add(new Integer[]{row, i});
+                    } else if (!getPieceColor(row, i).equals(pColor)) {
+                        capture2Indexes.add(new Integer[]{row, i});
+                        break;
+                    } else if (getPieceColor(row, i).equals(pColor)) {
+                        myCapture.add(new Integer[]{row, i});
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+
+                int i = row - 1, j = col + 1;
+                while (i >= 0 && j < 8) {
                     if (!board[i][j]) {
-                        legalMoves[i][j] = true;
+                        legalIndexes.add(new Integer[]{i, j});
                     } else if (!getPieceColor(i, j).equals(pColor)) {
-                        captureMoves[i][j] = true;
+                        capture2Indexes.add(new Integer[]{i, j});
+                        break;
+                    } else if (getPieceColor(i, j).equals(pColor)) {
+                        myCapture.add(new Integer[]{i, j});
+                        break;
+                    } else {
                         break;
                     }
-                    else if (getPieceColor(i, j).equals(pColor)) {
-                        captureMyMoves[i][j] = true;
+                    i--;
+                    j++;
+                }
+
+                i = row - 1;
+                j = col - 1;
+                while (i >= 0 && j >= 0) {
+                    if (!board[i][j]) {
+                        legalIndexes.add(new Integer[]{i, j});
+                    } else if (!getPieceColor(i, j).equals(pColor)) {
+                        capture2Indexes.add(new Integer[]{i, j});
                         break;
-                    }else {
+                    } else if (getPieceColor(i, j).equals(pColor)) {
+                        myCapture.add(new Integer[]{i, j});
+                        break;
+                    } else {
                         break;
                     }
+                    i--;
+                    j--;
+                }
+
+                i = row + 1;
+                j = col + 1;
+                while (i < 8 && j < 8) {
+                    if (!board[i][j]) {
+                        legalIndexes.add(new Integer[]{i, j});
+                    } else if (!getPieceColor(i, j).equals(pColor)) {
+                        capture2Indexes.add(new Integer[]{i, j});
+                        break;
+                    } else if (getPieceColor(i, j).equals(pColor)) {
+                        myCapture.add(new Integer[]{i, j});
+                        break;
+                    } else {
+                        break;
+                    }
+                    i++;
+                    j++;
+                }
+
+                i = row + 1;
+                j = col - 1;
+                while (i < 8 && j >= 0) {
+                    if (!board[i][j]) {
+                        legalIndexes.add(new Integer[]{i, j});
+                    } else if (!getPieceColor(i, j).equals(pColor)) {
+                        capture2Indexes.add(new Integer[]{i, j});
+                        break;
+                    } else if (getPieceColor(i, j).equals(pColor)) {
+                        myCapture.add(new Integer[]{i, j});
+                        break;
+                    } else {
+                        break;
+                    }
+                    i++;
+                    j--;
                 }
             }
         }
 
-        List<boolean[][]> movesList = new ArrayList<>();
+        List<List<Integer[]>> allIndexes = new ArrayList<>();
 
-        movesList.add(legalMoves);
-        movesList.add(captureMoves);
-        movesList.add(captureMyMoves);
-        movesList.add(castle);
+        allIndexes.add(legalIndexes);
+        allIndexes.add(capture2Indexes);
+        allIndexes.add(myCapture);
+        allIndexes.add(castleIndexes);
 
-        return movesList;
+        return allIndexes;
     }
-    public static List<Integer[]> getTrueIndexes(boolean[][] arr) {
 
-        List<Integer[]> trueIndexes = new ArrayList<>();
-
-        for (int i = 0; i < arr.length; i++) {
-            for (int j = 0; j < arr[i].length; j++) {
-                if (arr[i][j]) {
-                    Integer[] index = {i, j};
-                    trueIndexes.add(index);
-                }
-            }
-        }
-
-        return trueIndexes;
-    }
     public static List<Integer[]> getChecks(boolean isWitheTurn) {
 
         List<Integer[]> captureIndexes = new ArrayList<>();
@@ -474,18 +455,18 @@ public class ChessLogic extends ChessBoard {
                             pt = "bpawn";
                         }
 
-                        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
+                        List<List<Integer[]>> moves = ChessLogic.getLegalMoves(board, row, col, pt, wb);
 
-                        boolean[][] legal = moves.get(0);
-                        boolean[][] capture = moves.get(1);
-                        boolean[][] captureOwn = moves.get(2);
+                        List<Integer[]> legal = moves.get(0);
+                        List<Integer[]> capture = moves.get(1);
+                        List<Integer[]> captureOwn = moves.get(2);
 
                         if(!pt.equals("pawn") && !pt.equals("bpawn"))
                         {
-                            captureIndexes.addAll(ChessLogic.getTrueIndexes(capture));
-                            captureIndexes.addAll(ChessLogic.getTrueIndexes(legal));
+                            captureIndexes.addAll(capture);
+                            captureIndexes.addAll(legal);
                         }
-                        captureIndexes.addAll(ChessLogic.getTrueIndexes(captureOwn));
+                        captureIndexes.addAll(captureOwn);
                     }
                 }
             }

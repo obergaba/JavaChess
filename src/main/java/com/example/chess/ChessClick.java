@@ -42,15 +42,11 @@ public class ChessClick extends ChessBoard {
             pieceType = "bpawn";
         }
 
-        List<boolean[][]> moves = ChessLogic.getLegalMoves(board, row, col, pieceType, wb);
+        List<List<Integer[]>> moves = ChessLogic.getLegalMoves(board, row, col, pieceType, wb);
 
-        boolean[][] legalMoves = moves.get(0);
-        boolean[][] captureMoves = moves.get(1);
-        boolean[][] castleMoves = moves.get(3);
-
-        List<Integer[]> legalIndexes = ChessLogic.getTrueIndexes(legalMoves);
-        List<Integer[]> captureIndexes = ChessLogic.getTrueIndexes(captureMoves);
-        List<Integer[]> castleIndexes = ChessLogic.getTrueIndexes(castleMoves);
+        List<Integer[]> legalIndexes = moves.get(0);
+        List<Integer[]> captureIndexes = moves.get(1);
+        List<Integer[]> castleIndexes = moves.get(3);
 
         if(thruCheck[0] != -1) {
             for (Integer[] index : legalIndexes) {
@@ -241,7 +237,7 @@ public class ChessClick extends ChessBoard {
 
                 ChessChecks.DoCheck(kingRow, kingCol, atkPieceRow, atkPieceCol, pieceType);
 
-                }
+            }
         }
 
         isWhiteTurn = !isWhiteTurn;
@@ -494,4 +490,3 @@ public class ChessClick extends ChessBoard {
         return false;
     }
 }
-
