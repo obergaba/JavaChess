@@ -7,6 +7,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
+import stockfish.Stockfish;
 
 import java.util.*;
 public class ChessClick extends ChessBoard {
@@ -213,6 +214,12 @@ public class ChessClick extends ChessBoard {
         }
 
         isWhiteTurn = !isWhiteTurn;
+
+        if(!isWhiteTurn)
+        {
+            System.out.println(client.getOutput(0));
+            System.out.println("Best move : " + client.getBestMove_inTime(STARTING_FEN, 100));
+        }
 
     }
     static void UpdateFEN(int fromRow, int fromCol, int toRow, int toCol){

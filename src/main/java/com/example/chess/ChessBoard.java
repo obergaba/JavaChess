@@ -24,12 +24,14 @@ public class ChessBoard extends Application {
         static double WINDOW_SIZE = 800;
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
-        public static String STARTING_FEN = "3q1k2/4pp2/3p4/8/8/4P3/1Q1P1N2/3K4 w - - 0 27";
+        public static String STARTING_FEN = "3q1k2/4pp2/3p4/8/8/4P3/1Q1P1N2/3K4 b - - 0 27";
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
         public static boolean isWhiteTurn = true;
         public static boolean boolCheck= false;
         public static GridPane chessBoard;
+
+        public static Stockfish client = new Stockfish();
         Image icon = new Image("icon.png");
         public static String pieceType;
         @Override
@@ -90,6 +92,15 @@ public class ChessBoard extends Application {
             primaryStage.setResizable(false);
             primaryStage.setScene(scene);
             primaryStage.show();
+
+
+
+
+            if (client.startEngine()) {
+                System.out.println("Engine has started..");
+            } else {
+                System.out.println("Oops! Something went wrong..");
+            }
 
             /*Stockfish client = new Stockfish();
 
