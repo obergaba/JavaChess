@@ -172,8 +172,13 @@ public class ChessClick extends ChessBoard {
             castle(toCol, toRow, fromRow, fromCol, wb);
         }
 
+        System.out.println("prima:");
+        System.out.println(STARTING_FEN);
         //TODO: Update FEN, considering castle. Iterate all stacks? Update only single piece?
         UpdateFEN(fromRow, fromCol, toRow, toCol);
+
+        System.out.println("dopo:");
+        System.out.println(STARTING_FEN);
 
         to.getChildren().add(piece);
 
@@ -219,8 +224,8 @@ public class ChessClick extends ChessBoard {
 
             System.out.println(client.getOutput(0));
 
-            String bestMove = client.getBestMove_inTime(STARTING_FEN, 100); // Output example: f8g8. a = 97 -> h = 104
-            System.out.println(bestMove + " ----------------------");
+            String bestMove = client.getBestMove_inTime(STARTING_FEN, 10); // Output example: f8g8. a = 97 -> h = 104
+
             char[] bestMove_chars = bestMove.toCharArray();
 
             int fromCol_AI = (7 - ('h' - bestMove_chars[0]));int fromRow_AI = 7 - (Character.getNumericValue(bestMove_chars[1]) - 1);
