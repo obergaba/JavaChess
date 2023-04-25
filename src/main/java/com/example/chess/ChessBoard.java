@@ -24,7 +24,7 @@ public class ChessBoard extends Application {
         static double WINDOW_SIZE = 800;
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
-        public static String STARTING_FEN = "3q1k2/4pp2/3p4/8/8/4P3/1Q1P1N2/3K4 b - - 0 27";
+        public static String STARTING_FEN = "3q1k2/4pp2/3p4/8/8/4P3/1Q1P1N2/3K4 w - - 0 27";
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
         public static boolean isWhiteTurn = true;
@@ -37,6 +37,11 @@ public class ChessBoard extends Application {
         @Override
 
         public void start(Stage primaryStage) {
+
+
+            char a = 'h';
+            int b = 7 - ('h' - a);
+            System.out.println(b + " ---------------");
 
             Integer[] temp = {-1, -1};
 

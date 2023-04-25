@@ -218,9 +218,14 @@ public class ChessClick extends ChessBoard {
         if(!isWhiteTurn)
         {
             System.out.println(client.getOutput(0));
-            System.out.println("Best move : " + client.getBestMove_inTime(STARTING_FEN, 100));
-        }
+            String bestMove = client.getBestMove_inTime(STARTING_FEN, 100); // Output example: f8g8. a = 97 -> h = 104
+            char[] bestMove_chars = bestMove.toCharArray();
+            int fromCol_AI = 7 - ('h' - bestMove_chars[0]);int fromRow_AI = Character.getNumericValue(bestMove_chars[1]);
+            int toCol_AI = 7 - ('h' - bestMove_chars[2]); int toRow_AI = Character.getNumericValue(bestMove_chars[3]);
 
+            System.out.println("Best move : " + client.getBestMove_inTime(STARTING_FEN, 100));
+            System.out.println("From Col: " + fromCol_AI + ", From Row: " + fromRow_AI + "\n" + "To Col: " + toCol_AI + ", To Row: " + toRow_AI);
+        }
     }
     static void UpdateFEN(int fromRow, int fromCol, int toRow, int toCol){
 
@@ -366,6 +371,7 @@ public class ChessClick extends ChessBoard {
 
         return new String(fenArray);
     }
+
     static void highlightSquare(int row, int col, String legOrCap) {
 
         StackPane squareToHighlight = (StackPane) chessBoard.getChildren().get(row * 8 + col + 1);
