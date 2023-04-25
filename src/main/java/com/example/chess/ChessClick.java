@@ -223,9 +223,8 @@ public class ChessClick extends ChessBoard {
 
             char[] bestMove_chars = bestMove.toCharArray();
 
-            int fromCol_AI = 7 - ('h' - bestMove_chars[0]);int fromRow_AI = Character.getNumericValue(bestMove_chars[1]);
-            int toCol_AI = 7 - ('h' - bestMove_chars[2]); int toRow_AI = Character.getNumericValue(bestMove_chars[3]);
-
+            int fromCol_AI = (7 - ('h' - bestMove_chars[0]));int fromRow_AI = 7 - (Character.getNumericValue(bestMove_chars[1]) - 1);
+            int toCol_AI = (7 - ('h' - bestMove_chars[2])); int toRow_AI = 7 - (Character.getNumericValue(bestMove_chars[3]) - 1);
 
             if(startingPositions[toRow_AI][toCol_AI] != null)
             {
