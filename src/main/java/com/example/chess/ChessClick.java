@@ -175,7 +175,8 @@ public class ChessClick extends ChessBoard {
         }
 
         //TODO: Update FEN, considering castle. Iterate all stacks? Update only single piece?
-        //UpdateFEN(fromRow, fromCol, toRow, toCol);
+        UpdateFEN(fromRow, fromCol, toRow, toCol);
+
 
         to.getChildren().add(piece);
 
@@ -221,18 +222,18 @@ public class ChessClick extends ChessBoard {
         // Function have to handle fen split = 8, P1P and so on
         // Row = 1, Col = 1
 
-        // FEN example = rnbqkbnr/1p5p/8/8/8/8/PPPPPPPP/RNBQKBNR
-        // fromFEN = 1P5P -> 115P -> 7P
+        // FEN example = 3q1k2/4pp2/3p4/8/8/4P3/1Q1P1N2/3K4
+        // fromFEN = 4P3 -> 413 -> 8
         // toFEN = 8
 
-        String oldFen = STARTING_FEN.split(" ")[0];
+        String rightSideFEN = STARTING_FEN.substring(STARTING_FEN.indexOf(" ") + 1);
+        String[] oldFen = STARTING_FEN.split(" ")[0].split("/");
 
-        String fromFen = oldFen.split("/")[fromRow];
+        String fromFen = oldFen[fromRow];
         char[] fromChars = fromFen.toCharArray();
 
-        String toFen = oldFen.split("/")[toRow];
-
         int charInd = 0;
+        int charCount = -1;
         for (char ch : fromChars)
         {
             if (Character.isDigit(ch))
@@ -243,24 +244,112 @@ public class ChessClick extends ChessBoard {
             }else
             {System.out.println("Error on parsing col FEN");}
 
-            if (charInd-1 == fromCol)
-            {
-                break;
+            if (charInd-1 == fromCol) {
+                charCount += 1;
+                break;}
+            charCount += 1;
+        }
+        char targetPiece = fromChars[charCount];
+        fromChars[charCount] = '1';
+
+        ArrayList<Character> fromFEN_copy = new ArrayList<>();
+        charCount = 0;
+        for (int i = 0; i < fromChars.length; i++) {
+            if (Character.isDigit(fromChars[i]) && (charCount == 0)){
+                int charSum = 0;
+                charSum += Character.getNumericValue(fromChars[i]);
+                for (int j = i+1; j < fromChars.length; j++) {
+                    if (Character.isDigit(fromChars[j]))
+                    {
+                        charSum += Character.getNumericValue(fromChars[j]);
+                        charCount += 1;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                fromFEN_copy.add((char)(charSum+'0'));
+            }
+            else if (charCount == 0){fromFEN_copy.add(fromChars[i]);}
+            else {charCount -= 1;}
+        }
+        StringBuilder sb = new StringBuilder();
+        for (char c : fromFEN_copy){
+            sb.append(c);
+        }String st = sb.toString();
+        oldFen[fromRow] = st;
+
+
+        String newFen = String.join("/",oldFen);
+
+        String[] oldFen_copy = newFen.split(" ")[0].split("/");
+        String toFen = oldFen_copy[toRow];
+
+        char[] exploded = explodeFEN(toFen).toCharArray();
+        exploded[toCol] = targetPiece;
+        String s = new String(exploded);
+        String rebuild = rebuildFEN(s);
+
+        oldFen_copy[toRow] = rebuild;
+
+        String result = String.join("/", oldFen_copy) + " " +  rightSideFEN;
+        System.out.println(STARTING_FEN);
+        STARTING_FEN = result;
+        System.out.println(result);
+
+    }
+
+    private static String rebuildFEN(String Fen){
+
+        ArrayList<Character> fromFEN_copy = new ArrayList<>();
+        int charCount = 0;
+        char[] fromChars = Fen.toCharArray();
+
+        for (int i = 0; i < fromChars.length; i++) {
+            if (Character.isDigit(fromChars[i]) && (charCount == 0)){
+                int charSum = 0;
+                charSum += Character.getNumericValue(fromChars[i]);
+                for (int j = i+1; j < fromChars.length; j++) {
+                    if (Character.isDigit(fromChars[j]))
+                    {
+                        charSum += Character.getNumericValue(fromChars[j]);
+                        charCount += 1;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                fromFEN_copy.add((char)(charSum+'0'));
+            }
+            else if (charCount == 0){fromFEN_copy.add(fromChars[i]);}
+            else {charCount -= 1;}
+        }
+        StringBuilder sb = new StringBuilder();
+        for (char c : fromFEN_copy){
+            sb.append(c);
+        }
+
+        return sb.toString();
+    }
+    private static String explodeFEN(String Fen){
+        
+        ArrayList<Character> exploded = new ArrayList<>();
+        for (char ch : Fen.toCharArray())
+        {
+            if (Character.isDigit(ch)){
+                for (int i = 0; i < Character.getNumericValue(ch); i++) {
+                    exploded.add('1');
+                }
+            }
+            else {
+                exploded.add(ch);
             }
         }
-        fromChars[charInd-1] = '1';
-
-        int prevIsDigit = 1;
-        int count = 0;
-
-        while (count < fromChars.length)
-        {
-
-            count += 1;
+        StringBuilder sb = new StringBuilder();
+        for (char c : exploded) {
+            sb.append(c);
         }
-
-        System.out.println(fromFen);
-        System.out.println(String.valueOf(fromChars));
+        return sb.toString();
     }
     static void highlightSquare(int row, int col, String legOrCap) {
 

@@ -24,7 +24,7 @@ public class ChessBoard extends Application {
         static double WINDOW_SIZE = 800;
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
-        final static String STARTING_FEN = "r3k3/8/2q5/8/8/8/2Q5/R3K2R w - - 0 27";
+        public static String STARTING_FEN = "3q1k2/4pp2/3p4/8/8/4P3/1Q1P1N2/3K4 w - - 0 27";
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
         public static boolean isWhiteTurn = true;
@@ -91,13 +91,13 @@ public class ChessBoard extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
-            Stockfish client = new Stockfish();
+            /*Stockfish client = new Stockfish();
 
              if (client.startEngine()) {
                  System.out.println("Engine has started..");
             } else {
                System.out.println("Oops! Something went wrong..");
-            }
+            }*/
 
             //System.out.println(client.getOutput(0));
             //System.out.println("Best move : " + client.getBestMove_inTime(STARTING_FEN, 100));
@@ -126,6 +126,7 @@ public class ChessBoard extends Application {
 
             return square;
         }
+
         private void CreateTexts(Pane pane)
         {
             //PROBLEM: Windows size needs to be a square and equal offset by board
@@ -155,6 +156,7 @@ public class ChessBoard extends Application {
 
             }
         }
+
         private String[][] StartingPositionFromFEN()
         {
             Dictionary<Character, String> dict = new Hashtable<>();
