@@ -177,7 +177,6 @@ public class ChessClick extends ChessBoard {
         //TODO: Update FEN, considering castle. Iterate all stacks? Update only single piece?
         UpdateFEN(fromRow, fromCol, toRow, toCol);
 
-
         to.getChildren().add(piece);
 
         startingPositions[toRow][toCol] = pieceType;
@@ -227,6 +226,8 @@ public class ChessClick extends ChessBoard {
         // toFEN = 8
 
         String rightSideFEN = STARTING_FEN.substring(STARTING_FEN.indexOf(" ") + 1);
+        rightSideFEN = changeFen_turn(rightSideFEN);
+
         String[] oldFen = STARTING_FEN.split(" ")[0].split("/");
 
         String fromFen = oldFen[fromRow];
@@ -298,7 +299,6 @@ public class ChessClick extends ChessBoard {
         System.out.println(result);
 
     }
-
     private static String rebuildFEN(String Fen){
 
         ArrayList<Character> fromFEN_copy = new ArrayList<>();
@@ -350,6 +350,14 @@ public class ChessClick extends ChessBoard {
             sb.append(c);
         }
         return sb.toString();
+    }
+    private static String changeFen_turn(String Fen)
+    {
+        char[] fenArray = Fen.toCharArray();
+        char turn = (fenArray[0] == 'w') ? 'b' : 'w';
+        fenArray[0] = turn;
+
+        return new String(fenArray);
     }
     static void highlightSquare(int row, int col, String legOrCap) {
 
