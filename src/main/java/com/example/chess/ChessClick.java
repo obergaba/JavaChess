@@ -15,6 +15,11 @@ public class ChessClick extends ChessBoard {
 
         removePrevHigh();
 
+        square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
+
+        System.out.println("Turn:");
+        System.out.println(isWhiteTurn);
+
         String pieceType = ChessBoard.startingPositions[row][col];
         Integer[] SelectedPrev = new Integer[]{row, col};
 
@@ -130,15 +135,13 @@ public class ChessClick extends ChessBoard {
             String finalPieceType = pieceType;
             castleMove.setOnMouseClicked(event1 ->
                     movePieceCapture(row, col, square, castleMove, wb, finalPieceType, false, true));
-
         }
 
         prevHigh = legalIndexes;
         prevHigh.addAll(captureIndexes);
         prevHigh.addAll(castleIndexes);
-
         prevHigh.add(SelectedPrev);
-        square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
+
 
     }
     private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt, boolean castle) {
@@ -185,6 +188,7 @@ public class ChessClick extends ChessBoard {
             boolCheck = false;
         }
         removePrevHigh();
+
         turns(isWhiteTurn);
 
         if(!pieceType.equals("king"))
@@ -207,7 +211,9 @@ public class ChessClick extends ChessBoard {
                 ChessChecks.DoCheck(kingRow, kingCol, atkPieceRow, atkPieceCol, pieceType);
             }
         }
+
         isWhiteTurn = !isWhiteTurn;
+
     }
     static void UpdateFEN(int fromRow, int fromCol, int toRow, int toCol){
 
@@ -279,15 +285,12 @@ public class ChessClick extends ChessBoard {
     }
     private static void castle(int toCol, int toRow,int fromRow, int fromCol, String wb) {
 
-
-
         if(toCol == 6 && toRow == 7 && wb.equals("white"))
         {
             StackPane rookCastle = (StackPane) chessBoard.getChildren().get(64);
             rookCastle.getChildren().remove(0);
 
             startingPositions[7][7] = null;
-
 
             rookCastle.setOnMouseClicked(null);
 
@@ -340,7 +343,6 @@ public class ChessClick extends ChessBoard {
 
             startingPositions[0][0] = null;
 
-
             rookCastle.setOnMouseClicked(null);
 
             ChessPiece rook = new ChessPiece("rook", wb, true);
@@ -355,6 +357,7 @@ public class ChessClick extends ChessBoard {
 
         List<Integer[]> list = new ArrayList<>();
         Integer[] temp = {-1, -1};
+
         for(int i = 0; i<8; i++)
         {
             for(int j = 0; j<8; j++)

@@ -218,12 +218,12 @@ public class ChessLogic extends ChessBoard {
 
                 if (hasMoved(row, col)) {
                     if (hasMoved(row, col + 3) && startingPositions[row][col+1] == null && startingPositions[row][col+2] == null &&
-                            isAttacked(captureIndexes, row, col + 1) && isAttacked(captureIndexes, row, col + 2)) {
+                            isAttacked(captureIndexes, row, col + 1) && isAttacked(captureIndexes, row, col + 2) && !boolCheck) {
 
                         castleIndexes.add(new Integer[]{row, col+2});
                     }
                     if (hasMoved(row, col - 4) && startingPositions[row][col-1] == null && startingPositions[row][col-2] == null && startingPositions[row][col-3] == null &&
-                            isAttacked(captureIndexes, row, col - 1) && isAttacked(captureIndexes, row, col - 2)) {
+                            isAttacked(captureIndexes, row, col - 1) && isAttacked(captureIndexes, row, col - 2) && !boolCheck) {
                         castleIndexes.add(new Integer[]{row, col-2});
                     }
                 }
