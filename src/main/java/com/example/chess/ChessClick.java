@@ -18,9 +18,6 @@ public class ChessClick extends ChessBoard {
 
         square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
 
-        System.out.println("Turn:");
-        System.out.println(isWhiteTurn);
-
         String pieceType = ChessBoard.startingPositions[row][col];
         Integer[] SelectedPrev = new Integer[]{row, col};
 
@@ -188,6 +185,7 @@ public class ChessClick extends ChessBoard {
             //TODO: take king coordinates and remove the highlight, maybe?
             boolCheck = false;
         }
+
         removePrevHigh();
 
         turns(isWhiteTurn);
@@ -217,25 +215,37 @@ public class ChessClick extends ChessBoard {
 
         if(!isWhiteTurn)
         {
+            boolean capture = false;
+
             System.out.println(client.getOutput(0));
+
             String bestMove = client.getBestMove_inTime(STARTING_FEN, 100); // Output example: f8g8. a = 97 -> h = 104
+
             char[] bestMove_chars = bestMove.toCharArray();
+
             int fromCol_AI = 7 - ('h' - bestMove_chars[0]);int fromRow_AI = Character.getNumericValue(bestMove_chars[1]);
             int toCol_AI = 7 - ('h' - bestMove_chars[2]); int toRow_AI = Character.getNumericValue(bestMove_chars[3]);
 
-            System.out.println("Best move : " + client.getBestMove_inTime(STARTING_FEN, 100));
-            System.out.println("From Col: " + fromCol_AI + ", From Row: " + fromRow_AI + "\n" + "To Col: " + toCol_AI + ", To Row: " + toRow_AI);
+
+            if(startingPositions[toRow_AI][toCol_AI] != null)
+            {
+                capture = true;
+            }
+
+            StackPane from_AI = (StackPane) chessBoard.getChildren().get(fromRow_AI * 8 + fromCol_AI+1);
+            StackPane to_AI = (StackPane) chessBoard.getChildren().get(toRow_AI * 8 + toCol_AI+1);
+
+            ChessPiece piece_AI = (ChessPiece) from_AI.getChildren().get(0);
+            String color_AI = piece_AI.getColor();
+            String pt_AI = piece_AI.getType();
+
+            movePieceCapture(fromRow_AI, fromCol_AI, from_AI, to_AI,color_AI, pt_AI, capture, false);
+
         }
     }
+
+
     static void UpdateFEN(int fromRow, int fromCol, int toRow, int toCol){
-
-        // Edit old fen from row that give the current fen split and target one.
-        // Function have to handle fen split = 8, P1P and so on
-        // Row = 1, Col = 1
-
-        // FEN example = 3q1k2/4pp2/3p4/8/8/4P3/1Q1P1N2/3K4
-        // fromFEN = 4P3 -> 413 -> 8
-        // toFEN = 8
 
         String rightSideFEN = STARTING_FEN.substring(STARTING_FEN.indexOf(" ") + 1);
         rightSideFEN = changeFen_turn(rightSideFEN);
@@ -306,10 +316,7 @@ public class ChessClick extends ChessBoard {
         oldFen_copy[toRow] = rebuild;
 
         String result = String.join("/", oldFen_copy) + " " +  rightSideFEN;
-        System.out.println(STARTING_FEN);
         STARTING_FEN = result;
-        System.out.println(result);
-
     }
     private static String rebuildFEN(String Fen){
 
@@ -524,6 +531,8 @@ public class ChessClick extends ChessBoard {
             squareToRemove.getChildren().remove(vBoxToRemove);
         }
     }
+
+
 
     public static void removePrevHigh() {
 
