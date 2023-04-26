@@ -99,7 +99,6 @@ public class Stockfish {
         sendCommand("position fen " + fen);
         sendCommand("go movetime " + waitTime);
         String result = getOutput(waitTime + 300);
-
         int a = 1;
         try{
             //result_cio = getOutput(waitTime + 300);
@@ -115,7 +114,28 @@ public class Stockfish {
     public String getBestMove_inDepth(String fen, int depth) {
         sendCommand("position fen " + fen);
         sendCommand("go depth " + depth);
-        return getOutput(20).split("bestmove ")[1].split(" ")[0];
+
+        String bestmove = "";
+        //getOutput(20).split("bestmove ")[1].split(" ")[0];
+        int maxLines = 1000;
+        while (true)
+        {
+            String[] output = getOutput(20).split("\n");
+            for (String line : output)
+            {
+                if (line.startsWith("bestmove "))
+                {
+                    bestmove = line.split("bestmove ")[1].split(" ")[0];
+                }
+            }
+            if (!bestmove.equals(" ") || maxLines <= 0)
+            {
+                break;
+            }
+            maxLines += output.length + 1;
+        }
+
+        return bestmove;
     }
 
     /**

@@ -94,8 +94,6 @@ public class ChessBoard extends Application {
             primaryStage.show();
 
 
-
-
             if (client.startEngine()) {
                 System.out.println("Engine has started..");
             } else {
