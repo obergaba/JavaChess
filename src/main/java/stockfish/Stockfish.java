@@ -35,6 +35,8 @@ public class Stockfish {
                     engineProcess.getInputStream()));
             processWriter = new OutputStreamWriter(
                     engineProcess.getOutputStream());
+            sendCommand("uci");
+            sendCommand("ucinewgame");
             sendCommand("setoption name Use NNUE");
             sendCommand("setoption name Skill Level value " + Level);
         } catch (Exception e) {

@@ -406,7 +406,7 @@ public class ChessClick extends ChessBoard {
 
         client.getOutput(0);
 
-        String bestMove = client.getBestMove_inDepth(STARTING_FEN, 10); // Output example: f8g8. a = 97 -> h = 104
+        String bestMove = client.getBestMove_inDepth(STARTING_FEN, 1); // Output example: f8g8. a = 97 -> h = 104
 
         char[] bestMove_chars = bestMove.toCharArray();
 

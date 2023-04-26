@@ -96,7 +96,7 @@ public class ChessBoard extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
-            if (client.startEngine(10)) {
+            if (client.startEngine(0)) {
                 System.out.println("Engine has started..");
             } else {
                 System.out.println("Oops! Something went wrong..");
