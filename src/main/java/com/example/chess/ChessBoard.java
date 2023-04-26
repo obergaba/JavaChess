@@ -24,7 +24,7 @@ public class ChessBoard extends Application {
         static double WINDOW_SIZE = 800;
         static String COLOR_1 = "#dee3e6";
         static String COLOR_2 = "#8ca2ad";
-        public static String STARTING_FEN = "1n2k2r/2p2pp1/b3p3/3qN2P/3Pn3/1Pb1P1K1/r4P1P/2QR4 w - - 0 0";
+        public static String STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 0";
         public static String[][] startingPositions = new String[8][8];
         public static int[][] startingPositionColors = new int[8][8];
         public static boolean isWhiteTurn = true;
@@ -58,6 +58,7 @@ public class ChessBoard extends Application {
                     final int currentCol = col;
 
                     StackPane square = createSquare(row, col);
+
                     chessBoard.add(square, col, row);
 
                     pieceType = startingPositions[currentRow][currentCol];
