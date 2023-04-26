@@ -1,5 +1,6 @@
 package com.example.chess;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
@@ -222,7 +223,23 @@ public class ChessClick extends ChessBoard {
 
         if(!isWhiteTurn)
         {
-            stockfishMoves();
+            Thread stockfishThread = new Thread(new Runnable() {
+                public void run() {
+                        Platform.runLater(new Runnable() {
+                            public void run() {
+                                stockfishMoves(Thread.currentThread());
+                            }
+                        });
+                }
+            });
+            try {
+                Thread.sleep(50);
+            }
+            catch (Exception e){
+                System.out.println("EXEPTION ON SLEEP");
+            }
+            stockfishThread.start();
+
         }
     }
 
@@ -382,13 +399,14 @@ public class ChessClick extends ChessBoard {
         }
     }
 
-    static void stockfishMoves() {
+    static void stockfishMoves(Thread currentThread) {
+
 
         boolean capture = false;
 
-       client.getOutput(0);
+        client.getOutput(0);
 
-        String bestMove = client.getBestMove_inTime(STARTING_FEN, 10); // Output example: f8g8. a = 97 -> h = 104
+        String bestMove = client.getBestMove_inDepth(STARTING_FEN, 10); // Output example: f8g8. a = 97 -> h = 104
 
         char[] bestMove_chars = bestMove.toCharArray();
 
@@ -408,6 +426,8 @@ public class ChessClick extends ChessBoard {
         String pt_AI = piece_AI.getType();
 
         movePieceCapture(fromRow_AI, fromCol_AI, from_AI, to_AI,color_AI, pt_AI, capture, false);
+
+        currentThread.interrupt();
     }
     private static void castle(int toCol, int toRow,int fromRow, int fromCol, String wb) {
 

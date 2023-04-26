@@ -18,7 +18,7 @@ import static com.example.chess.ChessClick.stockfishMoves;
 //TODO: Highlight check square
 //TODO: Double checks
 //TODO: Stalemate
-//TODO: Update Fen for Stockfish
+//TODO: Update Fen improvement: castle update, castle fen check, n° of moves
 
 public class ChessBoard extends Application {
         static double BOARD_SIZE = 600.0;
@@ -96,7 +96,7 @@ public class ChessBoard extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
-            if (client.startEngine()) {
+            if (client.startEngine(10)) {
                 System.out.println("Engine has started..");
             } else {
                 System.out.println("Oops! Something went wrong..");

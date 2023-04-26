@@ -21,10 +21,13 @@ public class Stockfish {
 
     /**
      * Starts Stockfish engine as a process and initializes it
-     *
+     @param Level
+      *            Skill level of stockfish engine
+      *            level range min 0 max 20
+      *            good luck
      * @return True on success. False otherwise
      */
-    public boolean startEngine() {
+    public boolean startEngine(int Level) {
 
         try {
             Process engineProcess = Runtime.getRuntime().exec(PATH);
@@ -33,7 +36,7 @@ public class Stockfish {
             processWriter = new OutputStreamWriter(
                     engineProcess.getOutputStream());
             sendCommand("setoption name Use NNUE");
-
+            sendCommand("setoption name Skill Level value " + Level);
         } catch (Exception e) {
             return false;
         }
@@ -70,7 +73,7 @@ public class Stockfish {
         StringBuilder buffer = new StringBuilder();
 
         try {
-            Thread.sleep(waitTime);
+            //Thread.sleep(waitTime);
             sendCommand("isready");
             while (true) {
                 String text = processReader.readLine();
@@ -82,6 +85,10 @@ public class Stockfish {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            processWriter.flush();
+        }catch (Exception e){System.out.println("EXCEPTION ON FLUSH");}
+
         return buffer.toString();
     }
 
@@ -101,7 +108,6 @@ public class Stockfish {
         String result = getOutput(waitTime + 300);
         int a = 1;
         try{
-            //result_cio = getOutput(waitTime + 300);
             String[] temp_result = result.split("\n");
             result = temp_result[temp_result.length - 1].split(" ")[1]; //.split(" ")[0];
         }
@@ -121,14 +127,16 @@ public class Stockfish {
         while (true)
         {
             String[] output = getOutput(20).split("\n");
+
             for (String line : output)
             {
-                if (line.startsWith("bestmove "))
-                {
-                    bestmove = line.split("bestmove ")[1].split(" ")[0];
+                if (!line.equals("\n") && !line.equals("")) {
+                    if (line.startsWith("bestmove ")) {
+                        bestmove = line.split("bestmove ")[1].split(" ")[0];
+                    }
                 }
             }
-            if (!bestmove.equals(" ") || maxLines <= 0)
+            if (!bestmove.equals("") || maxLines <= 0)
             {
                 break;
             }
