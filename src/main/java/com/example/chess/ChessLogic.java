@@ -480,7 +480,6 @@ public class ChessLogic extends ChessBoard {
     }
     private static boolean hasMoved(int row, int col) {
 
-
         StackPane squareToCheck = (StackPane) chessBoard.getChildren().get(row * 8 + col+1);
         if (squareToCheck.getChildren().size() > 0)
         {

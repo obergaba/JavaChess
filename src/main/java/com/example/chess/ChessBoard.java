@@ -12,6 +12,8 @@ import stockfish.Stockfish;
 
 import java.util.*;
 
+import static com.example.chess.ChessClick.stockfishMoves;
+
 //TODO: En passant
 //TODO: Highlight check square
 //TODO: Double checks
@@ -94,28 +96,11 @@ public class ChessBoard extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
-
             if (client.startEngine()) {
                 System.out.println("Engine has started..");
             } else {
                 System.out.println("Oops! Something went wrong..");
             }
-
-            /*Stockfish client = new Stockfish();
-
-             if (client.startEngine()) {
-                 System.out.println("Engine has started..");
-            } else {
-               System.out.println("Oops! Something went wrong..");
-            }*/
-
-            //System.out.println(client.getOutput(0));
-            //System.out.println("Best move : " + client.getBestMove_inTime(STARTING_FEN, 100));
-
-            //System.out.println("Evaluation score : " + client.getEvalScore(STARTING_FEN, 10000));
-            //System.out.println("Evaluation with NNUE: " + client.getNNUE_Eval());
-
-            //client.stopEngine();
         }
 
 

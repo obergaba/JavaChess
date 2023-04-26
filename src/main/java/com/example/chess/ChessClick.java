@@ -7,6 +7,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
+
 import stockfish.Stockfish;
 
 import java.util.*;
@@ -172,13 +173,14 @@ public class ChessClick extends ChessBoard {
             castle(toCol, toRow, fromRow, fromCol, wb);
         }
 
-        System.out.println("prima:");
-        System.out.println(STARTING_FEN);
+        //System.out.println("prima:");
+        //System.out.println(STARTING_FEN);
+
         //TODO: Update FEN, considering castle. Iterate all stacks? Update only single piece?
         UpdateFEN(fromRow, fromCol, toRow, toCol);
 
-        System.out.println("dopo:");
-        System.out.println(STARTING_FEN);
+        //System.out.println("dopo:");
+        //System.out.println(STARTING_FEN);
 
         to.getChildren().add(piece);
 
@@ -220,34 +222,9 @@ public class ChessClick extends ChessBoard {
 
         if(!isWhiteTurn)
         {
-            boolean capture = false;
-
-            System.out.println(client.getOutput(0));
-
-            String bestMove = client.getBestMove_inTime(STARTING_FEN, 10); // Output example: f8g8. a = 97 -> h = 104
-
-            char[] bestMove_chars = bestMove.toCharArray();
-
-            int fromCol_AI = (7 - ('h' - bestMove_chars[0]));int fromRow_AI = 7 - (Character.getNumericValue(bestMove_chars[1]) - 1);
-            int toCol_AI = (7 - ('h' - bestMove_chars[2])); int toRow_AI = 7 - (Character.getNumericValue(bestMove_chars[3]) - 1);
-
-            if(startingPositions[toRow_AI][toCol_AI] != null)
-            {
-                capture = true;
-            }
-
-            StackPane from_AI = (StackPane) chessBoard.getChildren().get(fromRow_AI * 8 + fromCol_AI+1);
-            StackPane to_AI = (StackPane) chessBoard.getChildren().get(toRow_AI * 8 + toCol_AI+1);
-
-            ChessPiece piece_AI = (ChessPiece) from_AI.getChildren().get(0);
-            String color_AI = piece_AI.getColor();
-            String pt_AI = piece_AI.getType();
-
-            movePieceCapture(fromRow_AI, fromCol_AI, from_AI, to_AI,color_AI, pt_AI, capture, false);
-
+            stockfishMoves();
         }
     }
-
 
     static void UpdateFEN(int fromRow, int fromCol, int toRow, int toCol){
 
@@ -404,6 +381,34 @@ public class ChessClick extends ChessBoard {
             squareToHighlight.setStyle("-fx-background-color: rgba(92, 32, 27, 0.7);");
         }
     }
+
+    static void stockfishMoves() {
+
+        boolean capture = false;
+
+       client.getOutput(0);
+
+        String bestMove = client.getBestMove_inTime(STARTING_FEN, 10); // Output example: f8g8. a = 97 -> h = 104
+
+        char[] bestMove_chars = bestMove.toCharArray();
+
+        int fromCol_AI = (7 - ('h' - bestMove_chars[0]));int fromRow_AI = 7 - (Character.getNumericValue(bestMove_chars[1]) - 1);
+        int toCol_AI = (7 - ('h' - bestMove_chars[2])); int toRow_AI = 7 - (Character.getNumericValue(bestMove_chars[3]) - 1);
+
+        if(startingPositions[toRow_AI][toCol_AI] != null)
+        {
+            capture = true;
+        }
+
+        StackPane from_AI = (StackPane) chessBoard.getChildren().get(fromRow_AI * 8 + fromCol_AI+1);
+        StackPane to_AI = (StackPane) chessBoard.getChildren().get(toRow_AI * 8 + toCol_AI+1);
+
+        ChessPiece piece_AI = (ChessPiece) from_AI.getChildren().get(0);
+        String color_AI = piece_AI.getColor();
+        String pt_AI = piece_AI.getType();
+
+        movePieceCapture(fromRow_AI, fromCol_AI, from_AI, to_AI,color_AI, pt_AI, capture, false);
+    }
     private static void castle(int toCol, int toRow,int fromRow, int fromCol, String wb) {
 
         if(toCol == 6 && toRow == 7 && wb.equals("white"))
@@ -430,7 +435,6 @@ public class ChessClick extends ChessBoard {
 
             startingPositions[7][0] = null;
 
-
             rookCastle.setOnMouseClicked(null);
 
             ChessPiece rook = new ChessPiece("rook", wb, true);
@@ -440,6 +444,7 @@ public class ChessClick extends ChessBoard {
             startingPositions[fromRow][fromCol-1] = "rook";
 
         }
+
 
         if(toCol == 6 && toRow == 0 && wb.equals("black"))
         {
@@ -535,8 +540,6 @@ public class ChessClick extends ChessBoard {
             squareToRemove.getChildren().remove(vBoxToRemove);
         }
     }
-
-
 
     public static void removePrevHigh() {
 
