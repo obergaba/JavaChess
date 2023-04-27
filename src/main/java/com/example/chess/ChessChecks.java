@@ -1,6 +1,6 @@
 package com.example.chess;
 
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,8 +71,8 @@ public class ChessChecks extends ChessClick{
         isWhiteTurn = !isWhiteTurn;
 
         StackPane kingSquare = (StackPane) chessBoard.getChildren().get(kingRow * 8 + kingCol + 1);
-        //kingSquare.setStyle("-fx-border-color: red; -fx-border-width: 2px;-fx-background-color:" + getSquareColor(kingRow, kingCol));
-        kingSquare.setStyle("-fx-background-color: rgba(100, 255, 0, 0.7)");
+
+        kingSquare.setStyle("-fx-background-color: rgba(100, 0, 0, 0.7)");
 
         String wb;
 
@@ -119,6 +119,7 @@ public class ChessChecks extends ChessClick{
         if(legalIndexes.isEmpty() && canBlockIndex.size() == 0 && capIndexes.isEmpty())
         {
             System.out.println("CHECK MATE!!");
+            play("C:\\Users\\GABA\\Desktop\\java git\\JavaChess\\src\\main\\resources\\generic.wav");
             return;
         }
 

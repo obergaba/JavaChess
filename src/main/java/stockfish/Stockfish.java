@@ -30,6 +30,7 @@ public class Stockfish {
     public boolean startEngine(int Level) {
 
         try {
+
             Process engineProcess = Runtime.getRuntime().exec(PATH);
             processReader = new BufferedReader(new InputStreamReader(
                     engineProcess.getInputStream()));
@@ -39,6 +40,7 @@ public class Stockfish {
             sendCommand("ucinewgame");
             sendCommand("setoption name Use NNUE");
             sendCommand("setoption name Skill Level value " + Level);
+            sendCommand("uci");
         } catch (Exception e) {
             return false;
         }

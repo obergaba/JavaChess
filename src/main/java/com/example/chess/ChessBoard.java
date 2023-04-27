@@ -11,8 +11,9 @@ import javafx.stage.Stage;
 import stockfish.Stockfish;
 
 import java.util.*;
+import java.util.List;
 
-import static com.example.chess.ChessClick.stockfishMoves;
+import static com.example.chess.ChessClick.play;
 
 //TODO: En passant
 //TODO: Highlight check square
@@ -38,7 +39,7 @@ public class ChessBoard extends Application {
         public static String pieceType;
         @Override
 
-        public void start(Stage primaryStage) {
+        public void start(Stage primaryStage){
 
             Integer[] temp = {-1, -1};
 
@@ -96,11 +97,13 @@ public class ChessBoard extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
-            if (client.startEngine(0)) {
+            if (client.startEngine(20)) {
                 System.out.println("Engine has started..");
             } else {
                 System.out.println("Oops! Something went wrong..");
             }
+
+            play("C:\\Users\\GABA\\Desktop\\java git\\JavaChess\\src\\main\\resources\\generic.wav");
         }
 
 

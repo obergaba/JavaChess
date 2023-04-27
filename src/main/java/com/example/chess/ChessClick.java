@@ -9,19 +9,31 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
 
-import stockfish.Stockfish;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
+import java.io.File;
 import java.util.*;
+import java.util.List;
+
 public class ChessClick extends ChessBoard {
     private static List<Integer[]> prevHigh = new ArrayList<>();
+    private static final int[] kingHigh = new int[2];
     public static void setClick(int row, int col, StackPane square, List<Integer[]> checkBlock, Integer[] thruCheck) {
 
+        Integer[] SelectedPrev = new Integer[0];
         removePrevHigh();
 
-        square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
+        if(!boolCheck)
+        {
+            square.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 40, 0, 0.5);");
+            SelectedPrev = new Integer[]{row, col};
+        }
+
 
         String pieceType = ChessBoard.startingPositions[row][col];
-        Integer[] SelectedPrev = new Integer[]{row, col};
+
 
         ChessPiece piece = (ChessPiece) square.getChildren().get(0);
         String wb = piece.getColor();
@@ -104,7 +116,9 @@ public class ChessClick extends ChessBoard {
 
             }else {
                 startingPositions[row][col] = null;
+
                 int[] result = ChessChecks.isCheck(!isWhiteTurn);
+
                 if (result[0] != 0 || result[1] != 0) {
                     startingPositions[row][col] = pieceType;
                     continue;
@@ -137,14 +151,21 @@ public class ChessClick extends ChessBoard {
                     movePieceCapture(row, col, square, castleMove, wb, finalPieceType, false, true));
         }
 
+
         prevHigh = legalIndexes;
         prevHigh.addAll(captureIndexes);
         prevHigh.addAll(castleIndexes);
-        prevHigh.add(SelectedPrev);
-
-
+        if(!boolCheck)
+            prevHigh.add(SelectedPrev);
     }
-    private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt, boolean castle) {
+    private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt, boolean castle)  {
+
+
+        if(!Capt)
+            play("C:\\Users\\GABA\\Desktop\\java git\\JavaChess\\src\\main\\resources\\move.wav");
+
+        if(Capt)
+            play("C:\\Users\\GABA\\Desktop\\java git\\JavaChess\\src\\main\\resources\\capture.wav");
 
         int toCol = GridPane.getColumnIndex(to);
         int toRow = GridPane.getRowIndex(to);
@@ -174,14 +195,8 @@ public class ChessClick extends ChessBoard {
             castle(toCol, toRow, fromRow, fromCol, wb);
         }
 
-        //System.out.println("prima:");
-        //System.out.println(STARTING_FEN);
-
         //TODO: Update FEN, considering castle. Iterate all stacks? Update only single piece?
         UpdateFEN(fromRow, fromCol, toRow, toCol);
-
-        //System.out.println("dopo:");
-        //System.out.println(STARTING_FEN);
 
         to.getChildren().add(piece);
 
@@ -190,7 +205,7 @@ public class ChessClick extends ChessBoard {
 
         if(boolCheck)
         {
-            //TODO: take king coordinates and remove the highlight, maybe?
+            removeHighlight(kingHigh[0], kingHigh[1]);
             boolCheck = false;
         }
 
@@ -208,12 +223,11 @@ public class ChessClick extends ChessBoard {
                 int kingRow = result[0];
                 int kingCol = result[1];
 
-                Integer[] kingHigh = new Integer[]{kingRow, kingCol};
+                kingHigh[0] = kingRow;
+                kingHigh[1] = kingCol;
 
                 int atkPieceRow = result[2];
                 int atkPieceCol = result[3];
-
-                prevHigh.add(kingHigh);
 
                 ChessChecks.DoCheck(kingRow, kingCol, atkPieceRow, atkPieceCol, pieceType);
             }
@@ -223,23 +237,26 @@ public class ChessClick extends ChessBoard {
 
         if(!isWhiteTurn)
         {
-            Thread stockfishThread = new Thread(new Runnable() {
-                public void run() {
-                        Platform.runLater(new Runnable() {
-                            public void run() {
-                                stockfishMoves(Thread.currentThread());
-                            }
-                        });
-                }
-            });
+            Thread stockfishThread = new Thread(() -> Platform.runLater(() -> stockfishMoves(Thread.currentThread())));
             try {
                 Thread.sleep(50);
             }
             catch (Exception e){
-                System.out.println("EXEPTION ON SLEEP");
+                System.out.println("EXCEPTION ON SLEEP");
             }
             stockfishThread.start();
 
+        }
+    }
+
+    public static void play(String filePath) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch (Exception e) {
+            System.out.println("Error playing sound: " + e.getMessage());
         }
     }
 
@@ -313,8 +330,7 @@ public class ChessClick extends ChessBoard {
 
         oldFen_copy[toRow] = rebuild;
 
-        String result = String.join("/", oldFen_copy) + " " +  rightSideFEN;
-        STARTING_FEN = result;
+        STARTING_FEN = String.join("/", oldFen_copy) + " " +  rightSideFEN;
     }
     private static String rebuildFEN(String Fen){
 
@@ -401,17 +417,18 @@ public class ChessClick extends ChessBoard {
 
     static void stockfishMoves(Thread currentThread) {
 
-
         boolean capture = false;
 
         client.getOutput(0);
 
-        String bestMove = client.getBestMove_inDepth(STARTING_FEN, 1); // Output example: f8g8. a = 97 -> h = 104
+        String bestMove = client.getBestMove_inDepth(STARTING_FEN, 10); // Output example: f8g8. a = 97 -> h = 104
 
         char[] bestMove_chars = bestMove.toCharArray();
 
-        int fromCol_AI = (7 - ('h' - bestMove_chars[0]));int fromRow_AI = 7 - (Character.getNumericValue(bestMove_chars[1]) - 1);
-        int toCol_AI = (7 - ('h' - bestMove_chars[2])); int toRow_AI = 7 - (Character.getNumericValue(bestMove_chars[3]) - 1);
+        int fromCol_AI = (7 - ('h' - bestMove_chars[0]));
+        int fromRow_AI = 7 - (Character.getNumericValue(bestMove_chars[1]) - 1);
+        int toCol_AI = (7 - ('h' - bestMove_chars[2]));
+        int toRow_AI = 7 - (Character.getNumericValue(bestMove_chars[3]) - 1);
 
         if(startingPositions[toRow_AI][toCol_AI] != null)
         {
