@@ -5,11 +5,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import stockfish.Stockfish;
 
+import java.io.File;
 import java.util.*;
 import java.util.List;
 
@@ -20,6 +25,7 @@ import static com.example.chess.ChessClick.play;
 //TODO: Double checks
 //TODO: Stalemate
 //TODO: Update Fen improvement: castle update, castle fen check, n° of moves
+//TODO: clocks
 
 public class ChessBoard extends Application {
         static double BOARD_SIZE = 600.0;
@@ -33,6 +39,7 @@ public class ChessBoard extends Application {
         public static boolean isWhiteTurn = true;
         public static boolean boolCheck= false;
         public static GridPane chessBoard;
+        public static Pane pane;
 
         public static Stockfish client = new Stockfish();
         Image icon = new Image("icon.png");
@@ -83,9 +90,8 @@ public class ChessBoard extends Application {
                 }
             }
 
-            Pane pane = new Pane();
+            pane = new Pane();
             pane.getChildren().add(chessBoard);
-
             Scene scene = new Scene(pane, WINDOW_SIZE, WINDOW_SIZE);
             scene.setFill(Color.WHITE);
 
@@ -103,7 +109,7 @@ public class ChessBoard extends Application {
                 System.out.println("Oops! Something went wrong..");
             }
 
-            play("C:\\Users\\GABA\\Desktop\\java git\\JavaChess\\src\\main\\resources\\generic.wav");
+            play(new File("").getAbsolutePath().concat("\\src\\main\\resources\\generic.wav"));
         }
 
 

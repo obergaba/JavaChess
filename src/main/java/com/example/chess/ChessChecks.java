@@ -2,6 +2,7 @@ package com.example.chess;
 
 import javafx.scene.layout.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -119,7 +120,7 @@ public class ChessChecks extends ChessClick{
         if(legalIndexes.isEmpty() && canBlockIndex.size() == 0 && capIndexes.isEmpty())
         {
             System.out.println("CHECK MATE!!");
-            play("C:\\Users\\GABA\\Desktop\\java git\\JavaChess\\src\\main\\resources\\generic.wav");
+            play(new File("").getAbsolutePath().concat("\\src\\main\\resources\\generic.wav"));
             return;
         }
 

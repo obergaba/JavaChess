@@ -162,10 +162,10 @@ public class ChessClick extends ChessBoard {
 
 
         if(!Capt)
-            play("C:\\Users\\GABA\\Desktop\\java git\\JavaChess\\src\\main\\resources\\move.wav");
+            play(new File("").getAbsolutePath().concat("\\src\\main\\resources\\move.wav"));//C:\Users\GABA\Desktop\java git\JavaChess\src\main\resources\
 
         if(Capt)
-            play("C:\\Users\\GABA\\Desktop\\java git\\JavaChess\\src\\main\\resources\\capture.wav");
+            play(new File("").getAbsolutePath().concat("\\src\\main\\resources\\capture.wav"));//C:\Users\GABA\Desktop\java git\JavaChess\src\main\resources\capture.wav
 
         int toCol = GridPane.getColumnIndex(to);
         int toRow = GridPane.getRowIndex(to);
@@ -384,8 +384,7 @@ public class ChessClick extends ChessBoard {
         }
         return sb.toString();
     }
-    private static String changeFen_turn(String Fen)
-    {
+    private static String changeFen_turn(String Fen) {
         char[] fenArray = Fen.toCharArray();
         char turn = (fenArray[0] == 'w') ? 'b' : 'w';
         fenArray[0] = turn;
@@ -405,6 +404,7 @@ public class ChessClick extends ChessBoard {
 
             VBox vBox = new VBox(circle);
             vBox.setAlignment(Pos.CENTER);
+            vBox.setId("hint");
 
             squareToHighlight.getChildren().add(vBox);
         }
