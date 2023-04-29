@@ -135,6 +135,7 @@ public class ChessChecks extends ChessClick{
             StackPane canBlock = (StackPane) chessBoard.getChildren().get(rowTemp * 8 + colTemp + 1);
             canBlock.setOnMouseClicked(event ->
                     ChessClick.setClick(rowTemp, colTemp, canBlock, toBlockIndex, temp));
+            canBlock.setMouseTransparent(false);
         }
     }
 
@@ -371,6 +372,7 @@ public class ChessChecks extends ChessClick{
                 if(startingPositions[i][j] != null ) {
                     StackPane turn2 = (StackPane) chessBoard.getChildren().get(i * 8 + j + 1);
                     turn2.setOnMouseClicked(null);
+                    turn2.setMouseTransparent(true);
                 }
             }
         }

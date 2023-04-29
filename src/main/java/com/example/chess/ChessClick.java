@@ -145,6 +145,7 @@ public class ChessClick extends ChessBoard {
             highlightSquare(trow, tcol, "legal");
 
             StackPane castleMove = (StackPane) chessBoard.getChildren().get(trow * 8 + tcol+1);
+            castleMove.setId("castle");
 
             String finalPieceType = pieceType;
             castleMove.setOnMouseClicked(event1 ->
@@ -158,7 +159,7 @@ public class ChessClick extends ChessBoard {
         if(!boolCheck)
             prevHigh.add(SelectedPrev);
     }
-    private static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt, boolean castle)  {
+    public static void movePieceCapture(int fromRow, int fromCol, StackPane from, StackPane to, String wb, String pieceType, boolean Capt, boolean castle)  {
 
 
         if(!Capt)
@@ -180,10 +181,9 @@ public class ChessClick extends ChessBoard {
             pieceType ="queen";
         }
 
+        ChessPiece piece = (ChessPiece) from.getChildren().get(0);
         from.getChildren().remove(0);
         from.setOnMouseClicked(null);
-
-        ChessPiece piece = new ChessPiece(pieceType, wb, true);
 
         if(Capt)
         {
@@ -412,6 +412,7 @@ public class ChessClick extends ChessBoard {
         else if(Objects.equals(legOrCap, "capture"))
         {
             squareToHighlight.setStyle("-fx-background-color: rgba(92, 32, 27, 0.7);");
+            squareToHighlight.setId("capture");
         }
     }
 
@@ -563,6 +564,7 @@ public class ChessClick extends ChessBoard {
 
         StackPane squareToRemove = (StackPane) chessBoard.getChildren().get(row * 8 + col+1);
         squareToRemove.setStyle("-fx-border-color: transparent;-fx-border-width: 0px;-fx-background-color:" + getSquareColor(row, col));
+        squareToRemove.setId("");
 
         VBox vBoxToRemove = null;
 

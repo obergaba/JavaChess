@@ -19,12 +19,15 @@ public class ChessPiece extends ImageView  {
     private final String type;
     private final String color;
     private static GridPane gridPane;
+    private static StackPane fromStack;
     private static int prevHigh = -1;
     private static boolean isPressed = false;
     private static int currentX = -1; private static int currentY = -1;
     private static int fromX = -1; private static int fromY = -1;
 
     private static boolean isValidIndex = false;
+    private static boolean isCapture = false;
+    private static boolean isCastle = false;
 
     private final boolean hasMoved;
     public ChessPiece(String type, String color, boolean hasMoved) {
@@ -45,21 +48,21 @@ public class ChessPiece extends ImageView  {
         setImage(image);
 
         setOnMousePressed(event -> {
-            StackPane parent = (StackPane) this.getParent();
-            fromX = (GridPane.getColumnIndex(parent));
-            fromY = (GridPane.getRowIndex(parent));
+            fromStack = (StackPane) this.getParent();
+            fromX = (GridPane.getColumnIndex(fromStack));
+            fromY = (GridPane.getRowIndex(fromStack));
 
-            gridPane = (GridPane) parent.getParent();
+            gridPane = (GridPane) fromStack.getParent();
 
             List<Integer[]> em = new ArrayList<>();
             Integer[] em_1 = {-1,-1};
-            ChessClick.setClick(fromY, fromX, parent, em, em_1);
+            ChessClick.setClick(fromY, fromX, fromStack, em, em_1);
 
             if (this.getParent() != ChessBoard.pane) {
-                double colS_2 = ((GridPane.getColumnIndex(parent)) * ChessBoard.CELL_SIZE) + ((ChessBoard.WINDOW_SIZE - ChessBoard.BOARD_SIZE)/2);
-                double rowS_2 = ((GridPane.getRowIndex(parent)) * ChessBoard.CELL_SIZE) + ((ChessBoard.WINDOW_SIZE - ChessBoard.BOARD_SIZE)/2);
+                double colS_2 = ((GridPane.getColumnIndex(fromStack)) * ChessBoard.CELL_SIZE) + ((ChessBoard.WINDOW_SIZE - ChessBoard.BOARD_SIZE)/2);
+                double rowS_2 = ((GridPane.getRowIndex(fromStack)) * ChessBoard.CELL_SIZE) + ((ChessBoard.WINDOW_SIZE - ChessBoard.BOARD_SIZE)/2);
 
-                parent.getChildren().remove(0);
+                fromStack.getChildren().remove(0);
                 Pane mainPane = ChessBoard.pane;
                 mainPane.getChildren().add(this);
 
@@ -76,11 +79,13 @@ public class ChessPiece extends ImageView  {
                 setX(mouseX - getFitWidth()/2);
                 setY(mouseY - getFitHeight()/2);
 
-                currentX = (int) Math.floor((Math.min((Math.max((ChessBoard.WINDOW_SIZE - ChessBoard.BOARD_SIZE)/2, getX())),
-                        ChessBoard.BOARD_SIZE + (ChessBoard.WINDOW_SIZE - ChessBoard.BOARD_SIZE)/2)) / ChessBoard.CELL_SIZE) - 1;
+                currentX = (int) Math.min(Math.floor((Math.min((Math.max((ChessBoard.WINDOW_SIZE - ChessBoard.BOARD_SIZE)/2, getX())),
+                        ChessBoard.BOARD_SIZE + (ChessBoard.WINDOW_SIZE - ChessBoard.BOARD_SIZE)/2))
+                        / ChessBoard.CELL_SIZE) - 1, 7);
 
-                currentY = (int) Math.floor((Math.min((Math.max((ChessBoard.WINDOW_SIZE - ChessBoard.BOARD_SIZE)/2, getY())),
-                        ChessBoard.BOARD_SIZE + (ChessBoard.WINDOW_SIZE - ChessBoard.BOARD_SIZE)/2)) / ChessBoard.CELL_SIZE) - 1;
+                currentY = (int) Math.min(Math.floor((Math.min((Math.max((ChessBoard.WINDOW_SIZE - ChessBoard.BOARD_SIZE)/2, getY())),
+                        ChessBoard.BOARD_SIZE + (ChessBoard.WINDOW_SIZE - ChessBoard.BOARD_SIZE)/2))
+                        / ChessBoard.CELL_SIZE) - 1, 7);
 
                 StackPane stack = (StackPane) gridPane.getChildren().get(currentY * 8 + currentX+1);
 
@@ -90,14 +95,29 @@ public class ChessPiece extends ImageView  {
                 }
 
                 if (stack.getChildren().size() == 0){isValidIndex = false;}
-                for (Node e : stack.getChildren()){
-                    if (e instanceof VBox){
+                for (Node e : stack.getChildren()) {
+                    if (e instanceof VBox) {
                         stack.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(0, 0, 255, 0.5);");
-                        stack.setId("drag");
-                        prevHigh = currentY * 8 + currentX+1;
+                        prevHigh = currentY * 8 + currentX + 1;
                         isValidIndex = true;
                     }
                 }
+                if (stack.getId() != null){
+                    if (stack.getId().equals("capture")) {
+                        stack.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(255,200,16,0.5);");
+                        prevHigh = currentY * 8 + currentX + 1;
+                        isValidIndex = true;
+                        isCapture = true;
+                    }
+                    if (stack.getId().equals("castle")) {
+                        stack.setStyle("-fx-border-color: transparent; -fx-border-width: 0.0; -fx-background-color: rgba(182,0,253,0.5);");
+                        prevHigh = currentY * 8 + currentX + 1;
+                        isValidIndex = true;
+                        isCapture = false;
+                        isCastle = true;
+                    }
+                }
+
         });
 
         setOnMouseReleased(event -> {
@@ -106,13 +126,17 @@ public class ChessPiece extends ImageView  {
                 if (currentX != -1 && currentY != -1){
                     if (isValidIndex) {
                         StackPane toPane = (StackPane) gridPane.getChildren().get(currentY * 8 + currentX + 1);
-                        toPane.getChildren().add(this);
+                        fromStack.getChildren().add(this);
+                        System.out.println("Castle: " + isCastle);
+                        ChessClick.movePieceCapture(fromY, fromX, fromStack, toPane, "white", type, isCapture, isCastle);
                     }
                     else {
                         StackPane toPane = (StackPane) gridPane.getChildren().get(fromY * 8 + fromX + 1);
-                        toPane.getChildren().add(this);
+                        fromStack.getChildren().add(this);
                     }
                 }
+                setX(0);
+                setY(0);
                 prevHigh = -1;
                 isValidIndex = false;
             }
